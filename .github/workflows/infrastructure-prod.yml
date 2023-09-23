@@ -1,0 +1,21 @@
+name: infrastructure-prod
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/infrastructure.yml'
+      - '.github/workflows/infrastructure-prod.yml'
+      - 'infrastructure/**'
+  workflow_dispatch:
+
+jobs:
+  infrastructure-prod:
+    uses: ./.github/workflows/infrastructure.yml
+    with:
+      environment: prod
+      existing: true
+    secrets: 
+      azureCredentials: ${{ secrets.AZURE_CREDENTIALS }}
+      apiKey: ${{ secrets.API_KEY }}

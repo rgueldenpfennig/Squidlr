@@ -1,0 +1,38 @@
+﻿@using Squidlr.Web.States;
+@using Squidlr.Web.Telemetry
+
+@inject AppState AppState
+
+<TelemetryComponent />
+<Router AppAssembly="@typeof(App).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+    </Found>
+    <NotFound>
+        <PageTitle>Not found</PageTitle>
+        <LayoutView Layout="@typeof(MainLayout)">
+            <HeadContent>
+                <meta name="robots" content="noindex" />
+            </HeadContent>
+            <div class="text-center py-5">
+                <h1 class="display-1">404</h1>
+                <h2>Oops, there's nothing at this address.</h2>
+            </div>
+        </LayoutView>
+    </NotFound>
+</Router>
+
+@code{
+    [Parameter]
+    public string? Referer { get; set; }
+
+    [Parameter]
+    public string? UserAgent { get; set; }
+
+    protected override void OnInitialized()
+    {
+        AppState.Referer = Referer;
+        AppState.UserAgent = UserAgent;
+    }
+}

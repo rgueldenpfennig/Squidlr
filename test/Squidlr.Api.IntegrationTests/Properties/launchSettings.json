@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "TweetCrawler.Api.IntegrationTests": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:52635;http://localhost:52636"
+    }
+  }
+}

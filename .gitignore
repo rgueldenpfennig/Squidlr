@@ -396,3 +396,8 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# SASS
+/src/Squidlr.Web/wwwroot/css/custom-bootstrap.css
+/src/Squidlr.Web/wwwroot/css/custom-bootstrap.css.map
+/src/Squidlr.Web/wwwroot/lib/

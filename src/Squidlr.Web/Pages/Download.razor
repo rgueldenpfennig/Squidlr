@@ -1,0 +1,136 @@
+﻿@page "/download"
+
+@using Microsoft.AspNetCore.WebUtilities;
+@using Microsoft.Extensions.Options;
+@using System.Net;
+@using Serilog.Context;
+@using Squidlr.Utilities;
+@using Squidlr.Web.Clients;
+@using Squidlr.Web.States;
+@using Squidlr.Web.Telemetry;
+
+@inject ILogger<Download> Logger
+@inject NavigationManager NavigationManager
+@inject RequestVideoState RequestVideoState
+@inject ApiClient ApiClient
+@inject IOptions<ApplicationOptions> ApplicationOptions
+@inject IHostEnvironment HostEnvironment
+@inject IJSRuntime JS
+@inject TelemetryHandler TelemetryHandler
+
+@implements IDisposable
+
+<head>
+    <meta name="robots" content="noindex, nofollow" />
+</head>
+
+<PageTitle>@(SeoProperties.CreatePageTitle("Download"))</PageTitle>
+
+<div class="d-flex flex-column align-items-center justify-content-center">
+    <div class="px-4 my-4 text-center">
+        <h1 class="display-6 fw-bold text-body-emphasis">Download your X video</h1>
+    </div>
+
+    @if (tweetContent is not null)
+    {
+        <TweetContentView TweetContent="@tweetContent" />
+    }
+
+    @if (errorMessage is not null)
+    {
+        <h2 class="text-center mt-4">Oh no! Something went wrong :-(</h2>
+        <div class="alert alert-warning" role="alert">@errorMessage</div>
+    }
+
+    <div class="container mt-4">
+        <h2 class="text-center">Want to download another video?</h2>
+
+        <VideoSearchQuery />
+    </div>
+
+    <BusyIndicator IsBusy="@isBusy" />
+</div>
+
+@code {
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "url")]
+    public string? Url { get; set; }
+
+    private TweetIdentifier tweetIdentifier;
+
+    private TweetContent? tweetContent;
+
+    private bool isBusy = true;
+
+    private string? errorMessage;
+
+    private CancellationTokenSource cts = new CancellationTokenSource();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        isBusy = true;
+        tweetContent = null;
+        errorMessage = null;
+        RequestVideoState.TwitterUrl = Url;
+
+        if (string.IsNullOrEmpty(RequestVideoState.TwitterUrl) ||
+           !UrlUtilities.IsValidTwitterStatusUrl(RequestVideoState.TwitterUrl))
+        {
+            NavigationManager.NavigateTo("/");
+        }
+        else
+        {
+            tweetIdentifier = UrlUtilities.CreateTweetIdentifierFromUrl(Url!);
+        }
+
+        try
+        {
+            var tweetContentResult = await ApiClient.GetTweetContentAsync(tweetIdentifier, cts.Token);
+            if (tweetContentResult.IsSuccessful)
+            {
+                tweetContent = tweetContentResult.Value;
+            }
+            else
+            {
+                SetErrorMessage(tweetContentResult.Error);
+            }
+        }
+        catch (ApiClientException e)
+        {
+            SetErrorMessage(e);
+        }
+
+        isBusy = false;
+    }
+
+    private void SetErrorMessage(GetTweetVideoResult result)
+    {
+        if (result == GetTweetVideoResult.Success) return;
+
+        errorMessage = result switch
+        {
+            GetTweetVideoResult.NotFound => "Unfortunately the requested post could not be found.",
+            GetTweetVideoResult.NoVideo => "It seems that the post does not contain any video.",
+            GetTweetVideoResult.UnsupportedVideo => "The post contains an embedded video source which is not yet supported.",
+            GetTweetVideoResult.AdultContent => "Age-restricted adult content. This content might not be appropriate for people under 18 years old.",
+            GetTweetVideoResult.AccountSuspended => "The account containing the requested post has been suspended.",
+            GetTweetVideoResult.Protected => "The account owner limits who can view their Posts.",
+            GetTweetVideoResult.GatewayError => "The response from the X servers was not what we expected. We will try to fix that as soon as possible!",
+            _ => "There was an unexpected error. We will try to fix that as soon as possible!"
+        };
+    }
+
+    private void SetErrorMessage(ApiClientException exception)
+    {
+        errorMessage = exception.StatusCode switch
+        {
+            HttpStatusCode.TooManyRequests => "You created too many request. Please try again later.",
+            _ => "There was an unexpected error. We will try to fix that as soon as possible!"
+        };
+    }
+
+    void IDisposable.Dispose()
+    {
+        cts.Dispose();
+    }
+}

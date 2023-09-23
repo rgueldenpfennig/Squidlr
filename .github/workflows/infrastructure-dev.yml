@@ -1,0 +1,21 @@
+name: infrastructure-dev
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - '.github/workflows/infrastructure.yml'
+      - '.github/workflows/infrastructure-dev.yml'
+      - 'infrastructure/**'
+  workflow_dispatch:
+
+jobs:
+  infrastructure-dev:
+    uses: ./.github/workflows/infrastructure.yml
+    with:
+      environment: staging
+      existing: true
+    secrets:
+      azureCredentials: ${{ secrets.AZURE_CREDENTIALS }}
+      apiKey: ${{ secrets.API_KEY_STAGING }}

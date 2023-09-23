@@ -1,0 +1,25 @@
+version: "3.9"
+services:
+  api:
+    build:
+      context: .
+      dockerfile: src/Squidlr.Api/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      APPLICATION__APIKEY: foobar
+      ASPNETCORE_URLS: http://*:80;http://*:5001
+    ports:
+      - "8080:80"
+      - "5001:5001"
+  web:
+    build:
+      context: .
+      dockerfile: src/Squidlr.Web/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      APPLICATION__APIHOSTURI: http://api
+      APPLICATION__APIKEY: foobar
+      ASPNETCORE_URLS: http://*:80;http://*:5002
+    ports:
+      - "8090:80"
+      - "5002:5002"

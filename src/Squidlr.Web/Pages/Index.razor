@@ -1,0 +1,80 @@
+﻿@page "/"
+
+@using Squidlr.Web.States;
+
+@inject RequestVideoState RequestVideoState
+@inject NavigationManager NavigationManager
+
+<HeadContent>
+    <meta name="og:title" content="@SeoProperties.Title" />
+    <meta name="og:description" content="@SeoProperties.Description" />
+    <meta name="og:type" content="website" />
+    <meta name="og:site_name" content="@SeoProperties.Domain" />
+    <meta name="og:url" content="@(NavigationManager.BaseUri)" />
+    <meta name="og:image" content="@(NavigationManager.BaseUri)social-header.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="@SeoProperties.Title" />
+    <meta name="twitter:description" content="@SeoProperties.Description" />
+    <meta name="twitter:creator" content="@@SquidlrBot" />
+    <meta name="twitter:site" content="@@SquidlrBot" />
+    <meta name="twitter:image:src" content="@(NavigationManager.BaseUri)social-header.png" />
+    <meta name="twitter:domain" content="@SeoProperties.Domain">
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="@(NavigationManager.BaseUri)sitemap.xml" />
+</HeadContent>
+
+<div class="pb-4 my-4 text-center border-bottom">
+    <h1 class="display-6 fw-bold text-body-emphasis">X / Twitter Video Downloader</h1>
+    <div class="mx-auto text-center">
+        <p class="lead fs-5 mb-4">
+            Download any X / Twitter video or GIF animation online right now.<br />
+            Choose your resolution and save it locally on your device as a MP4 file.
+        </p>
+        <VideoSearchQuery ShowSample=@true FocusInput=@true />
+    </div>
+</div>
+
+<div class="p-4 my-4">
+    <h2 class="display-7 text-center">How do I download a X / Twitter video?</h2>
+    <div class="row g-4 pt-4 row-cols-1 row-cols-lg-3">
+        <div class="col d-flex align-items-start">
+            <div class="d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+                <span class="oi oi-link-intact" data-glyph="link-intact" title="Copy link" aria-hidden="true"></span>
+            </div>
+            <div>
+                <h3 class="fs-4 text-body-emphasis">1. Copy X / Twitter link</h3>
+                <p>Copy the link of the post that contains the video you want to download.</p>
+            </div>
+        </div>
+        <div class="col d-flex align-items-start">
+            <div class="d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+                <span class="oi oi-share-boxed" data-glyph="share-boxed" title="Paste URL" aria-hidden="true"></span>
+            </div>
+            <div>
+                <h3 class="fs-4 text-body-emphasis">2. Paste the URL</h3>
+                <p>Now paste the copied link into the upper search bar and press the Download button.</p>
+            </div>
+        </div>
+        <div class="col d-flex align-items-start">
+            <div class="d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+                <span class="oi oi-cloud-download" data-glyph="cloud-download" title="Download" aria-hidden="true"></span>
+            </div>
+            <div>
+                <h3 class="fs-4 text-body-emphasis">3. Download the video</h3>
+                <p>The download page will display one or more videos that have been found.</p>
+                <p>Download your selection and enjoy!</p>
+            </div>
+        </div>
+    </div>
+    <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+        <div class="col-10 col-sm-8 col-lg-6">
+            <img src="favicon-256.png" class="d-block mx-lg-auto img-fluid" alt="Squidrl Logo" width="256" loading="lazy">
+        </div>
+        <div class="col-lg-6">
+            <h2 class="display-7 fw-bold text-body-emphasis lh-1 mb-3">What is Squidlr?</h2>
+            <div class="lead">
+                <p>Squidlr enables you to easily download videos and GIFs from <a href="https://www.x.com" rel="nofollow">X.com</a> (formerly Twitter). It's free of use and not bloated with advertisments.</p>
+                <p>In the future it is also planned so support additonal platforms to download video files.</p>
+            </div>
+        </div>
+    </div>
+</div>

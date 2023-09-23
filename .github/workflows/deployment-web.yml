@@ -1,0 +1,81 @@
+name: deployment-web
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+
+env:
+  # Disable the .NET logo in the console output.
+  DOTNET_NOLOGO: true
+  # Disable the .NET first time experience to skip caching NuGet packages and speed up the build.
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  # Disable sending .NET CLI telemetry to Microsoft.
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      statuses: write
+      checks: write
+      contents: write
+      pull-requests: write
+      actions: write
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: true
+      DOTNET_NOLOGO: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '7.0.x'
+      
+      - uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          # Look to see if there is a cache hit for the corresponding requirements file
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget
+
+      - name: Install dependencies
+        run: dotnet restore src/Squidlr.Web/Squidlr.Web.csproj
+
+      - name: Build
+        run: dotnet build src/Squidlr.Web/Squidlr.Web.csproj --configuration Release --no-restore
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set environment variables
+        uses: ./.github/actions/setvars
+        with:
+            varFilePath: ./.github/variables/vars.${{ inputs.environment }}.env
+
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Build and deploy web container image
+        uses: azure/container-apps-deploy-action@v1
+        with:
+          appSourcePath: ${{ github.workspace }}
+          dockerfilePath: src/Squidlr.Web/Dockerfile
+          acrName: ${{ env.ACR_NAME }}
+          imageToBuild: ${{ env.ACR_LOGIN_SERVER }}/squidlr-web:${{ github.sha }}
+          containerAppName: ${{ env.CONTAINER_APP_NAME_WEB }}
+          resourceGroup: ${{ env.RESOURCE_GROUP_NAME }}
+          disableTelemetry: true

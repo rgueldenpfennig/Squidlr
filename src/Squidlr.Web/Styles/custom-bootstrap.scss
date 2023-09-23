@@ -1,0 +1,24 @@
+﻿@import '../wwwroot/lib/bootstrap/scss/_functions';
+@import '../wwwroot/lib/bootstrap/scss/_variables';
+
+$primary: #4c25d2;
+$secondary: $purple-400;
+$success: $success;
+$info: $info;
+$warning: $warning;
+$danger: $danger;
+$light: $purple-200;
+$dark: $purple-900;
+
+$primary-text-emphasis: $dark;
+$primary-bg-subtle: $light;
+$primary-border-subtle: $purple-400;
+$border-color: $purple-300;
+$border-color-translucent: $purple-300;
+$body-emphasis-color: $purple-800;
+$link-color: $primary;
+
+// merge with existing $theme-colors map
+$theme-colors: map-merge($theme-colors, ( "primary": $primary, "secondary": $secondary, "success": $success, "info": $info, "warning": $warning, "danger": $danger, "light": $light, "dark": $dark ));
+
+@import '../wwwroot/lib/bootstrap/scss/bootstrap';

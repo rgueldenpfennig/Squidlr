@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33530.505
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Squidlr", "src\Squidlr\Squidlr.csproj", "{29DEBC86-35A4-4200-BB0F-E153AC900B5F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{3636F848-04AF-49BF-9496-C40DB1E85B07}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Squidlr.Tests", "test\Squidlr.Tests\Squidlr.Tests.csproj", "{6F23F69E-60D9-4B8A-9C39-D4469C9CDD07}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Squidlr.Api", "src\Squidlr.Api\Squidlr.Api.csproj", "{790B35FE-F6C7-4F19-BC72-69AD4DE8260B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Squidlr.Api.IntegrationTests", "test\Squidlr.Api.IntegrationTests\Squidlr.Api.IntegrationTests.csproj", "{8F37572A-3A88-4B38-A0F5-4DDB8C6DF698}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Squidlr.Web", "src\Squidlr.Web\Squidlr.Web.csproj", "{03691757-1449-431F-BDB2-DFA13DEB0637}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Squidlr.Hosting", "src\Squidlr.Hosting\Squidlr.Hosting.csproj", "{9149A88C-6346-47FE-B277-A3AF75628FB5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{29DEBC86-35A4-4200-BB0F-E153AC900B5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29DEBC86-35A4-4200-BB0F-E153AC900B5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29DEBC86-35A4-4200-BB0F-E153AC900B5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29DEBC86-35A4-4200-BB0F-E153AC900B5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F23F69E-60D9-4B8A-9C39-D4469C9CDD07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F23F69E-60D9-4B8A-9C39-D4469C9CDD07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F23F69E-60D9-4B8A-9C39-D4469C9CDD07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F23F69E-60D9-4B8A-9C39-D4469C9CDD07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{790B35FE-F6C7-4F19-BC72-69AD4DE8260B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{790B35FE-F6C7-4F19-BC72-69AD4DE8260B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{790B35FE-F6C7-4F19-BC72-69AD4DE8260B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{790B35FE-F6C7-4F19-BC72-69AD4DE8260B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F37572A-3A88-4B38-A0F5-4DDB8C6DF698}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F37572A-3A88-4B38-A0F5-4DDB8C6DF698}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F37572A-3A88-4B38-A0F5-4DDB8C6DF698}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F37572A-3A88-4B38-A0F5-4DDB8C6DF698}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03691757-1449-431F-BDB2-DFA13DEB0637}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03691757-1449-431F-BDB2-DFA13DEB0637}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03691757-1449-431F-BDB2-DFA13DEB0637}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03691757-1449-431F-BDB2-DFA13DEB0637}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9149A88C-6346-47FE-B277-A3AF75628FB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9149A88C-6346-47FE-B277-A3AF75628FB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9149A88C-6346-47FE-B277-A3AF75628FB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9149A88C-6346-47FE-B277-A3AF75628FB5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6F23F69E-60D9-4B8A-9C39-D4469C9CDD07} = {3636F848-04AF-49BF-9496-C40DB1E85B07}
+		{8F37572A-3A88-4B38-A0F5-4DDB8C6DF698} = {3636F848-04AF-49BF-9496-C40DB1E85B07}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {21070736-B9E2-4478-9D91-C60717762C9A}
+	EndGlobalSection
+EndGlobal

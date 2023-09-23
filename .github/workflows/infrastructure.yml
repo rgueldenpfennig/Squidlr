@@ -1,0 +1,58 @@
+name: infrastructure
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+      existing:
+        required: true
+        type: boolean
+        description: Determines if all infrastructure resources are already existing, or else, should be created
+    secrets:
+      azureCredentials:
+          required: true
+      apiKey:
+          required: true
+
+jobs:
+  infrastructure:
+    runs-on: ubuntu-latest
+    outputs:
+      acrName: ${{ steps.arm.outputs.acrName }}
+      acrLoginServer: ${{ steps.arm.outputs.acrLoginServer }}
+      apiContainerAppName: ${{ steps.arm.outputs.apiContainerAppName }}
+      webContainerAppName: ${{ steps.arm.outputs.webContainerAppName }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set environment variables
+        uses: ./.github/actions/setvars
+        with:
+          varFilePath: ./.github/variables/vars.${{ inputs.environment }}.env
+
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.azureCredentials }}
+    
+      - name: Ensure resource group
+        uses: Azure/CLI@v1
+        with:
+          inlineScript: |
+            #!/bin/bash
+            az group create --name "$RESOURCE_GROUP_NAME" --location "$REGION"
+  
+      - name: Deploy Azure resources
+        id: arm
+        uses: azure/arm-deploy@v1
+        with:
+          deploymentName: ${{ github.run_number }}
+          resourceGroupName: ${{ env.RESOURCE_GROUP_NAME }}
+          template: ${{ github.workspace }}/infrastructure/main.bicep
+          failOnStdErr: false
+          scope: resourcegroup
+          parameters: 'apiAppExists=${{ inputs.existing }} webAppExists=${{ inputs.existing }} environmentName=${{ inputs.environment }} apiKey=${{ secrets.apiKey }}'

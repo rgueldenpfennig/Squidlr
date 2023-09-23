@@ -1,0 +1,103 @@
+name: deployment-api
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+
+env:
+  # Disable the .NET logo in the console output.
+  DOTNET_NOLOGO: true
+  # Disable the .NET first time experience to skip caching NuGet packages and speed up the build.
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  # Disable sending .NET CLI telemetry to Microsoft.
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      statuses: write
+      checks: write
+      contents: write
+      pull-requests: write
+      actions: write
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: true
+      DOTNET_NOLOGO: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '7.0.x'
+      
+      - uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          # Look to see if there is a cache hit for the corresponding requirements file
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget
+
+      - name: Install dependencies
+        run: dotnet restore src/Squidlr.Api/Squidlr.Api.csproj
+
+      - name: Build
+        run: dotnet build src/Squidlr.Api/Squidlr.Api.csproj --configuration Release --no-restore
+
+      - name: Unit Tests
+        run: dotnet test test/Squidlr.Tests --verbosity normal --logger trx --results-directory "TestResults"
+
+      - name: Integration Tests
+        run: dotnet test test/Squidlr.Api.IntegrationTests --verbosity normal --logger trx --results-directory "TestResults"
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: TestResults
+        # Use always() to always run this step to publish test results when there are test failures
+        if: ${{ always() }}
+
+      - name: Create test report
+        uses: dorny/test-reporter@v1
+        if: success() || failure()
+        with:
+          name: Test report
+          path: 'TestResults/*.trx'
+          reporter: dotnet-trx
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set environment variables
+        uses: ./.github/actions/setvars
+        with:
+            varFilePath: ./.github/variables/vars.${{ inputs.environment }}.env
+
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Build and deploy API container image
+        uses: azure/container-apps-deploy-action@v1
+        with:
+          appSourcePath: ${{ github.workspace }}
+          dockerfilePath: src/Squidlr.Api/Dockerfile
+          acrName: ${{ env.ACR_NAME }}
+          imageToBuild: ${{ env.ACR_LOGIN_SERVER }}/squidlr-api:${{ github.sha }}
+          containerAppName: ${{ env.CONTAINER_APP_NAME_API }}
+          resourceGroup: ${{ env.RESOURCE_GROUP_NAME }}
+          disableTelemetry: true
