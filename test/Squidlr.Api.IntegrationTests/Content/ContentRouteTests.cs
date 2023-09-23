@@ -15,8 +15,6 @@ public class ContentRouteTests : IClassFixture<ApiWebApplicationFactory>
     }
 
     [Theory]
-    // this account owner limits who can view their Posts
-    [InlineData("https://twitter.com/giphz/status/657991469417025536", HttpStatusCode.NotFound)]
     // Amplify video card
     [InlineData("https://twitter.com/starwars/status/665052190608723968")]
     // embedded video from other source than Twitter
@@ -27,8 +25,6 @@ public class ContentRouteTests : IClassFixture<ApiWebApplicationFactory>
     [InlineData("https://twitter.com/LouisVuitton/status/1671250425813815296", HttpStatusCode.NotFound)]
     // Tweet with adult content
     [InlineData("https://twitter.com/Rizdraws/status/1575199173472927762", HttpStatusCode.UnavailableForLegalReasons)]
-    [InlineData("https://x.com/LostEvParadise/status/1699385345069199871", HttpStatusCode.UnavailableForLegalReasons)]
-    [InlineData("https://twitter.com/itsabigass/status/1701113849817038971", HttpStatusCode.UnavailableForLegalReasons)]
     // Video Tweet including other quoted video
     [InlineData("https://twitter.com/DavidToons_/status/1578353380363501568")]
     // Twitter space recording
