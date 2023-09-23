@@ -17,7 +17,7 @@ param registryUsername string
 @secure()
 param registryPassword string
 
-resource containerApp 'Microsoft.App/containerApps@2023-04-01-preview' ={
+resource containerApp 'Microsoft.App/containerApps@2023-05-01' ={
   name: name
   location: location
   properties:{

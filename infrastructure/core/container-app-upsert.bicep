@@ -17,7 +17,7 @@ param registryUsername string
 param registryPassword string
 param exists bool = false
 
-resource existingApp 'Microsoft.App/containerApps@2023-04-01-preview' existing = if (exists) {
+resource existingApp 'Microsoft.App/containerApps@2023-05-01' existing = if (exists) {
   name: name
 }
 

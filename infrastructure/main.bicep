@@ -26,7 +26,7 @@ param apiAppExists bool = false
 param webAppExists bool = false
 
 // create the azure container registry
-resource acr 'Microsoft.ContainerRegistry/registries@2023-01-01-preview' = {
+resource acr 'Microsoft.ContainerRegistry/registries@2023-07-01' = {
   name: 'cr${applicationName}${environmentName}'
   location: location
   sku: {
