@@ -1,6 +1,6 @@
 ﻿using DotNext;
 
-namespace Squidlr.Services
+namespace Squidlr.Twitter.Services
 {
     public interface ITweetContentService
     {

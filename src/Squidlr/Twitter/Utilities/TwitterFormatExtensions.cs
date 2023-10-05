@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace Squidlr.Utilities;
+namespace Squidlr.Twitter.Utilities;
 
 internal static class TwitterFormatExtensions
 {

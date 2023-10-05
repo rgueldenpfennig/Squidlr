@@ -3,7 +3,7 @@ using Microsoft.Extensions.Options;
 
 namespace Squidlr;
 
-public sealed class TweetCrawlerOptions : IOptions<TweetCrawlerOptions>, IValidatableObject
+public sealed class SquidlrOptions : IOptions<SquidlrOptions>, IValidatableObject
 {
     [Required(AllowEmptyStrings = false)]
     public string? AuthorizationBearerToken { get; set; }
@@ -11,7 +11,7 @@ public sealed class TweetCrawlerOptions : IOptions<TweetCrawlerOptions>, IValida
     [Required]
     public Uri? TwitterApiHostUri { get; set; }
 
-    public TweetCrawlerOptions Value => this;
+    public SquidlrOptions Value => this;
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {

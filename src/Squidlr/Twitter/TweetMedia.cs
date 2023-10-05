@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Text.Json.Serialization;
 
-namespace Squidlr;
+namespace Squidlr.Twitter;
 
 [JsonDerivedType(typeof(TweetMedia), typeDiscriminator: "base")]
 [JsonDerivedType(typeof(TweetMediaVideo), typeDiscriminator: "withVideo")]

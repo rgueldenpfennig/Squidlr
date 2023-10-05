@@ -1,6 +1,7 @@
 ﻿using DotNext;
 using Microsoft.AspNetCore.Mvc;
 using Serilog.Context;
+using Squidlr.Twitter;
 using Squidlr.Web.Telemetry;
 
 namespace Squidlr.Web.Clients;

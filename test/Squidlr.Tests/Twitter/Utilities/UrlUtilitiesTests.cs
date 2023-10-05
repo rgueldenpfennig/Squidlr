@@ -1,6 +1,6 @@
 using Squidlr.Utilities;
 
-namespace Squidlr.Tests.Utilities;
+namespace Squidlr.Tests.Twitter.Utilities;
 
 public class UrlUtilitiesTests
 {

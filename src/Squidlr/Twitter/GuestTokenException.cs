@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace Squidlr.Client;
+namespace Squidlr.Twitter;
 
 [Serializable]
 public class GuestTokenException : Exception

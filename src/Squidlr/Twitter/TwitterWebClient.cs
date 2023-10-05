@@ -7,13 +7,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 
-namespace Squidlr.Client;
+namespace Squidlr.Twitter;
 
 public sealed class TwitterWebClient
 {
     public const string HttpClientName = nameof(TwitterWebClient);
 
-    private const int DefaultBufferSize = 65_536;
+    private const int _defaultBufferSize = 65_536;
 
     private readonly IHttpClientFactory _clientFactory;
     private readonly IMemoryCache _memoryCache;
@@ -21,7 +21,6 @@ public sealed class TwitterWebClient
 
     public TwitterWebClient(IHttpClientFactory httpClientFactory, IMemoryCache memoryCache, ILogger<TwitterWebClient> logger)
     {
-        ArgumentNullException.ThrowIfNull(httpClientFactory);
         _clientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
         _memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -143,7 +142,7 @@ public sealed class TwitterWebClient
     private static async ValueTask CopyStream(Stream output, Stream input, CancellationToken cancellationToken)
     {
         // stream copying taken from https://github.com/microsoft/reverse-proxy/blob/main/src/ReverseProxy/Forwarder/StreamCopier.cs
-        var buffer = ArrayPool<byte>.Shared.Rent(DefaultBufferSize);
+        var buffer = ArrayPool<byte>.Shared.Rent(_defaultBufferSize);
         int read;
         long contentLength = 0;
         try
@@ -170,7 +169,7 @@ public sealed class TwitterWebClient
 
                     await zeroByteReadTask;
 
-                    buffer = ArrayPool<byte>.Shared.Rent(DefaultBufferSize);
+                    buffer = ArrayPool<byte>.Shared.Rent(_defaultBufferSize);
                 }
 
                 read = await input.ReadAsync(buffer.AsMemory(), cancellationToken);

@@ -4,10 +4,11 @@ using System.Web;
 using System.Xml.Linq;
 using DotNext;
 using Microsoft.Extensions.Logging;
-using Squidlr.Client;
+using Squidlr.Common;
+using Squidlr.Twitter.Utilities;
 using Squidlr.Utilities;
 
-namespace Squidlr.Parser;
+namespace Squidlr.Twitter;
 
 public sealed class TweetContentParser
 {
@@ -155,34 +156,34 @@ public sealed class TweetContentParser
             var name = nameElement.Value.GetString();
             var tweetCardType = name switch
             {
-                string val when val.Contains("poll2choice_video", StringComparison.OrdinalIgnoreCase) => TweetCardType.Poll2ChoiceVideo,
-                string val when val.Contains("poll3choice_video", StringComparison.OrdinalIgnoreCase) => TweetCardType.Poll3ChoiceVideo,
-                string val when val.Contains("poll4choice_video", StringComparison.OrdinalIgnoreCase) => TweetCardType.Poll4ChoiceVideo,
-                string val when val.Contains("broadcast", StringComparison.OrdinalIgnoreCase) => TweetCardType.Broadcast,
-                string val when val.Contains("video_direct_message", StringComparison.OrdinalIgnoreCase) => TweetCardType.VideoDirectMessage,
-                string val when val.Equals("amplify", StringComparison.OrdinalIgnoreCase) => TweetCardType.Amplify,
-                string val when val.Equals("promo_video_convo", StringComparison.OrdinalIgnoreCase) => TweetCardType.PromoVideo,
-                string val when val.Equals("unified_card", StringComparison.OrdinalIgnoreCase) => TweetCardType.UnifiedCard,
-                _ => TweetCardType.Unknown
+                string val when val.Contains("poll2choice_video", StringComparison.OrdinalIgnoreCase) => TwitterCardType.Poll2ChoiceVideo,
+                string val when val.Contains("poll3choice_video", StringComparison.OrdinalIgnoreCase) => TwitterCardType.Poll3ChoiceVideo,
+                string val when val.Contains("poll4choice_video", StringComparison.OrdinalIgnoreCase) => TwitterCardType.Poll4ChoiceVideo,
+                string val when val.Contains("broadcast", StringComparison.OrdinalIgnoreCase) => TwitterCardType.Broadcast,
+                string val when val.Contains("video_direct_message", StringComparison.OrdinalIgnoreCase) => TwitterCardType.VideoDirectMessage,
+                string val when val.Equals("amplify", StringComparison.OrdinalIgnoreCase) => TwitterCardType.Amplify,
+                string val when val.Equals("promo_video_convo", StringComparison.OrdinalIgnoreCase) => TwitterCardType.PromoVideo,
+                string val when val.Equals("unified_card", StringComparison.OrdinalIgnoreCase) => TwitterCardType.UnifiedCard,
+                _ => TwitterCardType.Unknown
             };
 
             switch (tweetCardType)
             {
-                case TweetCardType.Unknown:
-                case TweetCardType.Broadcast:
+                case TwitterCardType.Unknown:
+                case TwitterCardType.Broadcast:
                     _logger.LogInformation("Could not fulfill unsupported video request of card type '{TweetCardType}'.", tweetCardType);
                     return GetTweetVideoResult.UnsupportedVideo;
-                case TweetCardType.Poll2ChoiceVideo:
-                case TweetCardType.Poll3ChoiceVideo:
-                case TweetCardType.Poll4ChoiceVideo:
+                case TwitterCardType.Poll2ChoiceVideo:
+                case TwitterCardType.Poll3ChoiceVideo:
+                case TwitterCardType.Poll4ChoiceVideo:
                     return await CreateFromCardWithVmapAsync("player_stream_url", cancellationToken);
-                case TweetCardType.Amplify:
+                case TwitterCardType.Amplify:
                     return await CreateFromCardWithVmapAsync("amplify_url_vmap", cancellationToken);
-                case TweetCardType.PromoVideo:
+                case TwitterCardType.PromoVideo:
                     return await CreateFromCardWithVmapAsync("player_url", cancellationToken);
-                case TweetCardType.UnifiedCard:
+                case TwitterCardType.UnifiedCard:
                     return await CreateFromUnifiedCardAsync(cancellationToken);
-                case TweetCardType.VideoDirectMessage:
+                case TwitterCardType.VideoDirectMessage:
                     return await CreateFromCardWithVmapAsync("player_url", cancellationToken);
                 default:
                     return GetTweetVideoResult.NoVideo;
@@ -294,7 +295,7 @@ public sealed class TweetContentParser
 
             var videoUrl = videoVariant.Attribute("url")?.Value;
             var bitrateAttribute = videoVariant.Attribute("bit_rate");
-            var bitrate = (bitrateAttribute != null) ? Convert.ToInt32(bitrateAttribute.Value) : 0;
+            var bitrate = bitrateAttribute != null ? Convert.ToInt32(bitrateAttribute.Value) : 0;
 
             if (videoUrl != null)
             {

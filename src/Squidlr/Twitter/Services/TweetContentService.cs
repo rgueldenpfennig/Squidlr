@@ -1,8 +1,7 @@
 ﻿using DotNext;
 using Microsoft.Extensions.Logging;
-using Squidlr.Parser;
 
-namespace Squidlr.Services;
+namespace Squidlr.Twitter.Services;
 
 public class TweetContentService : ITweetContentService
 {

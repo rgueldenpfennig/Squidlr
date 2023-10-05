@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
-using Squidlr.Utilities;
+using Squidlr.Twitter.Utilities;
 
-namespace Squidlr.Tests.Utilities;
+namespace Squidlr.Tests.Twitter.Utilities;
 
 public class TwitterFormatExtensionsTests
 {
@@ -11,7 +11,7 @@ public class TwitterFormatExtensionsTests
     public void ParseToDateTimeOffset(string value, string expectedResult)
     {
         // Act
-        var result = TwitterFormatExtensions.ParseToDateTimeOffset(value);
+        var result = value.ParseToDateTimeOffset();
 
         // Assert
         Assert.Equal(expectedResult, result.ToString(CultureInfo.InvariantCulture));

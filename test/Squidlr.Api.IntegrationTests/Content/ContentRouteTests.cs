@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using Squidlr.Twitter;
 using Xunit.Abstractions;
 
 namespace Squidlr.Api.IntegrationTests.Content;

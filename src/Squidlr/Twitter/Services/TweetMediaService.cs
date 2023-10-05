@@ -1,9 +1,8 @@
 ﻿using System.Net;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Squidlr.Client;
 
-namespace Squidlr.Services;
+namespace Squidlr.Twitter.Services;
 
 public sealed class TweetMediaService
 {

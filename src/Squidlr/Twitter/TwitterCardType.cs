@@ -1,6 +1,6 @@
-﻿namespace Squidlr.Parser;
+﻿namespace Squidlr.Twitter;
 
-internal enum TweetCardType
+internal enum TwitterCardType
 {
     Unknown,
 

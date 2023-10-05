@@ -47,7 +47,7 @@ public partial class Program
 
             builder.Services.AddTelemetry(o => o.IgnoreAbsolutePaths = new[] { "/health" });
 
-            builder.Host.UseTweetCrawler();
+            builder.Host.UseSquidlr();
 
             builder.Services.AddProblemDetails();
             builder.Services.AddHttpContextAccessor();

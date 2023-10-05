@@ -1,9 +1,8 @@
 ﻿using DotNext;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
-using Squidlr.Parser;
 
-namespace Squidlr.Services;
+namespace Squidlr.Twitter.Services;
 
 public sealed class CachedTweetContentService : TweetContentService
 {
@@ -22,7 +21,8 @@ public sealed class CachedTweetContentService : TweetContentService
             return result;
 
         result = await base.GetTweetContentAsync(identifier, cancellationToken);
-        if (result.Error is GetTweetVideoResult.Canceled or GetTweetVideoResult.GatewayError) return result;
+        if (result.Error is GetTweetVideoResult.Canceled or GetTweetVideoResult.GatewayError)
+            return result;
 
         _memoryCache.Set(cacheKey, result, absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(15));
         return result;

@@ -5,29 +5,28 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Polly;
 using Polly.Extensions.Http;
-using Squidlr.Client;
-using Squidlr.Parser;
-using Squidlr.Services;
+using Squidlr.Twitter;
+using Squidlr.Twitter.Services;
 
 namespace Squidlr;
 
-public static class TweetCrawlerHostBuilderExtensions
+public static class SquidlrHostBuilderExtensions
 {
-    public static IHostBuilder UseTweetCrawler(this IHostBuilder builder)
+    public static IHostBuilder UseSquidlr(this IHostBuilder builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
         builder.ConfigureServices((ctx, services) =>
         {
-            services.AddOptions<TweetCrawlerOptions>()
-                .Bind(ctx.Configuration.GetSection("TweetCrawler"))
+            services.AddOptions<SquidlrOptions>()
+                .Bind(ctx.Configuration.GetSection("Squidlr"))
                 .ValidateDataAnnotations()
                 .ValidateOnStart();
 
             services.AddMemoryCache();
             services.AddHttpClient(TwitterWebClient.HttpClientName, (sp, client) =>
             {
-                var options = sp.GetRequiredService<IOptions<TweetCrawlerOptions>>().Value;
+                var options = sp.GetRequiredService<IOptions<SquidlrOptions>>().Value;
 
                 client.DefaultRequestHeaders.Add("authorization", $"Bearer {options.AuthorizationBearerToken!}");
                 client.DefaultRequestHeaders.Add("authority", "twitter.com");

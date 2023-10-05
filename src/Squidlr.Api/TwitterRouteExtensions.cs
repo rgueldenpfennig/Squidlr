@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Serilog.Context;
-using Squidlr.Services;
+using Squidlr.Twitter;
+using Squidlr.Twitter.Services;
 using Squidlr.Utilities;
 
 namespace Squidlr.Api;

@@ -1,8 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
-using Squidlr.Client;
 
-namespace Squidlr.Parser;
+namespace Squidlr.Twitter;
 
 public sealed class TweetContentParserFactory
 {

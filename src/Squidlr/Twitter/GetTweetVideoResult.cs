@@ -1,4 +1,4 @@
-﻿namespace Squidlr;
+﻿namespace Squidlr.Twitter;
 
 public enum GetTweetVideoResult
 {

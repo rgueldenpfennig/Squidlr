@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace Squidlr.Parser;
+namespace Squidlr.Common;
 
 internal static class JsonElementExtensions
 {
