@@ -2,7 +2,7 @@
 using Serilog.Context;
 using Squidlr.Twitter;
 using Squidlr.Twitter.Services;
-using Squidlr.Utilities;
+using Squidlr.Twitter.Utilities;
 
 namespace Squidlr.Api;
 

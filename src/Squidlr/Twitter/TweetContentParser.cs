@@ -6,7 +6,6 @@ using DotNext;
 using Microsoft.Extensions.Logging;
 using Squidlr.Common;
 using Squidlr.Twitter.Utilities;
-using Squidlr.Utilities;
 
 namespace Squidlr.Twitter;
 
