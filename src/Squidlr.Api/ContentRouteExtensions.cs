@@ -6,23 +6,28 @@ using Squidlr.Twitter.Utilities;
 
 namespace Squidlr.Api;
 
-internal static class TwitterRouteExtensions
+internal static class ContentRouteExtensions
 {
-    public static RouteHandlerBuilder MapTwitterRoutes(this IEndpointRouteBuilder builder)
+    public static RouteHandlerBuilder MapContentRoutes(this IEndpointRouteBuilder builder)
     {
-        builder.AddGetContent();
-        return builder.AddGetVideo();
+        return builder.AddGetContent();
     }
 
     private static RouteHandlerBuilder AddGetContent(this IEndpointRouteBuilder builder)
     {
-        return builder.MapGet("/content", async (string url, [FromServices] ITweetContentService service, HttpContext context, CancellationToken cancellationToken) =>
+        return builder.MapGet("/content",
+            async (
+                string url,
+                [FromServices] UrlResolver urlResolver,
+                [FromServices] ITweetContentService service,
+                HttpContext context,
+                CancellationToken cancellationToken) =>
         {
-            if (!UrlUtilities.IsValidTwitterStatusUrl(url))
+            if (urlResolver.ResolveUrl(url) == SocialMediaPlatform.Unknown)
             {
                 return Results.Problem(new()
                 {
-                    Detail = "The given URL seems not be a valid Twitter status URL.",
+                    Detail = "The given URL does not represent any supported Social Media Platform.",
                     Status = StatusCodes.Status400BadRequest
                 });
             }
@@ -56,51 +61,6 @@ internal static class TwitterRouteExtensions
         })
         .ProducesValidationProblem()
         .Produces<TweetContent>()
-        .RequireAuthorization();
-    }
-
-    private static RouteHandlerBuilder AddGetVideo(this IEndpointRouteBuilder builder)
-    {
-        return builder.MapGet("/video", async (string tweetId, string url, [FromServices] TweetMediaService service, HttpContext context, CancellationToken cancellationToken) =>
-        {
-            if (string.IsNullOrEmpty(tweetId))
-                return Results.Problem(new()
-                {
-                    Detail = "TweetId must be set.",
-                    Status = StatusCodes.Status400BadRequest
-                });
-
-            if (!UrlUtilities.IsValidTwitterVideoUrl(url))
-            {
-                return Results.Problem(new()
-                {
-                    Detail = "The given URL seems not be a valid Twitter video URL.",
-                    Status = StatusCodes.Status400BadRequest
-                });
-            }
-
-            using (LogContext.PushProperty("TweetId", tweetId))
-            {
-                await service.CopyTweetVideoStreamAsync(tweetId, new Uri(url, UriKind.Absolute), context, cancellationToken);
-                return Results.Empty;
-            }
-        })
-        .WithName("GetVideo")
-        .WithOpenApi(operation =>
-        {
-            var parameter = operation.Parameters[0];
-            parameter.Description = "The related Tweet ID for the video file.";
-
-            parameter = operation.Parameters[1];
-            parameter.Description = "The Twitter URL to a video file.";
-
-            operation.Summary = "Provides the video file stream of the requested Twitter video URL.";
-
-            return operation;
-        })
-        .ProducesValidationProblem()
-        .Produces<FileContentResult>(StatusCodes.Status200OK, contentType: "video/mp4")
-        .RequireRateLimiting("Video")
         .RequireAuthorization();
     }
 

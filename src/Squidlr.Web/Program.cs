@@ -2,14 +2,9 @@ using System.Net;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Options;
-using Polly;
-using Polly.Extensions.Http;
 using Serilog;
 using Serilog.Events;
 using Squidlr.Hosting.Telemetry;
-using Squidlr.Web.Clients;
-using Squidlr.Web.States;
-using Squidlr.Web.Telemetry;
 
 namespace Squidlr.Web;
 
@@ -58,40 +53,7 @@ public partial class Program
             builder.Services.AddServerSideBlazor();
             builder.Services.AddResponseCompression(options => options.EnableForHttps = true);
 
-            builder.Services.AddScoped<AppState>();
-            builder.Services.AddScoped<RequestVideoState>();
-            builder.Services.AddScoped<VideoSearchQueryState>();
-            builder.Services.AddOptions<ApplicationOptions>()
-                .Bind(builder.Configuration.GetSection("Application"))
-                .ValidateDataAnnotations()
-                .ValidateOnStart();
-
-            builder.Services.AddScoped<ApiClient>();
-            builder.Services.AddHttpClient(ApiClient.HttpClientName, (sp, client) =>
-            {
-                var options = sp.GetRequiredService<IOptions<ApplicationOptions>>().Value;
-
-                client.BaseAddress = options.ApiHostUri;
-                client.DefaultVersionPolicy = HttpVersionPolicy.RequestVersionOrLower;
-                client.DefaultRequestVersion = HttpVersion.Version20;
-                client.DefaultRequestHeaders.Add("X-API-KEY", options.ApiKey);
-            })
-            .AddPolicyHandler((services, request) => HttpPolicyExtensions.HandleTransientHttpError()
-                .WaitAndRetryAsync(new[]
-                {
-                    TimeSpan.FromMilliseconds(100),
-                    TimeSpan.FromMilliseconds(200),
-                    TimeSpan.FromMilliseconds(300)
-                },
-                onRetry: (outcome, timespan, retryAttempt, context) =>
-                {
-                    services.GetService<ILogger<ApiClient>>()?
-                        .LogWarning("Delaying for {delay}ms, then making retry {retry}.", timespan.TotalMilliseconds, retryAttempt);
-                }
-            ));
-
-            builder.Services.AddScoped<TelemetryHandler>();
-            builder.Services.AddScoped<ClipboardService>();
+            builder.Services.AddSquidlrWeb(builder.Configuration);
 
             builder.Services.Configure<ForwardedHeadersOptions>(options =>
             {

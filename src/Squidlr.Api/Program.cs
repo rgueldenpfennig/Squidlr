@@ -106,7 +106,8 @@ public partial class Program
             app.UseAuthorization();
 
             app.MapHealthChecks("/health").RequireHost("*:5001").AllowAnonymous();
-            app.MapTwitterRoutes();
+            app.MapContentRoutes();
+            app.MapVideoRoutes();
 
             app.Run();
             return 0;

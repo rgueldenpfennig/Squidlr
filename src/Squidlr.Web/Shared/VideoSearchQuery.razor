@@ -2,6 +2,8 @@
 @using Squidlr.Twitter.Utilities;
 @using Squidlr.Web.States;
 
+@inject UrlResolver UrlResolver
+
 @inject ClipboardService ClipboardService
 @inject NavigationManager NavigationManager
 @inject VideoSearchQueryState State
@@ -69,7 +71,7 @@
 
         if (!string.IsNullOrEmpty(State.Url))
         {
-            if (UrlUtilities.IsValidTwitterStatusUrl(State.Url))
+            if (UrlResolver.ResolveUrl(State.Url) != SocialMediaPlatform.Unknown)
             {
                 _downloadEnabled = true;
                 _errorMessage = null;
@@ -77,7 +79,7 @@
                 return;
             }
 
-            _errorMessage = "Please ensure to enter a valid Tweet URL before you continue.";
+            _errorMessage = "Please ensure to enter a valid URL before you continue.";
         }
 
         _downloadEnabled = false;
