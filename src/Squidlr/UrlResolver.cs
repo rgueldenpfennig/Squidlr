@@ -15,8 +15,11 @@ public sealed class UrlResolver
         _urlResolvers = urlResolvers;
     }
 
-    public SocialMediaPlatform ResolveUrl(string url)
+    public SocialMediaPlatform ResolveUrl(string? url)
     {
+        if (url == null)
+            return SocialMediaPlatform.Unknown;
+
         for (var i = 0; i < _urlResolvers.Count; i++)
         {
             var resolvedPlatform = _urlResolvers[i].ResolveUrl(url);
@@ -25,5 +28,10 @@ public sealed class UrlResolver
         }
 
         return SocialMediaPlatform.Unknown;
+    }
+
+    public bool IsValidUrl(string? url)
+    {
+        return ResolveUrl(url) != SocialMediaPlatform.Unknown;
     }
 }

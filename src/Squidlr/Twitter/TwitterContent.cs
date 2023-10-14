@@ -1,6 +1,11 @@
 ﻿namespace Squidlr.Twitter;
 
-public sealed class TweetContent
+public abstract class Content
+{
+
+}
+
+public sealed class TwitterContent : Content
 {
     public TweetIdentifier TweetIdentifier { get; }
 
@@ -26,7 +31,7 @@ public sealed class TweetContent
 
     public TweetMediaCollection Media { get; set; } = new TweetMediaCollection();
 
-    public TweetContent(TweetIdentifier tweetIdentifier)
+    public TwitterContent(TweetIdentifier tweetIdentifier)
     {
         TweetIdentifier = tweetIdentifier;
     }

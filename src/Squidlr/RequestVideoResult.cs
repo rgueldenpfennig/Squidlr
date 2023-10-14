@@ -1,29 +1,29 @@
-﻿namespace Squidlr.Twitter;
+﻿namespace Squidlr;
 
-public enum GetTweetVideoResult
+public enum RequestVideoResult
 {
     /// <summary>
-    /// The Tweet video was requested successfully.
+    /// The video was requested successfully.
     /// </summary>
     Success,
 
     /// <summary>
-    /// The Tweet was not found.
+    /// The content was not found.
     /// </summary>
     NotFound,
 
     /// <summary>
-    /// The Tweet contains no video.
+    /// The content contains no video.
     /// </summary>
     NoVideo,
 
     /// <summary>
-    /// The Tweet contains an embedded video source which is not yet supported.
+    /// The content contains an embedded video source which is not yet supported.
     /// </summary>
     UnsupportedVideo,
 
     /// <summary>
-    /// The account containing the requested Tweet has been suspended.
+    /// The account containing the requested content has been suspended.
     /// </summary>
     AccountSuspended,
 
@@ -38,7 +38,7 @@ public enum GetTweetVideoResult
     AdultContent,
 
     /// <summary>
-    /// The Twitter backend could not be accessed successfully.
+    /// The backend could not be accessed successfully.
     /// </summary>
     GatewayError,
 

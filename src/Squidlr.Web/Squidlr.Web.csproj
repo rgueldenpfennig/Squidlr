@@ -37,4 +37,8 @@
     <Content Include="Styles\custom-bootstrap.scss" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Shared\Twitter\" />
+  </ItemGroup>
+
 </Project>

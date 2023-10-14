@@ -14,7 +14,7 @@ public class TweetContentService : ITweetContentService
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public virtual async ValueTask<Result<TweetContent, GetTweetVideoResult>> GetTweetContentAsync(TweetIdentifier identifier, CancellationToken cancellationToken)
+    public virtual async ValueTask<Result<TwitterContent, RequestVideoResult>> GetTweetContentAsync(TweetIdentifier identifier, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Requesting Tweet content...");
 
@@ -26,7 +26,7 @@ public class TweetContentService : ITweetContentService
         }
         catch (OperationCanceledException)
         {
-            return new(GetTweetVideoResult.Canceled);
+            return new(RequestVideoResult.Canceled);
         }
     }
 }

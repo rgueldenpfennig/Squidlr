@@ -1,5 +1,6 @@
 ﻿@page "/download"
 
+@using DotNext;
 @using Microsoft.AspNetCore.WebUtilities;
 @using Microsoft.Extensions.Options;
 @using System.Net;
@@ -9,6 +10,7 @@
 @using Squidlr.Web.Clients;
 @using Squidlr.Web.States;
 @using Squidlr.Web.Telemetry;
+@using Squidlr;
 
 @inject ILogger<Download> Logger
 @inject NavigationManager NavigationManager
@@ -18,6 +20,7 @@
 @inject IHostEnvironment HostEnvironment
 @inject IJSRuntime JS
 @inject TelemetryHandler TelemetryHandler
+@inject UrlResolver UrlResolver
 
 @implements IDisposable
 
@@ -28,13 +31,9 @@
 <PageTitle>@(SeoProperties.CreatePageTitle("Download"))</PageTitle>
 
 <div class="d-flex flex-column align-items-center justify-content-center">
-    <div class="px-4 my-4 text-center">
-        <h1 class="display-6 fw-bold text-body-emphasis">Download your X video</h1>
-    </div>
-
-    @if (tweetContent is not null)
+    @if (content is TwitterContent twitterContent)
     {
-        <TweetContentView TweetContent="@tweetContent" />
+        <TwitterContentView TwitterContent="@twitterContent" />
     }
 
     @if (errorMessage is not null)
@@ -57,9 +56,7 @@
     [SupplyParameterFromQuery(Name = "url")]
     public string? Url { get; set; }
 
-    private TweetIdentifier tweetIdentifier;
-
-    private TweetContent? tweetContent;
+    private Content? content;
 
     private bool isBusy = true;
 
@@ -70,30 +67,42 @@
     protected override async Task OnParametersSetAsync()
     {
         isBusy = true;
-        tweetContent = null;
+        content = null;
         errorMessage = null;
-        RequestVideoState.TwitterUrl = Url;
+        RequestVideoState.Url = Url;
 
-        if (string.IsNullOrEmpty(RequestVideoState.TwitterUrl) ||
-           !UrlUtilities.IsValidTwitterStatusUrl(RequestVideoState.TwitterUrl))
+        var platform = UrlResolver.ResolveUrl(Url);
+        if (Url == null || platform == SocialMediaPlatform.Unknown)
         {
             NavigationManager.NavigateTo("/");
-        }
-        else
-        {
-            tweetIdentifier = UrlUtilities.CreateTweetIdentifierFromUrl(Url!);
+            return;
         }
 
         try
         {
-            var tweetContentResult = await ApiClient.GetTweetContentAsync(tweetIdentifier, cts.Token);
-            if (tweetContentResult.IsSuccessful)
+            bool isSuccessful;
+            RequestVideoResult error;
+            Content contentResult;
+
+            switch (platform)
             {
-                tweetContent = tweetContentResult.Value;
+                case SocialMediaPlatform.Twitter:
+                    var response = await ApiClient.GetContentAsync<TwitterContent>(Url, cts.Token);
+                    isSuccessful = response.IsSuccessful;
+                    error = response.Error;
+                    contentResult = response.Value;
+                    break;
+                default:
+                    throw new ArgumentException("Unsupported platform.");
+            }
+
+            if (isSuccessful)
+            {
+                content = contentResult;
             }
             else
             {
-                SetErrorMessage(tweetContentResult.Error);
+                SetErrorMessage(error);
             }
         }
         catch (ApiClientException e)
@@ -104,19 +113,19 @@
         isBusy = false;
     }
 
-    private void SetErrorMessage(GetTweetVideoResult result)
+    private void SetErrorMessage(RequestVideoResult result)
     {
-        if (result == GetTweetVideoResult.Success) return;
+        if (result == RequestVideoResult.Success) return;
 
         errorMessage = result switch
         {
-            GetTweetVideoResult.NotFound => "Unfortunately the requested post could not be found.",
-            GetTweetVideoResult.NoVideo => "It seems that the post does not contain any video.",
-            GetTweetVideoResult.UnsupportedVideo => "The post contains an embedded video source which is not yet supported.",
-            GetTweetVideoResult.AdultContent => "Age-restricted adult content. This content might not be appropriate for people under 18 years old.",
-            GetTweetVideoResult.AccountSuspended => "The account containing the requested post has been suspended.",
-            GetTweetVideoResult.Protected => "The account owner limits who can view their Posts.",
-            GetTweetVideoResult.GatewayError => "The response from the X servers was not what we expected. We will try to fix that as soon as possible!",
+            RequestVideoResult.NotFound => "Unfortunately the requested post could not be found.",
+            RequestVideoResult.NoVideo => "It seems that the post does not contain any video.",
+            RequestVideoResult.UnsupportedVideo => "The post contains an embedded video source which is not yet supported.",
+            RequestVideoResult.AdultContent => "Age-restricted adult content. This content might not be appropriate for people under 18 years old.",
+            RequestVideoResult.AccountSuspended => "The account containing the requested post has been suspended.",
+            RequestVideoResult.Protected => "The account owner limits who can view their Posts.",
+            RequestVideoResult.GatewayError => "The response from the X servers was not what we expected. We will try to fix that as soon as possible!",
             _ => "There was an unexpected error. We will try to fix that as soon as possible!"
         };
     }

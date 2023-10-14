@@ -14,14 +14,14 @@ public sealed class CachedTweetContentService : TweetContentService
         _memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
     }
 
-    public override async ValueTask<Result<TweetContent, GetTweetVideoResult>> GetTweetContentAsync(TweetIdentifier identifier, CancellationToken cancellationToken)
+    public override async ValueTask<Result<TwitterContent, RequestVideoResult>> GetTweetContentAsync(TweetIdentifier identifier, CancellationToken cancellationToken)
     {
         var cacheKey = $"TweetContent-{identifier.Id}";
-        if (_memoryCache.TryGetValue<Result<TweetContent, GetTweetVideoResult>>(cacheKey, out var result))
+        if (_memoryCache.TryGetValue<Result<TwitterContent, RequestVideoResult>>(cacheKey, out var result))
             return result;
 
         result = await base.GetTweetContentAsync(identifier, cancellationToken);
-        if (result.Error is GetTweetVideoResult.Canceled or GetTweetVideoResult.GatewayError)
+        if (result.Error is RequestVideoResult.Canceled or RequestVideoResult.GatewayError)
             return result;
 
         _memoryCache.Set(cacheKey, result, absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(15));

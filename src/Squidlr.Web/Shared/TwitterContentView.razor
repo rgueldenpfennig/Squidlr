@@ -4,9 +4,9 @@
 @inject IJSRuntime JS
 @inject NavigationManager NavigationManager
 
-@if (TweetContent is not null)
+@if (TwitterContent is not null)
 {
-    var title = SeoProperties.CreatePageTitle(TweetContent.FullText?.Replace(Environment.NewLine, ""));
+    var title = SeoProperties.CreatePageTitle(TwitterContent.FullText?.Replace(Environment.NewLine, ""));
     string? videoMediaUrl = null;
 
     <PageTitle>@title</PageTitle>
@@ -20,47 +20,51 @@
         {
             <meta name="og:image" content="@videoMediaUrl" />
         }
-        <meta name="twitter:creator" content="@@@TweetContent.UserName" />
+        <meta name="twitter:creator" content="@@@TwitterContent.UserName" />
         <meta name="twitter:site" content="@@SquidlrBot" />
         <meta name="twitter:domain" content="squidlr.com">
     </HeadContent>
 
+    <div class="px-4 my-4 text-center">
+        <h1 class="display-6 fw-bold text-body-emphasis">Download your X video</h1>
+    </div>
+
     <div class="card mb-4">
         <div class="card-body pb-0">
             <p class="card-text">
-                @if (TweetContent.FullText != null)
+                @if (TwitterContent.FullText != null)
                 {
                     <blockquote class="blockquote">
-                        <p style="white-space: pre-line">@((MarkupString)@TweetContent.FullText)</p>
-                        <footer class="blockquote-footer">@string.Format("@{0}", TweetContent.UserName)</footer>
+                        <p style="white-space: pre-line">@((MarkupString)TwitterContent.FullText)</p>
+                        <footer class="blockquote-footer">@string.Format("@{0}", TwitterContent.UserName)</footer>
                     </blockquote>
                 }
-                <a href="@TweetContent.TweetIdentifier.Url">
-                    <time datetime="@TweetContent.CreatedAtUtc.ToString("O", CultureInfo.InvariantCulture)">
-                        @TweetContent.CreatedAtUtc.ToString("f", CultureInfo.InvariantCulture)
+                <a href="@TwitterContent.TweetIdentifier.Url">
+                    <time datetime="@TwitterContent.CreatedAtUtc.ToString("O", CultureInfo.InvariantCulture)">
+                        @TwitterContent.CreatedAtUtc.ToString("f", CultureInfo.InvariantCulture)
                     </time>
                 </a>
-                @if (TweetContent.Views is not null)
+                @if (TwitterContent.Views is not null)
                 {
-                    <span> - <strong>@FormatNumber(TweetContent.Views.Value)</strong> <small>Views</small></span>
+                    <span> - <strong>@FormatNumber(TwitterContent.Views.Value)</strong> <small>Views</small></span>
                 }
-                @if (!string.IsNullOrEmpty(TweetContent.Source))
+                @if (!string.IsNullOrEmpty(TwitterContent.Source))
                 {
-                    <span> - @((MarkupString)@TweetContent.Source)</span>
+                    <span> - @((MarkupString)TwitterContent.Source)</span>
                 }
 
                 <ul class="list-inline mt-1">
-                    <li class="list-inline-item"><strong>@FormatNumber(TweetContent.RetweetCount)</strong> <small>Retweets</small></li>
-                    <li class="list-inline-item"><strong>@FormatNumber(TweetContent.QuoteCount)</strong> <small>Quotes</small></li>
-                    <li class="list-inline-item"><strong>@FormatNumber(TweetContent.FavoriteCount)</strong> <small>Likes</small></li>
-                    <li class="list-inline-item"><strong>@FormatNumber(TweetContent.BookmarkCount)</strong> <small>Bookmarks</small></li>
+                    <li class="list-inline-item"><strong>@FormatNumber(TwitterContent.RetweetCount)</strong> <small>Retweets</small></li>
+                    <li class="list-inline-item"><strong>@FormatNumber(TwitterContent.QuoteCount)</strong> <small>Quotes</small></li>
+                    <li class="list-inline-item"><strong>@FormatNumber(TwitterContent.FavoriteCount)</strong> <small>Likes</small></li>
+                    <li class="list-inline-item"><strong>@FormatNumber(TwitterContent.BookmarkCount)</strong> <small>Bookmarks</small></li>
                 </ul>
             </p>
 
             @{
                 int videoNumber = 0;
             }
-            @foreach (var video in TweetContent.Media.OfType<TweetMediaVideo>())
+            @foreach (var video in TwitterContent.Media.OfType<TweetMediaVideo>())
             {
                 videoNumber++;
                 <div class="card border-0 mb-3">
@@ -143,12 +147,12 @@
 }
 else
 {
-    <div class="alert alert-warning" role="alert">No Tweet content has been provided.</div>
+    <div class="alert alert-warning" role="alert">No content has been provided.</div>
 }
 
 @code {
     [Parameter]
-    public TweetContent? TweetContent { get; set; }
+    public TwitterContent? TwitterContent { get; set; }
 
     [Parameter]
     public bool ShowProblemText { get; set; }

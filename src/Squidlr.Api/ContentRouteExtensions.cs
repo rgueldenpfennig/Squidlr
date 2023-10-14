@@ -60,46 +60,46 @@ internal static class ContentRouteExtensions
             return operation;
         })
         .ProducesValidationProblem()
-        .Produces<TweetContent>()
+        .Produces<TwitterContent>()
         .RequireAuthorization();
     }
 
-    private static IResult CreateProblemResult(GetTweetVideoResult result)
+    private static IResult CreateProblemResult(RequestVideoResult result)
     {
         var reponseText = "The Tweet video could not be obtained.";
         var responseCode = StatusCodes.Status500InternalServerError;
 
         switch (result)
         {
-            case GetTweetVideoResult.NotFound:
+            case RequestVideoResult.NotFound:
                 reponseText = "The Tweet was not found.";
                 responseCode = StatusCodes.Status404NotFound;
                 break;
-            case GetTweetVideoResult.NoVideo:
+            case RequestVideoResult.NoVideo:
                 reponseText = "The Tweet contains no downloadable video.";
                 responseCode = StatusCodes.Status404NotFound;
                 break;
-            case GetTweetVideoResult.UnsupportedVideo:
+            case RequestVideoResult.UnsupportedVideo:
                 reponseText = "The Tweet contains an embedded video source that is not yet supported.";
                 responseCode = StatusCodes.Status404NotFound;
                 break;
-            case GetTweetVideoResult.AccountSuspended:
+            case RequestVideoResult.AccountSuspended:
                 reponseText = "The account containing the requested Tweet has been suspended.";
                 responseCode = StatusCodes.Status404NotFound;
                 break;
-            case GetTweetVideoResult.Protected:
+            case RequestVideoResult.Protected:
                 reponseText = "The account owner limits who can view their Posts.";
                 responseCode = StatusCodes.Status404NotFound;
                 break;
-            case GetTweetVideoResult.AdultContent:
+            case RequestVideoResult.AdultContent:
                 reponseText = "Age-restricted adult content. This content might not be appropriate for people under 18 years old.";
                 responseCode = StatusCodes.Status451UnavailableForLegalReasons;
                 break;
-            case GetTweetVideoResult.Error:
+            case RequestVideoResult.Error:
                 reponseText = "An error occured while requesting the original video.";
                 responseCode = StatusCodes.Status502BadGateway;
                 break;
-            case GetTweetVideoResult.Canceled:
+            case RequestVideoResult.Canceled:
                 reponseText = "The processing has been cancelled.";
                 responseCode = 499;
                 break;
