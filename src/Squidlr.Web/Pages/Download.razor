@@ -80,29 +80,15 @@
 
         try
         {
-            bool isSuccessful;
-            RequestVideoResult error;
-            Content contentResult;
+            var response = await ApiClient.GetContentAsync(Url, platform, cts.Token);
 
-            switch (platform)
+            if (response.IsSuccessful)
             {
-                case SocialMediaPlatform.Twitter:
-                    var response = await ApiClient.GetContentAsync<TwitterContent>(Url, cts.Token);
-                    isSuccessful = response.IsSuccessful;
-                    error = response.Error;
-                    contentResult = response.Value;
-                    break;
-                default:
-                    throw new ArgumentException("Unsupported platform.");
-            }
-
-            if (isSuccessful)
-            {
-                content = contentResult;
+                content = response.Value;
             }
             else
             {
-                SetErrorMessage(error);
+                SetErrorMessage(response.Error);
             }
         }
         catch (ApiClientException e)

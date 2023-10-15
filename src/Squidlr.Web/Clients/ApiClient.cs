@@ -20,9 +20,9 @@ public sealed class ApiClient
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async ValueTask<Result<TContent, RequestVideoResult>> GetContentAsync<TContent>(string url, CancellationToken cancellationToken) where TContent : Content
+    public async ValueTask<Result<Content, RequestVideoResult>> GetContentAsync(string url, SocialMediaPlatform platform, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNullOrEmpty(url);
+        ArgumentException.ThrowIfNullOrEmpty(url);
         _logger.LogInformation("Requesting content for '{ContentUrl}'", url);
 
         try
@@ -32,23 +32,29 @@ public sealed class ApiClient
             if (response.IsSuccessStatusCode)
             {
                 _telemetryHandler.TrackEvent("ContentRequested", new Dictionary<string, string> { { "Url", url } });
-                var content = await response.Content.ReadFromJsonAsync<TContent>(cancellationToken: cancellationToken);
-                return content!;
+
+                // TODO: maybe put the platform into HTTP headers? So we don't have to provide the enum here
+                switch (platform)
+                {
+                    case SocialMediaPlatform.Twitter:
+                        var content = await response.Content.ReadFromJsonAsync<TwitterContent>(cancellationToken: cancellationToken);
+                        return content!;
+                    default:
+                        throw new ArgumentException("Unsupported platform: " + platform);
+                }
             }
 
             if (response.Content.Headers.ContentType?.MediaType?.Equals("application/problem+json", StringComparison.OrdinalIgnoreCase) == true)
             {
                 var problem = await response.Content.ReadFromJsonAsync<ProblemDetails>(cancellationToken: cancellationToken);
+                var result = RequestVideoResult.Error;
+                if (problem!.Extensions.TryGetValue("result", out var resultObject) && resultObject is not null)
                 {
-                    var result = RequestVideoResult.Error;
-                    if (problem!.Extensions.TryGetValue("result", out var resultObject) && resultObject is not null)
-                    {
-                        result = Enum.Parse<RequestVideoResult>(resultObject.ToString()!, ignoreCase: true);
-                    }
-                    _logger.LogWarning("Failed to get content. Detail: '{ProblemDetail}' Result: '{ProblemResult}'", problem.Detail, result);
-
-                    return new(result);
+                    result = Enum.Parse<RequestVideoResult>(resultObject.ToString()!, ignoreCase: true);
                 }
+                _logger.LogWarning("Failed to get content. Detail: '{ProblemDetail}' Result: '{ProblemResult}'", problem.Detail, result);
+
+                return new(result);
             }
 
             _logger.LogWarning("Failed to get content. StatusCode: '{ResponseStatusCode}'", response.StatusCode);
