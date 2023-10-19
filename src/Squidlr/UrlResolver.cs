@@ -17,23 +17,23 @@ public sealed class UrlResolver
         _urlResolvers = urlResolvers;
     }
 
-    public SocialMediaPlatform ResolveUrl(string? url)
+    public ContentIdentifier ResolveUrl(string? url)
     {
         if (url == null)
-            return SocialMediaPlatform.Unknown;
+            return ContentIdentifier.Unknown;
 
         for (var i = 0; i < _urlResolvers.Count; i++)
         {
-            var resolvedPlatform = _urlResolvers[i].ResolveUrl(url);
-            if (resolvedPlatform != SocialMediaPlatform.Unknown)
-                return resolvedPlatform;
+            var contentIdentifier = _urlResolvers[i].ResolveUrl(url);
+            if (contentIdentifier != ContentIdentifier.Unknown)
+                return contentIdentifier;
         }
 
-        return SocialMediaPlatform.Unknown;
+        return ContentIdentifier.Unknown;
     }
 
     public bool IsValidUrl(string? url)
     {
-        return ResolveUrl(url) != SocialMediaPlatform.Unknown;
+        return ResolveUrl(url) != ContentIdentifier.Unknown;
     }
 }

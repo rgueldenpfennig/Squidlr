@@ -5,11 +5,14 @@ namespace Squidlr.Twitter;
 
 public sealed class TwitterUrlResolver : IUrlResolver
 {
-    public SocialMediaPlatform ResolveUrl(string url)
+    public ContentIdentifier ResolveUrl(string url)
     {
         if (UrlUtilities.IsValidTwitterStatusUrl(url))
-            return SocialMediaPlatform.Twitter;
+        {
+            var tweetIdentifier = UrlUtilities.CreateTweetIdentifierFromUrl(url);
+            return new ContentIdentifier(SocialMediaPlatform.Twitter, tweetIdentifier.Url);
+        }
 
-        return SocialMediaPlatform.Unknown;
+        return ContentIdentifier.Unknown;
     }
 }

@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Serilog.Context;
 using Squidlr.Twitter;
-using Squidlr.Twitter.Services;
-using Squidlr.Twitter.Utilities;
 
 namespace Squidlr.Api;
 
@@ -19,30 +16,25 @@ internal static class ContentRouteExtensions
             async (
                 string url,
                 [FromServices] UrlResolver urlResolver,
-                [FromServices] ITweetContentService service,
+                [FromServices] ContentProvider contentProvider,
                 HttpContext context,
                 CancellationToken cancellationToken) =>
         {
-            if (urlResolver.ResolveUrl(url) == SocialMediaPlatform.Unknown)
+            var identifier = urlResolver.ResolveUrl(url);
+            if (identifier.Platform == SocialMediaPlatform.Unknown)
             {
                 return CreateProblemResult(RequestContentResult.PlatformNotSupported);
             }
 
-            var tweetIdentifier = UrlUtilities.CreateTweetIdentifierFromUrl(url);
-
-            using (LogContext.PushProperty("TweetId", tweetIdentifier.Id))
+            var result = await contentProvider.GetContentAsync(identifier, cancellationToken);
+            if (!result.IsSuccessful)
             {
-                var result = await service.GetTweetContentAsync(tweetIdentifier, cancellationToken);
 
-                if (!result.IsSuccessful)
-                {
-
-                    return CreateProblemResult(result.Error);
-                }
-
-                var tweetContent = result.Value;
-                return Results.Ok(tweetContent);
+                return CreateProblemResult(result.Error);
             }
+
+            var content = result.Value;
+            return Results.Ok(content);
         })
         .WithName("GetContent")
         .WithOpenApi(operation =>
@@ -51,7 +43,7 @@ internal static class ContentRouteExtensions
             parameter.Description = "The content URL of a social media platform.";
 
             operation.Summary = "Provides the content details of the requested content URL.";
-            operation.Description = "If a valid Tweet URL is provided this API will respond with the details containing all video variants.";
+            operation.Description = "If a valid social media content URL is provided this API will respond with the details containing all video variants.";
 
             return operation;
         })

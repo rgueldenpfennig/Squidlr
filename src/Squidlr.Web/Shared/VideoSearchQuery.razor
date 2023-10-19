@@ -71,7 +71,7 @@
 
         if (!string.IsNullOrEmpty(State.Url))
         {
-            if (UrlResolver.ResolveUrl(State.Url) != SocialMediaPlatform.Unknown)
+            if (UrlResolver.ResolveUrl(State.Url) != ContentIdentifier.Unknown)
             {
                 _downloadEnabled = true;
                 _errorMessage = null;

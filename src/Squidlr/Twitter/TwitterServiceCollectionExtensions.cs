@@ -57,9 +57,9 @@ internal static class TwitterServiceCollectionExtensions
 
         services.AddSingleton<TwitterWebClient>();
         services.AddSingleton<TweetContentParserFactory>();
-        services.AddSingleton<ITweetContentService, CachedTweetContentService>();
         services.AddSingleton<TweetMediaService>();
         services.AddSingleton<IUrlResolver, TwitterUrlResolver>();
+        services.AddSingleton<IContentProvider, TwitterContentProvider>();
 
         return services;
     }

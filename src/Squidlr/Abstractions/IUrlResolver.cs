@@ -2,5 +2,5 @@
 
 public interface IUrlResolver
 {
-    SocialMediaPlatform ResolveUrl(string url);
+    ContentIdentifier ResolveUrl(string url);
 }

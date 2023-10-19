@@ -20,27 +20,26 @@ public sealed class ApiClient
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async ValueTask<Result<Content, RequestContentResult>> GetContentAsync(string url, SocialMediaPlatform platform, CancellationToken cancellationToken)
+    public async ValueTask<Result<Content, RequestContentResult>> GetContentAsync(ContentIdentifier contentIdentifier, CancellationToken cancellationToken)
     {
-        ArgumentException.ThrowIfNullOrEmpty(url);
-        _logger.LogInformation("Requesting content for '{ContentUrl}'", url);
+        _logger.LogInformation("Requesting content for '{ContentUrl}'", contentIdentifier.Url);
 
         try
         {
             var client = _httpClientFactory.CreateClient(HttpClientName);
-            var response = await client.GetAsync($"/content?url={url}", HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+            var response = await client.GetAsync($"/content?url={contentIdentifier.Url}", HttpCompletionOption.ResponseHeadersRead, cancellationToken);
             if (response.IsSuccessStatusCode)
             {
-                _telemetryHandler.TrackEvent("ContentRequested", new Dictionary<string, string> { { "Url", url } });
+                _telemetryHandler.TrackEvent("ContentRequested", new Dictionary<string, string> { { "Url", contentIdentifier.Url } });
 
                 // TODO: maybe put the platform into HTTP headers? So we don't have to provide the enum here
-                switch (platform)
+                switch (contentIdentifier.Platform)
                 {
                     case SocialMediaPlatform.Twitter:
                         var content = await response.Content.ReadFromJsonAsync<TwitterContent>(cancellationToken: cancellationToken);
                         return content!;
                     default:
-                        throw new ArgumentException("Unsupported platform: " + platform);
+                        throw new ArgumentException("Unsupported platform: " + contentIdentifier.Platform);
                 }
             }
 

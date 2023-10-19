@@ -71,8 +71,8 @@
         errorMessage = null;
         RequestVideoState.Url = Url;
 
-        var platform = UrlResolver.ResolveUrl(Url);
-        if (Url == null || platform == SocialMediaPlatform.Unknown)
+        var contentIdentifier = UrlResolver.ResolveUrl(Url);
+        if (Url == null || contentIdentifier == ContentIdentifier.Unknown)
         {
             NavigationManager.NavigateTo("/");
             return;
@@ -80,7 +80,7 @@
 
         try
         {
-            var response = await ApiClient.GetContentAsync(Url, platform, cts.Token);
+            var response = await ApiClient.GetContentAsync(contentIdentifier, cts.Token);
 
             if (response.IsSuccessful)
             {
@@ -99,19 +99,20 @@
         isBusy = false;
     }
 
-    private void SetErrorMessage(RequestVideoResult result)
+    private void SetErrorMessage(RequestContentResult result)
     {
-        if (result == RequestVideoResult.Success) return;
+        if (result == RequestContentResult.Success) return;
 
         errorMessage = result switch
         {
-            RequestVideoResult.NotFound => "Unfortunately the requested post could not be found.",
-            RequestVideoResult.NoVideo => "It seems that the post does not contain any video.",
-            RequestVideoResult.UnsupportedVideo => "The post contains an embedded video source which is not yet supported.",
-            RequestVideoResult.AdultContent => "Age-restricted adult content. This content might not be appropriate for people under 18 years old.",
-            RequestVideoResult.AccountSuspended => "The account containing the requested post has been suspended.",
-            RequestVideoResult.Protected => "The account owner limits who can view their Posts.",
-            RequestVideoResult.GatewayError => "The response from the X servers was not what we expected. We will try to fix that as soon as possible!",
+            RequestContentResult.NotFound => "Unfortunately the requested content could not be found.",
+            RequestContentResult.PlatformNotSupported => "The requested content seems to belong to an unsupported social media platform.",
+            RequestContentResult.NoVideo => "It seems that the content does not contain any video.",
+            RequestContentResult.UnsupportedVideo => "The content contains an embedded video source which is not yet supported.",
+            RequestContentResult.AdultContent => "Age-restricted adult content. This content might not be appropriate for people under 18 years old.",
+            RequestContentResult.AccountSuspended => "The account containing the requested content has been suspended.",
+            RequestContentResult.Protected => "The account owner limits who can view its content.",
+            RequestContentResult.GatewayError => "The response from the social media servers was not what we expected. We will try to fix that as soon as possible!",
             _ => "There was an unexpected error. We will try to fix that as soon as possible!"
         };
     }
