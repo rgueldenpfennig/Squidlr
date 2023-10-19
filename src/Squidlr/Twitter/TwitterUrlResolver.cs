@@ -1,4 +1,5 @@
-﻿using Squidlr.Twitter.Utilities;
+﻿using Squidlr.Abstractions;
+using Squidlr.Twitter.Utilities;
 
 namespace Squidlr.Twitter;
 

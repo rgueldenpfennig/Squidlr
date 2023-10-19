@@ -1,4 +1,6 @@
-﻿namespace Squidlr;
+﻿using Squidlr.Abstractions;
+
+namespace Squidlr;
 
 public sealed class UrlResolver
 {
@@ -9,7 +11,7 @@ public sealed class UrlResolver
         ArgumentNullException.ThrowIfNull(urlResolvers);
         if (urlResolvers.Count == 0)
         {
-            throw new ArgumentException($"No {nameof(IUrlResolver)} instance have been provided.", nameof(urlResolvers));
+            throw new ArgumentException($"No {nameof(IUrlResolver)} instances have been provided.", nameof(urlResolvers));
         }
 
         _urlResolvers = urlResolvers;

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using Polly;
 using Polly.Extensions.Http;
 using Squidlr;
+using Squidlr.Abstractions;
 using Squidlr.Twitter;
 using Squidlr.Web;
 using Squidlr.Web.Clients;

@@ -30,9 +30,9 @@ public sealed class TweetContentParser
         _tweetContent = new TwitterContent(tweetIdentifier);
     }
 
-    public async Task<Result<TwitterContent, RequestVideoResult>> CreateTweetContentAsync(CancellationToken cancellationToken)
+    public async Task<Result<TwitterContent, RequestContentResult>> CreateTweetContentAsync(CancellationToken cancellationToken)
     {
-        RequestVideoResult result;
+        RequestContentResult result;
 
         try
         {
@@ -41,22 +41,22 @@ public sealed class TweetContentParser
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
             _logger.LogError(ex, "Unable to parse Tweet detail contents.");
-            return new(RequestVideoResult.Error);
+            return new(RequestContentResult.Error);
         }
 
-        if (result == RequestVideoResult.Success && _tweetContent.Media?.Count > 0)
+        if (result == RequestContentResult.Success && _tweetContent.Media?.Count > 0)
         {
             return _tweetContent;
         }
-        else if (result == RequestVideoResult.Success && _tweetContent.Media?.Count == 0)
+        else if (result == RequestContentResult.Success && _tweetContent.Media?.Count == 0)
         {
-            return new(RequestVideoResult.NoVideo);
+            return new(RequestContentResult.NoVideo);
         }
 
         return new(result);
     }
 
-    private async ValueTask<RequestVideoResult> TryInitializeTweetContentAsync(TweetIdentifier tweetIdentifier, CancellationToken cancellationToken)
+    private async ValueTask<RequestContentResult> TryInitializeTweetContentAsync(TweetIdentifier tweetIdentifier, CancellationToken cancellationToken)
     {
         var tweetDetailResult = await _twitterClient.GetTweetDetailStreamAsync(tweetIdentifier, cancellationToken);
         if (!tweetDetailResult.IsSuccessful)
@@ -74,7 +74,7 @@ public sealed class TweetContentParser
         if (_resultElement == null)
         {
             _logger.LogInformation("Could not find 'result' element in Tweet detail JSON contents. Tweet seems not to be found.");
-            return RequestVideoResult.NotFound;
+            return RequestContentResult.NotFound;
         }
 
         var reason = _resultElement.Value.GetPropertyOrNull("reason")?.GetString();
@@ -84,10 +84,10 @@ public sealed class TweetContentParser
 
             return reason switch
             {
-                "Suspended" => RequestVideoResult.AccountSuspended,
-                "NsfwLoggedOut" => RequestVideoResult.AdultContent,
-                "Protected" => RequestVideoResult.Protected,
-                _ => RequestVideoResult.Error
+                "Suspended" => RequestContentResult.AccountSuspended,
+                "NsfwLoggedOut" => RequestContentResult.AdultContent,
+                "Protected" => RequestContentResult.Protected,
+                _ => RequestContentResult.Error
             };
         }
 
@@ -95,7 +95,7 @@ public sealed class TweetContentParser
         if (!tweetIdentifier.Id.Equals(restId, StringComparison.OrdinalIgnoreCase))
         {
             _logger.LogWarning("Tweet ID does not match 'rest_id'.");
-            return RequestVideoResult.Error;
+            return RequestContentResult.Error;
         }
 
         _legacyElement = _resultElement.Value.GetProperty("legacy");
@@ -105,7 +105,7 @@ public sealed class TweetContentParser
         {
             // this matches most Tweets with directly embedded videos
             await CreateFromExtendedEntitiesAsync(cancellationToken);
-            return RequestVideoResult.Success;
+            return RequestContentResult.Success;
         }
 
         // the requested Tweet contains a quoted Tweet
@@ -114,7 +114,7 @@ public sealed class TweetContentParser
             if (quotedResult.GetProperty("result").GetProperty("legacy").TryGetProperty("extended_entities", out _extendedEntitiesElement))
             {
                 await CreateFromExtendedEntitiesAsync(cancellationToken);
-                return RequestVideoResult.Success;
+                return RequestContentResult.Success;
             }
         }
 
@@ -149,7 +149,7 @@ public sealed class TweetContentParser
             if (nameElement == null)
             {
                 _logger.LogWarning("Could not find 'name' from card in Tweet detail contents.");
-                return RequestVideoResult.Error;
+                return RequestContentResult.Error;
             }
 
             var name = nameElement.Value.GetString();
@@ -171,7 +171,7 @@ public sealed class TweetContentParser
                 case TwitterCardType.Unknown:
                 case TwitterCardType.Broadcast:
                     _logger.LogInformation("Could not fulfill unsupported video request of card type '{TweetCardType}'.", tweetCardType);
-                    return RequestVideoResult.UnsupportedVideo;
+                    return RequestContentResult.UnsupportedVideo;
                 case TwitterCardType.Poll2ChoiceVideo:
                 case TwitterCardType.Poll3ChoiceVideo:
                 case TwitterCardType.Poll4ChoiceVideo:
@@ -185,11 +185,11 @@ public sealed class TweetContentParser
                 case TwitterCardType.VideoDirectMessage:
                     return await CreateFromCardWithVmapAsync("player_url", cancellationToken);
                 default:
-                    return RequestVideoResult.NoVideo;
+                    return RequestContentResult.NoVideo;
             }
         }
 
-        return RequestVideoResult.NoVideo;
+        return RequestContentResult.NoVideo;
     }
 
     private async ValueTask CreateFromExtendedEntitiesAsync(CancellationToken cancellationToken)
@@ -206,20 +206,20 @@ public sealed class TweetContentParser
                 _tweetContent.AddMedia(tweetMediaVideo);
     }
 
-    private async ValueTask<RequestVideoResult> CreateFromUnifiedCardAsync(CancellationToken cancellationToken)
+    private async ValueTask<RequestContentResult> CreateFromUnifiedCardAsync(CancellationToken cancellationToken)
     {
         var bindingValues = _cardElement.GetPropertyOrNull("legacy")?.GetPropertyOrNull("binding_values");
         if (bindingValues == null)
         {
             _logger.LogWarning("Could not find 'binding_values' in Tweet detail contents of a card.");
-            return RequestVideoResult.Error;
+            return RequestContentResult.Error;
         }
 
         var unifiedCardElement = GetValueByKey(bindingValues.Value, "unified_card");
         if (unifiedCardElement == null)
         {
             _logger.LogWarning("Could not find 'unified_card' in Tweet detail contents of a card.");
-            return RequestVideoResult.Error;
+            return RequestContentResult.Error;
         }
 
         var unifiedJson = unifiedCardElement.Value.GetProperty("string_value").GetString()!;
@@ -233,30 +233,30 @@ public sealed class TweetContentParser
                 _tweetContent.AddMedia(tweetMediaVideo);
         }
 
-        return RequestVideoResult.Success;
+        return RequestContentResult.Success;
     }
 
-    private async ValueTask<RequestVideoResult> CreateFromCardWithVmapAsync(string vmapPropertyName, CancellationToken cancellationToken)
+    private async ValueTask<RequestContentResult> CreateFromCardWithVmapAsync(string vmapPropertyName, CancellationToken cancellationToken)
     {
         var bindingValues = _cardElement.GetPropertyOrNull("legacy")?.GetPropertyOrNull("binding_values");
         if (bindingValues == null)
         {
             _logger.LogWarning("Could not find 'binding_values' in Tweet detail contents of a card.");
-            return RequestVideoResult.Error;
+            return RequestContentResult.Error;
         }
 
         var playerStreamUrlElement = GetValueByKey(bindingValues.Value, vmapPropertyName);
         if (playerStreamUrlElement == null)
         {
             _logger.LogWarning("Could not find {vmapPropertyName} in Tweet detail contents of a card.", vmapPropertyName);
-            return RequestVideoResult.Error;
+            return RequestContentResult.Error;
         }
 
         var playerImageElement = GetValueByKey(bindingValues.Value, "player_image");
         if (playerImageElement == null)
         {
             _logger.LogWarning("Could not find 'player_image' in Tweet detail contents of a card.");
-            return RequestVideoResult.Error;
+            return RequestContentResult.Error;
         }
 
         var contentDurationElement = GetValueByKey(bindingValues.Value, "content_duration_seconds");
@@ -277,7 +277,7 @@ public sealed class TweetContentParser
         if (!response.IsSuccessStatusCode)
         {
             _logger.LogWarning("Could not request 'player_stream_url'.");
-            return RequestVideoResult.Error;
+            return RequestContentResult.Error;
         }
 
         var xmlFileStream = await response.Content.ReadAsStreamAsync(cancellationToken);
@@ -315,7 +315,7 @@ public sealed class TweetContentParser
 
         _tweetContent.AddMedia(tweetMedia);
 
-        return RequestVideoResult.Success;
+        return RequestContentResult.Success;
     }
 
     private static JsonElement? GetValueByKey(JsonElement bindingValues, string key)

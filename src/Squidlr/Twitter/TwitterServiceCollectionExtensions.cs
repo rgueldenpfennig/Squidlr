@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Polly;
 using Polly.Extensions.Http;
+using Squidlr.Abstractions;
 using Squidlr.Twitter.Services;
 
 namespace Squidlr.Twitter;

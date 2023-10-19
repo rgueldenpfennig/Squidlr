@@ -20,7 +20,7 @@ public sealed class ApiClient
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async ValueTask<Result<Content, RequestVideoResult>> GetContentAsync(string url, SocialMediaPlatform platform, CancellationToken cancellationToken)
+    public async ValueTask<Result<Content, RequestContentResult>> GetContentAsync(string url, SocialMediaPlatform platform, CancellationToken cancellationToken)
     {
         ArgumentException.ThrowIfNullOrEmpty(url);
         _logger.LogInformation("Requesting content for '{ContentUrl}'", url);
@@ -47,10 +47,10 @@ public sealed class ApiClient
             if (response.Content.Headers.ContentType?.MediaType?.Equals("application/problem+json", StringComparison.OrdinalIgnoreCase) == true)
             {
                 var problem = await response.Content.ReadFromJsonAsync<ProblemDetails>(cancellationToken: cancellationToken);
-                var result = RequestVideoResult.Error;
+                var result = RequestContentResult.Error;
                 if (problem!.Extensions.TryGetValue("result", out var resultObject) && resultObject is not null)
                 {
-                    result = Enum.Parse<RequestVideoResult>(resultObject.ToString()!, ignoreCase: true);
+                    result = Enum.Parse<RequestContentResult>(resultObject.ToString()!, ignoreCase: true);
                 }
                 _logger.LogWarning("Failed to get content. Detail: '{ProblemDetail}' Result: '{ProblemResult}'", problem.Detail, result);
 

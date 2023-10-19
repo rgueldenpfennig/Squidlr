@@ -1,4 +1,4 @@
-﻿namespace Squidlr;
+﻿namespace Squidlr.Abstractions;
 
 public interface IUrlResolver
 {

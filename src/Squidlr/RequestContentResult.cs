@@ -1,11 +1,16 @@
 ﻿namespace Squidlr;
 
-public enum RequestVideoResult
+public enum RequestContentResult
 {
     /// <summary>
     /// The video was requested successfully.
     /// </summary>
     Success,
+
+    /// <summary>
+    /// The requested content seems to belong to an unsupported social media platform.
+    /// </summary>
+    PlatformNotSupported,
 
     /// <summary>
     /// The content was not found.

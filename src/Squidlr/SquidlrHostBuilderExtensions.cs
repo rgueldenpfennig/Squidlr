@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Squidlr.Abstractions;
 using Squidlr.Twitter;
 
 namespace Squidlr;
