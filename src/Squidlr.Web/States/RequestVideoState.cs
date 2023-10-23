@@ -5,5 +5,5 @@ namespace Squidlr.Web.States;
 public sealed class RequestVideoState
 {
     [Required(AllowEmptyStrings = false)]
-    public string? TwitterUrl { get; set; }
+    public string? Url { get; set; }
 }

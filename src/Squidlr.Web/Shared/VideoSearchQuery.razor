@@ -1,6 +1,8 @@
 ﻿@using Microsoft.AspNetCore.WebUtilities;
-@using Squidlr.Utilities;
+@using Squidlr.Twitter.Utilities;
 @using Squidlr.Web.States;
+
+@inject UrlResolver UrlResolver
 
 @inject ClipboardService ClipboardService
 @inject NavigationManager NavigationManager
@@ -11,7 +13,7 @@
         <button class="btn btn-primary" type="button" title="Paste from clipboard" @onclick="PasteClipboard">
             <span class="oi oi-clipboard" data-glyph="clipboard" aria-hidden="true"></span>
         </button>
-        <input @ref=_inputReference type="text" autocomplete="on" class="form-control shadow-none" placeholder="Paste your X URL here" inputmode="url" aria-label="X URL" aria-describedby="download-button" @bind:event="oninput" @bind:get="State.Url" @bind:set="HandleInput" @onkeypress="OnKeyPress" />
+        <input @ref=_inputReference type="text" autocomplete="on" class="form-control shadow-none" placeholder="Paste your URL here" inputmode="url" aria-label="Download URL" aria-describedby="download-button" @bind:event="oninput" @bind:get="State.Url" @bind:set="HandleInput" @onkeypress="OnKeyPress" />
     </div>
     <div class="mb-4">
         <button class="btn btn-primary" type="button" id="download-button" disabled="@(!_downloadEnabled)" @onclick="DownloadVideo">Download</button>
@@ -69,7 +71,7 @@
 
         if (!string.IsNullOrEmpty(State.Url))
         {
-            if (UrlUtilities.IsValidTwitterStatusUrl(State.Url))
+            if (UrlResolver.ResolveUrl(State.Url) != ContentIdentifier.Unknown)
             {
                 _downloadEnabled = true;
                 _errorMessage = null;
@@ -77,7 +79,7 @@
                 return;
             }
 
-            _errorMessage = "Please ensure to enter a valid Tweet URL before you continue.";
+            _errorMessage = "Please ensure to enter a valid URL before you continue.";
         }
 
         _downloadEnabled = false;

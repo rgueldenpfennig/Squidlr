@@ -73,12 +73,12 @@ public sealed class TwitterWebClient
         }
     }
 
-    public async Task<Result<Stream, GetTweetVideoResult>> GetTweetDetailStreamAsync(TweetIdentifier tweet, CancellationToken cancellationToken)
+    public async Task<Result<Stream, RequestContentResult>> GetTweetDetailStreamAsync(TweetIdentifier tweet, CancellationToken cancellationToken)
     {
         var guestToken = await GetOrCreateGuestTokenAsync(cancellationToken);
         if (guestToken == null)
         {
-            return new(GetTweetVideoResult.GatewayError);
+            return new(RequestContentResult.GatewayError);
         }
 
         var client = _clientFactory.CreateClient(HttpClientName);
@@ -95,9 +95,9 @@ public sealed class TwitterWebClient
                 response.StatusCode);
 
             if (response.StatusCode == HttpStatusCode.NotFound)
-                return new(GetTweetVideoResult.NotFound);
+                return new(RequestContentResult.NotFound);
 
-            return new(GetTweetVideoResult.GatewayError);
+            return new(RequestContentResult.GatewayError);
         }
 
         var streamCopy = new MemoryStream(

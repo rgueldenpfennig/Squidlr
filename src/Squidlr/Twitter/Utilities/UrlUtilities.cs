@@ -1,7 +1,6 @@
 ﻿using System.Text.RegularExpressions;
-using Squidlr.Twitter;
 
-namespace Squidlr.Utilities;
+namespace Squidlr.Twitter.Utilities;
 
 public static partial class UrlUtilities
 {

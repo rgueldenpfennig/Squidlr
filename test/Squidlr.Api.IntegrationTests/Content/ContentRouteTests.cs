@@ -74,7 +74,7 @@ public class ContentRouteTests : IClassFixture<ApiWebApplicationFactory>
 
         if (response.IsSuccessStatusCode)
         {
-            var content = await response.Content.ReadFromJsonAsync<TweetContent>();
+            var content = await response.Content.ReadFromJsonAsync<TwitterContent>();
             Assert.NotNull(content);
         }
     }

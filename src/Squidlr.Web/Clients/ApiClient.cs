@@ -1,6 +1,5 @@
 ﻿using DotNext;
 using Microsoft.AspNetCore.Mvc;
-using Serilog.Context;
 using Squidlr.Twitter;
 using Squidlr.Web.Telemetry;
 
@@ -21,46 +20,52 @@ public sealed class ApiClient
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async ValueTask<Result<TweetContent, GetTweetVideoResult>> GetTweetContentAsync(TweetIdentifier tweetIdentifier, CancellationToken cancellationToken)
+    public async ValueTask<Result<Content, RequestContentResult>> GetContentAsync(string url, CancellationToken cancellationToken)
     {
-        using (LogContext.PushProperty("TweetId", tweetIdentifier.Id))
+        ArgumentException.ThrowIfNullOrEmpty(url);
+        _logger.LogInformation("Requesting content for '{ContentUrl}'", url);
+
+        try
         {
-            _logger.LogInformation("Requesting Tweet content for '{TweetUrl}'", tweetIdentifier.Url);
-
-            try
+            var client = _httpClientFactory.CreateClient(HttpClientName);
+            var response = await client.GetAsync($"/content?url={url}", HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+            if (response.IsSuccessStatusCode)
             {
-                var client = _httpClientFactory.CreateClient(HttpClientName);
-                var response = await client.GetAsync($"/content?url={tweetIdentifier.Url}", HttpCompletionOption.ResponseHeadersRead, cancellationToken);
-                if (response.IsSuccessStatusCode)
+                _telemetryHandler.TrackEvent("ContentRequested", new Dictionary<string, string> { { "Url", url } });
+                if (!response.Headers.TryGetValues("X-Squidlr-Platform", out var headerValues))
+                    throw new ApiClientException("Platform header is missing.");
+
+                var platform = Enum.Parse<SocialMediaPlatform>(headerValues.Single());
+                switch (platform)
                 {
-                    _telemetryHandler.TrackEvent("ContentRequested", new Dictionary<string, string> { { "Url", tweetIdentifier.Url } });
-                    var content = await response.Content.ReadFromJsonAsync<TweetContent>(cancellationToken: cancellationToken);
-                    return content!;
+                    case SocialMediaPlatform.Twitter:
+                        var content = await response.Content.ReadFromJsonAsync<TwitterContent>(cancellationToken: cancellationToken);
+                        return content!;
+                    default:
+                        throw new ArgumentException("Unsupported platform: " + platform);
                 }
-
-                if (response.Content.Headers.ContentType?.MediaType?.Equals("application/problem+json", StringComparison.OrdinalIgnoreCase) == true)
-                {
-                    var problem = await response.Content.ReadFromJsonAsync<ProblemDetails>(cancellationToken: cancellationToken);
-                    {
-                        var result = GetTweetVideoResult.Error;
-                        if (problem!.Extensions.TryGetValue("result", out var resultObject) && resultObject is not null)
-                        {
-                            result = Enum.Parse<GetTweetVideoResult>(resultObject.ToString()!, ignoreCase: true);
-                        }
-                        _logger.LogWarning("Failed to get Tweet content. Detail: '{ProblemDetail}' Result: '{ProblemResult}'", problem.Detail, result);
-
-                        return new(result);
-                    }
-                }
-
-                _logger.LogWarning("Failed to get Tweet content. StatusCode: '{ResponseStatusCode}'", response.StatusCode);
-                throw new ApiClientException(response.StatusCode);
             }
-            catch (Exception e)
+
+            if (response.Content.Headers.ContentType?.MediaType?.Equals("application/problem+json", StringComparison.OrdinalIgnoreCase) == true)
             {
-                _logger.LogWarning(e, "Failed to get Tweet content due to exception.");
-                throw new ApiClientException(e);
+                var problem = await response.Content.ReadFromJsonAsync<ProblemDetails>(cancellationToken: cancellationToken);
+                var result = RequestContentResult.Error;
+                if (problem!.Extensions.TryGetValue("result", out var resultObject) && resultObject is not null)
+                {
+                    result = Enum.Parse<RequestContentResult>(resultObject.ToString()!, ignoreCase: true);
+                }
+                _logger.LogWarning("Failed to get content. Detail: '{ProblemDetail}' Result: '{ProblemResult}'", problem.Detail, result);
+
+                return new(result);
             }
+
+            _logger.LogWarning("Failed to get content. StatusCode: '{ResponseStatusCode}'", response.StatusCode);
+            throw new ApiClientException(response.StatusCode);
+        }
+        catch (Exception e)
+        {
+            _logger.LogWarning(e, "Failed to get content due to exception.");
+            throw new ApiClientException(e);
         }
     }
 }

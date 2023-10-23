@@ -1,4 +1,4 @@
-using Squidlr.Utilities;
+using Squidlr.Twitter.Utilities;
 
 namespace Squidlr.Tests.Twitter.Utilities;
 

@@ -4,6 +4,6 @@ namespace Squidlr.Twitter.Services
 {
     public interface ITweetContentService
     {
-        ValueTask<Result<TweetContent, GetTweetVideoResult>> GetTweetContentAsync(TweetIdentifier identifier, CancellationToken cancellationToken);
+        ValueTask<Result<TwitterContent, RequestContentResult>> GetTweetContentAsync(TweetIdentifier identifier, CancellationToken cancellationToken);
     }
 }
