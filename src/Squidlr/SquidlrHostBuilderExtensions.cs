@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Squidlr.Abstractions;
+using Squidlr.Instagram;
 using Squidlr.Twitter;
 
 namespace Squidlr;
@@ -27,6 +28,7 @@ public static class SquidlrHostBuilderExtensions
 
             // add supported social media platforms
             services.AddTwitter();
+            services.AddInstagram();
         });
 
         return builder;
