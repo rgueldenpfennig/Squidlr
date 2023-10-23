@@ -20,26 +20,29 @@ public sealed class ApiClient
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async ValueTask<Result<Content, RequestContentResult>> GetContentAsync(ContentIdentifier contentIdentifier, CancellationToken cancellationToken)
+    public async ValueTask<Result<Content, RequestContentResult>> GetContentAsync(string url, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Requesting content for '{ContentUrl}'", contentIdentifier.Url);
+        ArgumentException.ThrowIfNullOrEmpty(url);
+        _logger.LogInformation("Requesting content for '{ContentUrl}'", url);
 
         try
         {
             var client = _httpClientFactory.CreateClient(HttpClientName);
-            var response = await client.GetAsync($"/content?url={contentIdentifier.Url}", HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+            var response = await client.GetAsync($"/content?url={url}", HttpCompletionOption.ResponseHeadersRead, cancellationToken);
             if (response.IsSuccessStatusCode)
             {
-                _telemetryHandler.TrackEvent("ContentRequested", new Dictionary<string, string> { { "Url", contentIdentifier.Url } });
+                _telemetryHandler.TrackEvent("ContentRequested", new Dictionary<string, string> { { "Url", url } });
+                if (!response.Headers.TryGetValues("X-Squidlr-Platform", out var headerValues))
+                    throw new ApiClientException("Platform header is missing.");
 
-                // TODO: maybe put the platform into HTTP headers? So we don't have to provide the enum here
-                switch (contentIdentifier.Platform)
+                var platform = Enum.Parse<SocialMediaPlatform>(headerValues.Single());
+                switch (platform)
                 {
                     case SocialMediaPlatform.Twitter:
                         var content = await response.Content.ReadFromJsonAsync<TwitterContent>(cancellationToken: cancellationToken);
                         return content!;
                     default:
-                        throw new ArgumentException("Unsupported platform: " + contentIdentifier.Platform);
+                        throw new ArgumentException("Unsupported platform: " + platform);
                 }
             }
 

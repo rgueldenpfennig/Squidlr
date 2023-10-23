@@ -34,6 +34,8 @@ internal static class ContentRouteExtensions
             }
 
             var content = result.Value;
+            context.Response.Headers.Add("X-Squidlr-Platform", content.Platform.ToString());
+
             return Results.Ok(content);
         })
         .WithName("GetContent")

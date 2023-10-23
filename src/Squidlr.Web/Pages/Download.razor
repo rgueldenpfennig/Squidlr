@@ -80,7 +80,7 @@
 
         try
         {
-            var response = await ApiClient.GetContentAsync(contentIdentifier, cts.Token);
+            var response = await ApiClient.GetContentAsync(contentIdentifier.Url, cts.Token);
 
             if (response.IsSuccessful)
             {
