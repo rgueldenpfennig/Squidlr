@@ -16,12 +16,18 @@ public static partial class UrlUtilities
 
     public static string GetInstagramIdFromUrl(string url)
     {
+        var identifier = GetInstagramIdentifier(url);
+        return identifier.Id;
+    }
+
+    public static InstagramIdentifier GetInstagramIdentifier(string url)
+    {
         ArgumentException.ThrowIfNullOrEmpty(url);
 
         var match = InstagramUrlRegex().Match(url);
         if (!match.Success)
             throw new ArgumentException("The value represents no valid Instagram URL.", nameof(url));
 
-        return match.Groups["id"].Value;
+        return new(match.Groups["id"].Value, match.Groups[0].Value);
     }
 }

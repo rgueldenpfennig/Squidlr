@@ -53,7 +53,7 @@ internal static class InstagramServiceCollectionExtensions
         //services.AddSingleton<TweetContentParserFactory>();
         //services.AddSingleton<TweetMediaService>();
         services.AddSingleton<IUrlResolver, InstagramUrlResolver>();
-        //services.AddSingleton<IContentProvider, TwitterContentProvider>();
+        services.AddSingleton<IContentProvider, InstagramContentProvider>();
 
         return services;
     }
