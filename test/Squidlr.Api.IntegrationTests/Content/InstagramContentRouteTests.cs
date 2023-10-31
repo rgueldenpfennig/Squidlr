@@ -100,7 +100,7 @@ public class InstagramContentRouteTests : IClassFixture<ApiWebApplicationFactory
                                 Bitrate = 0,
                                 ContentLength = 1017460,
                                 ContentType = "video/mp4",
-                                Size = VideoSize.Empty,
+                                Size = new(612, 612),
                                 Url = new Uri("/o1/v/t16/f1/m84/684E26483F3B131A73D2F28B764A74AF_video_dashinit.mp4", UriKind.Relative)
                             }
                         }

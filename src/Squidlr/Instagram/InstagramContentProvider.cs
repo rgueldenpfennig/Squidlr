@@ -104,13 +104,17 @@ public sealed class InstagramContentProvider : IContentProvider
 
         var videoUri = new Uri(videoUrl, UriKind.Absolute);
         var contentLength = await _client.GetVideoContentLengthAsync(videoUri, cancellationToken);
+        var dimensions = shortcodeMedia!.Value.GetProperty("dimensions");
+        var videoSize = new VideoSize(
+            dimensions.GetProperty("height").GetInt32(),
+            dimensions.GetProperty("width").GetInt32());
 
         video.VideoSources.Add(new()
         {
             Bitrate = 0,
             ContentLength = contentLength,
             ContentType = "video/mp4",
-            Size = VideoSize.Empty,
+            Size = videoSize,
             Url = videoUri
         });
 

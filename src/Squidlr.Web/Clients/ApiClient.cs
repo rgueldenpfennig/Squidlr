@@ -1,5 +1,6 @@
 ﻿using DotNext;
 using Microsoft.AspNetCore.Mvc;
+using Squidlr.Instagram;
 using Squidlr.Twitter;
 using Squidlr.Web.Telemetry;
 
@@ -36,14 +37,12 @@ public sealed class ApiClient
                     throw new ApiClientException("Platform header is missing.");
 
                 var platform = Enum.Parse<SocialMediaPlatform>(headerValues.Single());
-                switch (platform)
+                return platform switch
                 {
-                    case SocialMediaPlatform.Twitter:
-                        var content = await response.Content.ReadFromJsonAsync<TwitterContent>(cancellationToken: cancellationToken);
-                        return content!;
-                    default:
-                        throw new ArgumentException("Unsupported platform: " + platform);
-                }
+                    SocialMediaPlatform.Instagram => (await response.Content.ReadFromJsonAsync<InstagramContent>(cancellationToken: cancellationToken))!,
+                    SocialMediaPlatform.Twitter => (await response.Content.ReadFromJsonAsync<TwitterContent>(cancellationToken: cancellationToken))!,
+                    _ => throw new ArgumentException("Unsupported platform: " + platform)
+                };
             }
 
             if (response.Content.Headers.ContentType?.MediaType?.Equals("application/problem+json", StringComparison.OrdinalIgnoreCase) == true)
