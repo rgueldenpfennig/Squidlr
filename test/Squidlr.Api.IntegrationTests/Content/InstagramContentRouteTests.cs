@@ -55,6 +55,7 @@ public class InstagramContentRouteTests : IClassFixture<ApiWebApplicationFactory
 
                 Assert.Equal(video.DisplayUrl.AbsolutePath, expectedVideo.DisplayUrl.OriginalString);
                 Assert.Equal(video.Duration, expectedVideo.Duration);
+                Assert.Equal(video.Views, expectedVideo.Views);
 
                 for (var j = 0; j < expectedVideo.VideoSources.Count; j++)
                 {
@@ -93,6 +94,7 @@ public class InstagramContentRouteTests : IClassFixture<ApiWebApplicationFactory
                     {
                         DisplayUrl = new Uri("/v/t51.2885-15/11379094_104911659849817_249670488_n.jpg", UriKind.Relative),
                         Duration = TimeSpan.Parse("00:00:08.7420000", CultureInfo.InvariantCulture),
+                        Views = 0,
                         VideoSources = new VideoSourceCollection
                         {
                             new VideoSource

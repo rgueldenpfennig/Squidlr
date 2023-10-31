@@ -50,18 +50,13 @@
                         @Content.CreatedAtUtc.ToString("f", CultureInfo.InvariantCulture)
                     </time>
                 </a>
-                @* @if (Content.Views is not null)
-                {
-                    <span> - <strong>@FormatNumber(Content.Views.Value)</strong> <small>Views</small></span>
-                }
-                @if (!string.IsNullOrEmpty(Content.Source))
-                {
-                    <span> - @((MarkupString)Content.Source)</span>
-                } *@
 
                 <ul class="list-inline mt-1">
-                    <li class="list-inline-item"><strong>@FormatNumber(Content.FavoriteCount)</strong> <small>Likes</small></li>
-                    <li class="list-inline-item"><strong>@FormatNumber(Content.ReplyCount)</strong> <small>Replies</small></li>
+                    @if (Content.FavoriteCount > 0)
+                    {
+                        <li class="list-inline-item"><strong>@FormatHelper.FormatNumber(Content.FavoriteCount)</strong> <small>Likes</small></li>
+                    }
+                    <li class="list-inline-item"><strong>@FormatHelper.FormatNumber(Content.ReplyCount)</strong> <small>@FormatHelper.ToQuantity(Content.ReplyCount, "Reply")</small></li>
                 </ul>
             </p>
 
@@ -80,7 +75,11 @@
                                     <ul class="list-inline mt-1">
                                         @if (@video.Duration is not null)
                                         {
-                                            <li class="list-inline-item"><strong>@FormatDuration(video.Duration.Value)</strong></li>
+                                            <li class="list-inline-item"><strong>@FormatHelper.FormatDuration(video.Duration.Value)</strong></li>
+                                        }
+                                        @if (@video.Views is not null)
+                                        {
+                                            <li class="list-inline-item"><strong>@FormatHelper.FormatNumber(@video.Views.Value)</strong> <small>Views</small></li>
                                         }
                                     </ul>
                                     <div class="alert alert-primary d-flex align-items-center" role="alert">
@@ -136,20 +135,4 @@ else
 @code {
     [Parameter]
     public InstagramContent? Content { get; set; }
-
-    private static string FormatNumber(int value)
-    {
-        if (value >= 10_000)
-            return value.ToMetric(decimals: 1).ToUpperInvariant();
-
-        return "{0:N0}".FormatWith(value);
-    }
-
-    private static string FormatDuration(TimeSpan duration)
-    {
-        if (duration.TotalSeconds <= 60)
-            return duration.Humanize();
-
-        return duration.Humanize(precision: 2);
-    }
 }

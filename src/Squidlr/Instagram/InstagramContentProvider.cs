@@ -99,7 +99,8 @@ public sealed class InstagramContentProvider : IContentProvider
         var video = new InstagramVideo()
         {
             DisplayUrl = new Uri(shortcodeMedia!.Value.GetProperty("display_url").GetString()!, UriKind.Absolute),
-            Duration = TimeSpan.FromSeconds(shortcodeMedia!.Value.GetProperty("video_duration").GetDouble())
+            Duration = TimeSpan.FromSeconds(shortcodeMedia!.Value.GetProperty("video_duration").GetDouble()),
+            Views = shortcodeMedia!.Value.GetProperty("video_view_count").GetInt32()
         };
 
         var videoUri = new Uri(videoUrl, UriKind.Absolute);

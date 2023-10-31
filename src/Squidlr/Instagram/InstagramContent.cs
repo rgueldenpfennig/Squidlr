@@ -21,6 +21,8 @@ public sealed class InstagramVideo
 
     public TimeSpan? Duration { get; set; }
 
+    public int? Views { get; set; }
+
     public VideoSourceCollection VideoSources { get; set; } = new();
 
     public InstagramVideo()
