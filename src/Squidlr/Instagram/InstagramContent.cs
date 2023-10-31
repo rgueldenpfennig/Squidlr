@@ -8,6 +8,10 @@ public sealed class InstagramContent : Content
     {
     }
 
+    public string? FullName { get; set; }
+
+    public Uri? ProfilePictureUrl { get; set; }
+
     public InstagramVideoCollection Videos { get; set; } = new();
 }
 

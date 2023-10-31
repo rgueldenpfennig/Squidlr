@@ -38,6 +38,12 @@ public class InstagramContentRouteTests : IClassFixture<ApiWebApplicationFactory
             Assert.InRange(content.ReplyCount, expectedContent.ReplyCount - 50, expectedContent.ReplyCount + 50);
             Assert.Equal(content.FullText, expectedContent.FullText);
             Assert.Equal(content.UserName, expectedContent.UserName);
+            Assert.Equal(content.FullName, expectedContent.FullName);
+
+            if (expectedContent.ProfilePictureUrl is not null)
+            {
+                Assert.Equal(content.ProfilePictureUrl!.AbsolutePath, expectedContent.ProfilePictureUrl.OriginalString);
+            }
 
             for (var i = 0; i < expectedContent.Videos.Count; i++)
             {
@@ -71,6 +77,7 @@ public class InstagramContentRouteTests : IClassFixture<ApiWebApplicationFactory
     {
         yield return new object[]
         {
+            // default post with a single video
             new InstagramContent("https://www.instagram.com/p/aye83DjauH")
             {
                 CreatedAtUtc = DateTimeOffset.Parse("2013-06-20T17:15:45+00:00", CultureInfo.InvariantCulture),
@@ -78,6 +85,8 @@ public class InstagramContentRouteTests : IClassFixture<ApiWebApplicationFactory
                 FullText = "If Abel was a booger, Luke would definitely pick him. See it in action by playing this video. Yes! That's right, folks. This is a video and Instagram made that possible! Read about this new capability and check out the promo video (with our cameo appearance) by clicking on the link in my profile. Also, be sure to download the latest version of Instagram and start sharing your videos!",
                 ReplyCount = 665,
                 UserName = "naomipq",
+                FullName = "B E A U T Y  F O R  A S H E S",
+                ProfilePictureUrl = new Uri("/v/t51.2885-19/350847933_1258485001453274_5980656859626345933_n.jpg", UriKind.Relative),
                 Videos = new InstagramVideoCollection
                 {
                     new InstagramVideo

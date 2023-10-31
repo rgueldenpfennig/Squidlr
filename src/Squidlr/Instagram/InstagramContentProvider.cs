@@ -70,6 +70,11 @@ public sealed class InstagramContentProvider : IContentProvider
 
         var owner = shortcodeMedia!.Value.GetProperty("owner");
         content.UserName = owner.GetProperty("username").GetString();
+        content.FullName = owner.GetProperty("full_name").GetString();
+        if (owner.TryGetProperty("profile_pic_url", out var profilePic))
+        {
+            content.ProfilePictureUrl = new(profilePic.GetString()!, UriKind.Absolute);
+        }
 
         var likes = shortcodeMedia!.Value.GetProperty("edge_media_preview_like").GetProperty("count").GetInt32();
         content.FavoriteCount = likes;
