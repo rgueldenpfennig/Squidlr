@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Squidlr.Abstractions;
 using Squidlr.Instagram;
 using Squidlr.Twitter;
@@ -24,7 +25,9 @@ public static class SquidlrHostBuilderExtensions
             services.AddSingleton(sp => new UrlResolver(
                 sp.GetServices<IUrlResolver>().ToList().AsReadOnly()));
             services.AddSingleton(sp => new ContentProvider(
-                sp.GetServices<IContentProvider>().ToList().AsReadOnly(), sp.GetRequiredService<IMemoryCache>()));
+                sp.GetServices<IContentProvider>().ToList().AsReadOnly(),
+                sp.GetRequiredService<IMemoryCache>(),
+                sp.GetRequiredService<ILogger<ContentProvider>>()));
 
             // add supported social media platforms
             services.AddTwitter();

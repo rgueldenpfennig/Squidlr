@@ -17,7 +17,7 @@ internal static class TwitterServiceCollectionExtensions
         {
             var options = sp.GetRequiredService<IOptions<SquidlrOptions>>().Value;
 
-            client.DefaultRequestHeaders.Add("authorization", $"Bearer {options.AuthorizationBearerToken!}");
+            client.DefaultRequestHeaders.Add("authorization", $"Bearer {options.TwitterAuthorizationBearerToken!}");
             client.DefaultRequestHeaders.Add("authority", "twitter.com");
             client.DefaultRequestHeaders.Add("accept", "*/*");
             client.DefaultRequestHeaders.Add("accept-language", "en-US,en;q=0.9");

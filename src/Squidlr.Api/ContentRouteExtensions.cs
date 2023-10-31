@@ -29,7 +29,6 @@ internal static class ContentRouteExtensions
             var result = await contentProvider.GetContentAsync(identifier, cancellationToken);
             if (!result.IsSuccessful)
             {
-
                 return CreateProblemResult(result.Error);
             }
 
