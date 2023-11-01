@@ -77,7 +77,7 @@
                                         {
                                             <li class="list-inline-item"><strong>@FormatHelper.FormatDuration(video.Duration.Value)</strong></li>
                                         }
-                                        @if (@video.Views is not null)
+                                        @if (@video.Views is not null && video.Views > 0)
                                         {
                                             <li class="list-inline-item"><strong>@FormatHelper.FormatNumber(@video.Views.Value)</strong> <small>Views</small></li>
                                         }
