@@ -10,6 +10,7 @@ public class UrlUtilitiesTests
     [InlineData("https://www.instagram.com/p/BQ0eAlwhDrw/", true)]
     [InlineData("https://www.instagram.com/tv/BkfuX9UB-eK/", true)]
     [InlineData("http://instagram.com/p/9o6LshA7zy/embed/", true)]
+    [InlineData("https://www.instagram.com/stories/highlights/18090946048123978/", false)] // TODO: Support Instagram story URLs
     [InlineData("https://www.instagram.com/marvelskies.fc/reel/CWqAgUZgCku/", true)]
     [InlineData("https://www.instagram.com/marvelskies.fc/abc/CWqAgUZgCku/", false)]
     [InlineData("https://example.com/foo/1152128691131318273/", false)]

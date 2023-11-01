@@ -62,13 +62,35 @@ public sealed class InstagramContentProvider : IContentProvider
             return new(RequestContentResult.NotFound);
         }
 
-        var videoUrl = shortcodeMedia!.Value.GetPropertyOrNull("video_url")?.GetString();
-        if (videoUrl == null)
-            return new(RequestContentResult.NoVideo);
-
         var content = new InstagramContent(identifier.Url);
 
-        var owner = shortcodeMedia!.Value.GetProperty("owner");
+        var isVideo = shortcodeMedia!.Value.GetProperty("is_video").GetBoolean();
+        if (isVideo)
+        {
+            // this is a single video post
+            await ExtractSingleVideo(shortcodeMedia.Value, content, cancellationToken);
+        }
+
+        var edgeSidecarToChildren = shortcodeMedia.Value.GetPropertyOrNull("edge_sidecar_to_children");
+        if (edgeSidecarToChildren != null)
+        {
+            // lets check if the post contains multiple videos
+            foreach (var edge in edgeSidecarToChildren.Value.GetProperty("edges").EnumerateArray())
+            {
+                var node = edge.GetPropertyOrNull("node");
+                if (node != null && node.Value.GetPropertyOrNull("is_video")?.GetBoolean() == true)
+                {
+                    await ExtractSingleVideo(node.Value, content, cancellationToken);
+                }
+            }
+        }
+
+        if (content.Videos.Count == 0)
+        {
+            return new(RequestContentResult.NoVideo);
+        }
+
+        var owner = shortcodeMedia.Value.GetProperty("owner");
         content.UserName = owner.GetProperty("username").GetString();
         content.FullName = owner.GetProperty("full_name").GetString();
         if (owner.TryGetProperty("profile_pic_url", out var profilePic))
@@ -76,13 +98,13 @@ public sealed class InstagramContentProvider : IContentProvider
             content.ProfilePictureUrl = new(profilePic.GetString()!, UriKind.Absolute);
         }
 
-        var likes = shortcodeMedia!.Value.GetProperty("edge_media_preview_like").GetProperty("count").GetInt32();
+        var likes = shortcodeMedia.Value.GetProperty("edge_media_preview_like").GetProperty("count").GetInt32();
         content.FavoriteCount = likes;
 
-        var takenAtTimestamp = shortcodeMedia!.Value.GetProperty("taken_at_timestamp").GetInt64();
+        var takenAtTimestamp = shortcodeMedia.Value.GetProperty("taken_at_timestamp").GetInt64();
         content.CreatedAtUtc = DateTimeOffset.FromUnixTimeSeconds(takenAtTimestamp);
 
-        var edgeMediaToCaption = shortcodeMedia!.Value.GetProperty("edge_media_to_caption");
+        var edgeMediaToCaption = shortcodeMedia.Value.GetProperty("edge_media_to_caption");
         foreach (var edge in edgeMediaToCaption.GetProperty("edges").EnumerateArray())
         {
             var node = edge.GetPropertyOrNull("node");
@@ -93,19 +115,25 @@ public sealed class InstagramContentProvider : IContentProvider
             }
         }
 
-        var edgeMediaToComment = shortcodeMedia!.Value.GetProperty("edge_media_to_comment");
+        var edgeMediaToComment = shortcodeMedia.Value.GetProperty("edge_media_to_comment");
         content.ReplyCount = edgeMediaToComment.GetProperty("count").GetInt32();
 
+        return content;
+    }
+
+    private async Task ExtractSingleVideo(JsonElement videoNode, InstagramContent content, CancellationToken cancellationToken)
+    {
+        var videoUrl = videoNode.GetProperty("video_url").GetString()!;
         var video = new InstagramVideo()
         {
-            DisplayUrl = new Uri(shortcodeMedia!.Value.GetProperty("display_url").GetString()!, UriKind.Absolute),
-            Duration = TimeSpan.FromSeconds(shortcodeMedia!.Value.GetProperty("video_duration").GetDouble()),
-            Views = shortcodeMedia!.Value.GetProperty("video_view_count").GetInt32()
+            DisplayUrl = new Uri(videoNode.GetProperty("display_url").GetString()!, UriKind.Absolute),
+            Duration = videoNode.TryGetProperty("video_duration", out var videoDuration) ? TimeSpan.FromSeconds(videoDuration.GetDouble()) : null,
+            Views = videoNode.GetProperty("video_view_count").GetInt32()
         };
 
         var videoUri = new Uri(videoUrl, UriKind.Absolute);
         var contentLength = await _client.GetVideoContentLengthAsync(videoUri, cancellationToken);
-        var dimensions = shortcodeMedia!.Value.GetProperty("dimensions");
+        var dimensions = videoNode.GetProperty("dimensions");
         var videoSize = new VideoSize(
             dimensions.GetProperty("height").GetInt32(),
             dimensions.GetProperty("width").GetInt32());
@@ -120,7 +148,5 @@ public sealed class InstagramContentProvider : IContentProvider
         });
 
         content.Videos.Add(video);
-
-        return content;
     }
 }
