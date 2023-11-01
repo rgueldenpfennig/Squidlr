@@ -22,16 +22,14 @@ namespace Squidlr.Hosting.Telemetry
 
         public void Process(ITelemetry item)
         {
-            if (_options.IgnoreAbsolutePaths.Length != 0)
+            if (_options.IgnoreAbsolutePaths.Length != 0 &&
+                item is RequestTelemetry requestTelemetry)
             {
-                if (item is RequestTelemetry requestTelemetry)
+                for (var i = 0; i < _options.IgnoreAbsolutePaths.Length; i++)
                 {
-                    for (var i = 0; i < _options.IgnoreAbsolutePaths.Length; i++)
+                    if (requestTelemetry.Url.AbsolutePath.Contains(_options.IgnoreAbsolutePaths[i]))
                     {
-                        if (requestTelemetry.Url.AbsolutePath.Contains(_options.IgnoreAbsolutePaths[i]))
-                        {
-                            return;
-                        }
+                        return;
                     }
                 }
             }

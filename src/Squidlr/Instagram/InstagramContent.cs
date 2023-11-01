@@ -13,6 +13,11 @@ public sealed class InstagramContent : Content
     public Uri? ProfilePictureUrl { get; set; }
 
     public InstagramVideoCollection Videos { get; set; } = new();
+
+    public override string ToString()
+    {
+        return SourceUrl;
+    }
 }
 
 public sealed class InstagramVideo
