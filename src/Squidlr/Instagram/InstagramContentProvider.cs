@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using System.Text.Encodings.Web;
 using System.Text.Json;
 using DotNext;
 using Microsoft.Extensions.Logging;
@@ -25,10 +24,7 @@ public sealed class InstagramContentProvider : IContentProvider
     public async ValueTask<Result<Content, RequestContentResult>> GetContentAsync(string url, CancellationToken cancellationToken)
     {
         var identifier = UrlUtilities.GetInstagramIdentifier(url);
-
-        using var response = await _client.GetAsync(
-            $"/graphql/query/?query_hash=9f8827793ef34641b2fb195d4d41151c&variables={UrlEncoder.Default.Encode($$"""{"shortcode":"{{identifier.Id}}"}""")}",
-            cancellationToken);
+        using var response = await _client.GetInstagramPostAsync(identifier, cancellationToken);
 
         if (!response.IsSuccessStatusCode)
         {
@@ -68,7 +64,8 @@ public sealed class InstagramContentProvider : IContentProvider
         if (isVideo)
         {
             // this is a single video post
-            await ExtractSingleVideo(shortcodeMedia.Value, content, cancellationToken);
+            var video = await ExtractVideoFromNode(shortcodeMedia.Value, cancellationToken);
+            content.Videos.Add(video);
         }
 
         var edgeSidecarToChildren = shortcodeMedia.Value.GetPropertyOrNull("edge_sidecar_to_children");
@@ -80,7 +77,8 @@ public sealed class InstagramContentProvider : IContentProvider
                 var node = edge.GetPropertyOrNull("node");
                 if (node != null && node.Value.GetPropertyOrNull("is_video")?.GetBoolean() == true)
                 {
-                    await ExtractSingleVideo(node.Value, content, cancellationToken);
+                    var video = await ExtractVideoFromNode(node.Value, cancellationToken);
+                    content.Videos.Add(video);
                 }
             }
         }
@@ -121,7 +119,7 @@ public sealed class InstagramContentProvider : IContentProvider
         return content;
     }
 
-    private async Task ExtractSingleVideo(JsonElement videoNode, InstagramContent content, CancellationToken cancellationToken)
+    private async ValueTask<InstagramVideo> ExtractVideoFromNode(JsonElement videoNode, CancellationToken cancellationToken)
     {
         var videoUrl = videoNode.GetProperty("video_url").GetString()!;
         var video = new InstagramVideo()
@@ -132,7 +130,7 @@ public sealed class InstagramContentProvider : IContentProvider
         };
 
         var videoUri = new Uri(videoUrl, UriKind.Absolute);
-        var contentLength = await _client.GetVideoContentLengthAsync(videoUri, cancellationToken);
+        var (contentLength, contentType) = await _client.GetVideoContentLengthAndTypeAsync(videoUri, cancellationToken);
         var dimensions = videoNode.GetProperty("dimensions");
         var videoSize = new VideoSize(
             dimensions.GetProperty("height").GetInt32(),
@@ -142,11 +140,11 @@ public sealed class InstagramContentProvider : IContentProvider
         {
             Bitrate = 0,
             ContentLength = contentLength,
-            ContentType = "video/mp4",
+            ContentType = contentType ?? "video/mp4",
             Size = videoSize,
             Url = videoUri
         });
 
-        content.Videos.Add(video);
+        return video;
     }
 }

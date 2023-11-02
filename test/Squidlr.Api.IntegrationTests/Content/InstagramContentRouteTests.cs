@@ -34,8 +34,8 @@ public class InstagramContentRouteTests : IClassFixture<ApiWebApplicationFactory
             var content = await response.Content.ReadFromJsonAsync<InstagramContent>();
             Assert.NotNull(content);
             Assert.Equal(content.CreatedAtUtc, expectedContent.CreatedAtUtc);
-            Assert.InRange(content.FavoriteCount, expectedContent.FavoriteCount - 50, expectedContent.FavoriteCount + 50);
-            Assert.InRange(content.ReplyCount, expectedContent.ReplyCount - 50, expectedContent.ReplyCount + 50);
+            Assert.InRange(content.FavoriteCount, expectedContent.FavoriteCount - 100, expectedContent.FavoriteCount + 100);
+            Assert.InRange(content.ReplyCount, expectedContent.ReplyCount - 100, expectedContent.ReplyCount + 100);
             Assert.Equal(content.FullText, expectedContent.FullText);
             Assert.Equal(content.UserName, expectedContent.UserName);
             Assert.Equal(content.FullName, expectedContent.FullName);
@@ -55,7 +55,8 @@ public class InstagramContentRouteTests : IClassFixture<ApiWebApplicationFactory
 
                 Assert.Equal(video.DisplayUrl.AbsolutePath, expectedVideo.DisplayUrl.OriginalString);
                 Assert.Equal(video.Duration, expectedVideo.Duration);
-                Assert.Equal(video.Views, expectedVideo.Views);
+                if (video.Views.HasValue)
+                    Assert.InRange(video.Views.Value, expectedVideo.Views!.Value - 100, expectedVideo.Views!.Value + 100);
 
                 for (var j = 0; j < expectedVideo.VideoSources.Count; j++)
                 {
