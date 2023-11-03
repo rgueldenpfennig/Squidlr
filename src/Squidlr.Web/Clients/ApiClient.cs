@@ -32,11 +32,16 @@ public sealed class ApiClient
             var response = await client.GetAsync($"/content?url={url}", HttpCompletionOption.ResponseHeadersRead, cancellationToken);
             if (response.IsSuccessStatusCode)
             {
-                _telemetryHandler.TrackEvent("ContentRequested", new Dictionary<string, string> { { "Url", url } });
                 if (!response.Headers.TryGetValues("X-Squidlr-Platform", out var headerValues))
                     throw new ApiClientException("Platform header is missing.");
 
                 var platform = Enum.Parse<SocialMediaPlatform>(headerValues.Single());
+                _telemetryHandler.TrackEvent("ContentRequested", new Dictionary<string, string>
+                {
+                    { "Url", url },
+                    { "SocialMediaPlatform", platform.ToString() }
+                });
+
                 return platform switch
                 {
                     SocialMediaPlatform.Instagram => (await response.Content.ReadFromJsonAsync<InstagramContent>(cancellationToken: cancellationToken))!,

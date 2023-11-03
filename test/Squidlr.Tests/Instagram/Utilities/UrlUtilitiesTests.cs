@@ -26,17 +26,18 @@ public class UrlUtilitiesTests
     }
 
     [Theory]
-    [InlineData("https://instagram.com/p/aye83DjauH/?foo=bar#abc", "aye83DjauH")]
-    [InlineData("https://www.instagram.com/reel/Chunk8-jurw/", "Chunk8-jurw")]
-    [InlineData("https://www.instagram.com/p/BQ0eAlwhDrw/", "BQ0eAlwhDrw")]
-    [InlineData("https://www.instagram.com/tv/BkfuX9UB-eK/", "BkfuX9UB-eK")]
-    [InlineData("http://instagram.com/p/9o6LshA7zy/embed/", "9o6LshA7zy")]
-    public void GetInstagramIdFromUrl(string url, string expectedResult)
+    [InlineData("https://instagram.com/p/aye83DjauH/?foo=bar#abc", "aye83DjauH", "https://instagram.com/p/aye83DjauH")]
+    [InlineData("https://www.instagram.com/reel/Chunk8-jurw/", "Chunk8-jurw", "https://www.instagram.com/reel/Chunk8-jurw")]
+    [InlineData("https://www.instagram.com/p/BQ0eAlwhDrw/", "BQ0eAlwhDrw", "https://www.instagram.com/p/BQ0eAlwhDrw")]
+    [InlineData("https://www.instagram.com/tv/BkfuX9UB-eK/", "BkfuX9UB-eK", "https://www.instagram.com/tv/BkfuX9UB-eK")]
+    [InlineData("http://instagram.com/p/9o6LshA7zy/embed/", "9o6LshA7zy", "http://instagram.com/p/9o6LshA7zy")]
+    public void GetInstagramIdentifier(string url, string expectedId, string expectedUrl)
     {
         // Act
-        var result = UrlUtilities.GetInstagramIdFromUrl(url);
+        var identifier = UrlUtilities.GetInstagramIdentifier(url);
 
         // Assert
-        Assert.Equal(expectedResult, result);
+        Assert.Equal(expectedId, identifier.Id);
+        Assert.Equal(expectedUrl, identifier.Url);
     }
 }

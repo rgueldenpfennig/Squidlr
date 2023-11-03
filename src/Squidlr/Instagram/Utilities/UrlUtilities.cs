@@ -14,12 +14,6 @@ public static partial class UrlUtilities
         return InstagramUrlRegex().IsMatch(url);
     }
 
-    public static string GetInstagramIdFromUrl(string url)
-    {
-        var identifier = GetInstagramIdentifier(url);
-        return identifier.Id;
-    }
-
     public static InstagramIdentifier GetInstagramIdentifier(string url)
     {
         ArgumentException.ThrowIfNullOrEmpty(url);
