@@ -118,7 +118,7 @@ public class InstagramContentRouteTests : IClassFixture<ApiWebApplicationFactory
             new InstagramContent("https://www.instagram.com/marvelskies.fc/reel/CWqAgUZgCku/")
             {
                 CreatedAtUtc = DateTimeOffset.Parse("2021-11-24T11:09:53+00:00", CultureInfo.InvariantCulture),
-                FavoriteCount = 1011472,
+                FavoriteCount = 1011106,
                 FullText = "Have no home 😂\n\n. Follow @marvelskies.fc \n\n.Tags 🏷️\n#spiderman #spidermannowayhome #tomholland #loveyou3000 #robertdowneyjr #andrewgarfield\n#tobeymaguire #ironman #marvel\n\n. Credits to the Respective Owners",
                 ReplyCount = 1757,
                 UserName = "marvelskies.fc",
@@ -139,7 +139,7 @@ public class InstagramContentRouteTests : IClassFixture<ApiWebApplicationFactory
                                 ContentLength = 1029283,
                                 ContentType = "video/mp4",
                                 Size = new(854, 480),
-                                Url = new Uri("/v/t50.2886-16/259868018_1125905931280424_2234748865005605879_n.mp4", UriKind.Relative)
+                                Url = new Uri("/o1/v/t16/f1/m69/GHJFfQ8ooBVnAQAEAPfT3aRAbAMfbq_EAAAF.mp4", UriKind.Relative)
                             }
                         }
                     }
