@@ -5,8 +5,11 @@ namespace Squidlr;
 
 public sealed class SquidlrOptions : IOptions<SquidlrOptions>, IValidatableObject
 {
+    [Required]
+    public Uri? InstagramHostUri { get; set; }
+
     [Required(AllowEmptyStrings = false)]
-    public string? AuthorizationBearerToken { get; set; }
+    public string? TwitterAuthorizationBearerToken { get; set; }
 
     [Required]
     public Uri? TwitterApiHostUri { get; set; }

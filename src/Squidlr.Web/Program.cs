@@ -81,11 +81,11 @@ public partial class Program
                     return ctx.Request.Path == "/health" ? LogEventLevel.Debug : defaultLevel;
                 };
             });
-            app.UseResponseCompression();
 
-            if (app.Environment.IsProduction())
+            if (app.Environment.IsProduction() || app.Environment.IsStaging())
             {
                 app.UseExceptionHandler("/Error");
+                app.UseResponseCompression();
             }
             else
             {

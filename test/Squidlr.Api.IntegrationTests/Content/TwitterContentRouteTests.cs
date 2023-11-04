@@ -4,11 +4,11 @@ using Xunit.Abstractions;
 
 namespace Squidlr.Api.IntegrationTests.Content;
 
-public class ContentRouteTests : IClassFixture<ApiWebApplicationFactory>
+public class TwitterContentRouteTests : IClassFixture<ApiWebApplicationFactory>
 {
     private readonly HttpClient _client;
 
-    public ContentRouteTests(ApiWebApplicationFactory factory, ITestOutputHelper testOutputHelper)
+    public TwitterContentRouteTests(ApiWebApplicationFactory factory, ITestOutputHelper testOutputHelper)
     {
         factory.TestOutputHelper = testOutputHelper;
         _client = factory.CreateClient();

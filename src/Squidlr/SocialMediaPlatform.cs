@@ -7,5 +7,7 @@ public enum SocialMediaPlatform
 {
     Unknown,
 
-    Twitter
+    Twitter,
+
+    Instagram
 }

@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Squidlr.Api.IntegrationTest
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Squidlr.Web", "src\Squidlr.Web\Squidlr.Web.csproj", "{03691757-1449-431F-BDB2-DFA13DEB0637}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Squidlr.Hosting", "src\Squidlr.Hosting\Squidlr.Hosting.csproj", "{9149A88C-6346-47FE-B277-A3AF75628FB5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Squidlr.Hosting", "src\Squidlr.Hosting\Squidlr.Hosting.csproj", "{9149A88C-6346-47FE-B277-A3AF75628FB5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

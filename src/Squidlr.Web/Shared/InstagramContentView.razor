@@ -1,4 +1,5 @@
 ﻿@using System.Globalization;
+@using Squidlr.Instagram;
 @using Squidlr.Twitter;
 
 @inject IJSRuntime JS
@@ -6,8 +7,8 @@
 
 @if (Content is not null)
 {
-    var title = SeoProperties.CreatePageTitle(Content.FullText?.Replace(Environment.NewLine, ""));
-    string? videoMediaUrl = null;
+    var title = SeoProperties.CreatePageTitle($"{Content.FullName} on Instagram: " + Content.FullText?.Replace(Environment.NewLine, ""));
+    string? displayUrl = null;
 
     <PageTitle>@title</PageTitle>
     <HeadContent>
@@ -16,17 +17,17 @@
         <meta name="og:type" content="video.other" />
         <meta name="og:site_name" content="squidlr.com" />
         <meta name="og:url" content="@(NavigationManager.Uri)" />
-        @if (videoMediaUrl != null)
+        @if (displayUrl != null)
         {
-            <meta name="og:image" content="@videoMediaUrl" />
+            <meta name="og:image" content="@displayUrl" />
         }
-        <meta name="twitter:creator" content="@@@Content.UserName" />
+        <meta name="twitter:creator" content="@@instagram" />
         <meta name="twitter:site" content="@@SquidlrBot" />
         <meta name="twitter:domain" content="squidlr.com">
     </HeadContent>
 
     <div class="px-4 my-4 text-center">
-        <h1 class="display-6 fw-bold text-body-emphasis">X / Twitter video download</h1>
+        <h1 class="display-6 fw-bold text-body-emphasis">Instagram video download</h1>
     </div>
 
     <div class="card mb-4">
@@ -36,46 +37,38 @@
                 {
                     <blockquote class="blockquote">
                         <p style="white-space: pre-line">@((MarkupString)Content.FullText)</p>
-                        <footer class="blockquote-footer">@string.Format("@{0}", Content.UserName)</footer>
+                        <a href="@string.Format("https://www.instagram.com/{0}", Content.UserName)" style="text-decoration: none">
+                            <footer class="blockquote-footer fw-bold">
+                                @string.Format("@{0}", Content.UserName)
+                                <p>@Content.FullName</p>
+                            </footer>
+                        </a>
                     </blockquote>
                 }
-                <a href="@Content.TweetIdentifier.Url">
+                <a href="@Content.SourceUrl">
                     <time datetime="@Content.CreatedAtUtc.ToString("O", CultureInfo.InvariantCulture)">
                         @Content.CreatedAtUtc.ToString("f", CultureInfo.InvariantCulture)
                     </time>
                 </a>
-                @if (Content.Views is not null)
-                {
-                    <span> - <strong>@FormatHelper.FormatNumber(Content.Views.Value)</strong> <small>Views</small></span>
-                }
-                @if (!string.IsNullOrEmpty(Content.Source))
-                {
-                    <span> - @((MarkupString)Content.Source)</span>
-                }
 
                 <ul class="list-inline mt-1">
-                    <li class="list-inline-item"><strong>@FormatHelper.FormatNumber(Content.RetweetCount)</strong> <small>Retweets</small></li>
-                    <li class="list-inline-item"><strong>@FormatHelper.FormatNumber(Content.QuoteCount)</strong> <small>Quotes</small></li>
-                    <li class="list-inline-item"><strong>@FormatHelper.FormatNumber(Content.FavoriteCount)</strong> <small>Likes</small></li>
-                    <li class="list-inline-item"><strong>@FormatHelper.FormatNumber(Content.BookmarkCount)</strong> <small>Bookmarks</small></li>
+                    @if (Content.FavoriteCount > 0)
+                    {
+                        <li class="list-inline-item"><strong>@FormatHelper.FormatNumber(Content.FavoriteCount)</strong> <small>Likes</small></li>
+                    }
+                    <li class="list-inline-item"><strong>@FormatHelper.FormatNumber(Content.ReplyCount)</strong> <small>@FormatHelper.ToQuantity(Content.ReplyCount, "Reply")</small></li>
                 </ul>
             </p>
 
             @{
                 int videoNumber = 0;
             }
-            @foreach (var video in Content.Media.OfType<TweetMediaVideo>())
+            @foreach (var video in Content.Videos)
             {
                 videoNumber++;
                 <div class="card border-0 mb-3">
-                    <div class="row g-0">
-                        <div class="col-md-4">
-                            @{
-                                videoMediaUrl ??= video.MediaUrl.ToString();
-                            }
-                            <img src="@video.MediaUrl" class="img-fluid rounded mb-2" alt="Video thumbnail">
-                        </div>
-                        <div class="col-md-8">
+                    <div class="row">
+                        <div class="col">
                             <div class="card-body pt-0">
                                 <h2 class="card-title">Video #@videoNumber</h2>
                                 <div class="card-text">
@@ -84,7 +77,7 @@
                                         {
                                             <li class="list-inline-item"><strong>@FormatHelper.FormatDuration(video.Duration.Value)</strong></li>
                                         }
-                                        @if (@video.Views is not null)
+                                        @if (@video.Views is not null && video.Views > 0)
                                         {
                                             <li class="list-inline-item"><strong>@FormatHelper.FormatNumber(@video.Views.Value)</strong> <small>Views</small></li>
                                         }
@@ -103,7 +96,7 @@
                                     {
                                         <a class="btn btn-primary list-group-item list-group-item-action mb-1" role="button" href="@source.Url.ToString()" target="_blank">
                                             <div class="d-flex w-100 justify-content-between">
-                                                <h5 class="mb-1">@CreateVideoResolutionText(videoSources, videoSourceIndex)</h5>
+                                                <h5 class="mb-1">Download</h5>
                                                 <span class="oi oi-cloud-download" data-glyph="cloud-download" title="Download" aria-hidden="true"></span>
                                             </div>
                                             <p class="mb-1">
@@ -121,7 +114,6 @@
                                                 {
                                                     <li class="list-item"><small>Size: @source.ContentLength.Value.Bytes().Humanize("#.#")</small></li>
                                                 }
-                                                <li class="list-item"><small>Bitrate: @string.Format("{0:N0}", @source.Bitrate)</small></li>
                                             </ul>
                                         </a>
                                         videoSourceIndex++;
@@ -130,16 +122,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            }
-
-            @if (ShowProblemText)
-            {
-                <div class="alert alert-warning" role="alert">
-                    <span class="oi oi-eye me-2" data-glyph="info" title="Information" aria-hidden="true"></span>
-                    <span class="fw-bold">Issue with some videos</span>
-                    <p>It seems that various videos are currently affected by a problem on the side of X.com<br>After downloading the video can't be played, e.g. the screen stays black. The reason is probably a corrupted MP4 video format.</p>
-                    <p>I am investigating and try to find a solution. All other video download services are also affected by this issue.</p>
                 </div>
             }
         </div>
@@ -152,23 +134,5 @@ else
 
 @code {
     [Parameter]
-    public TwitterContent? Content { get; set; }
-
-    [Parameter]
-    public bool ShowProblemText { get; set; }
-
-    private static string CreateVideoResolutionText(VideoSource[] videos, int videoSourceIndex)
-    {
-        return videoSourceIndex switch
-        {
-            0 => "Best resolution",
-            1 when videos.Length == 5 => "High resolution",
-            2 when videos.Length == 5 => "Medium resolution",
-            3 when videos.Length == 5 => "Low resolution",
-            1 when videos.Length == 4 => "High resolution",
-            2 when videos.Length == 4 => "Medium resolution",
-            1 when videos.Length == 3 => "Medium resolution",
-            _ => "Lowest resolution"
-        };
-    }
+    public InstagramContent? Content { get; set; }
 }

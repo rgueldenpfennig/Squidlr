@@ -5,6 +5,7 @@
 @using Microsoft.Extensions.Options;
 @using System.Net;
 @using Serilog.Context;
+@using Squidlr.Instagram;
 @using Squidlr.Twitter;
 @using Squidlr.Twitter.Utilities;
 @using Squidlr.Web.Clients;
@@ -31,9 +32,13 @@
 <PageTitle>@(SeoProperties.CreatePageTitle("Download"))</PageTitle>
 
 <div class="d-flex flex-column align-items-center justify-content-center">
+    @if (content is InstagramContent instagramContent)
+    {
+        <InstagramContentView Content="@instagramContent" />
+    }
     @if (content is TwitterContent twitterContent)
     {
-        <TwitterContentView TwitterContent="@twitterContent" />
+        <TwitterContentView Content="@twitterContent" />
     }
 
     @if (errorMessage is not null)

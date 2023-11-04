@@ -4,19 +4,9 @@ public sealed class TwitterContent : Content
 {
     public TweetIdentifier TweetIdentifier { get; }
 
-    public DateTimeOffset CreatedAtUtc { get; set; }
-
-    public string? UserName { get; set; }
-
-    public string? FullText { get; set; }
-
-    public int FavoriteCount { get; set; }
-
     public int BookmarkCount { get; set; }
 
     public int QuoteCount { get; set; }
-
-    public int ReplyCount { get; set; }
 
     public int RetweetCount { get; set; }
 
