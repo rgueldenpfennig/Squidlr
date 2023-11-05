@@ -15,7 +15,10 @@ jobs:
     uses: ./.github/workflows/infrastructure.yml
     with:
       environment: prod
+      proxyAddress: ${{ vars.PROXY_ADDRESS }}
       existing: true
     secrets: 
       azureCredentials: ${{ secrets.AZURE_CREDENTIALS }}
       apiKey: ${{ secrets.API_KEY }}
+      proxyUserName: ${{ secrets.PROXY_USERNAME }}
+      proxyPassword: ${{ secrets.PROXY_PASSWORD }}
