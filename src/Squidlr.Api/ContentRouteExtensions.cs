@@ -5,14 +5,14 @@ namespace Squidlr.Api;
 
 internal static class ContentRouteExtensions
 {
-    public static RouteHandlerBuilder MapContentRoutes(this IEndpointRouteBuilder builder)
+    public static RouteHandlerBuilder MapContentRoutes(this IEndpointRouteBuilder builder, IWebHostEnvironment environment)
     {
-        return builder.AddGetContent();
+        return builder.AddGetContent(environment);
     }
 
-    private static RouteHandlerBuilder AddGetContent(this IEndpointRouteBuilder builder)
+    private static RouteHandlerBuilder AddGetContent(this IEndpointRouteBuilder builder, IWebHostEnvironment environment)
     {
-        return builder.MapGet("/content",
+        var handler = builder.MapGet("/content",
             async (
                 string url,
                 [FromServices] UrlResolver urlResolver,
@@ -50,8 +50,14 @@ internal static class ContentRouteExtensions
         })
         .ProducesValidationProblem()
         .Produces<TwitterContent>()
-        .RequireRateLimiting("Content")
         .RequireAuthorization();
+
+        if (!environment.IsDevelopment())
+        {
+            handler.RequireRateLimiting("Content");
+        }
+
+        return handler;
     }
 
     private static IResult CreateProblemResult(RequestContentResult result)
