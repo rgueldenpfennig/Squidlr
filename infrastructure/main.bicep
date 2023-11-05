@@ -19,6 +19,17 @@ param applicationName string = 'squidlr'
 @secure()
 param apiKey string
 
+@description('The proxy address')
+param proxyAddress string
+
+@description('The proxy user name')
+@secure()
+param proxyUserName string
+
+@description('The proxy password')
+@secure()
+param proxyPassword string
+
 @description('Specifies if the API app exists')
 param apiAppExists bool = false
 
@@ -81,6 +92,18 @@ var api_app_config = [
   {
     name: 'ASPNETCORE_URLS'
     value: 'http://*:80;http://*:5001'
+  }
+  {
+    name: 'SQUIDLR__PROXYOPTIONS__PROXYADDRESS'
+    value: proxyAddress
+  }
+  {
+    name: 'SQUIDLR__PROXYOPTIONS__USERNAME'
+    value: proxyUserName
+  }
+  {
+    name: 'SQUIDLR__PROXYOPTIONS__PASSWORD'
+    value: proxyPassword
   }
 ]
 

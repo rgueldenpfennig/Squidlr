@@ -6,16 +6,22 @@ on:
       environment:
         required: true
         type: string
+      proxyAddress:
+        required: false
+        type: string
       existing:
         required: true
         type: boolean
         description: Determines if all infrastructure resources are already existing, or else, should be created
     secrets:
       azureCredentials:
-          required: true
+        required: true
       apiKey:
-          required: true
-
+        required: true
+      proxyUserName:
+        required: false
+      proxyPassword:
+        required: false
 jobs:
   infrastructure:
     runs-on: ubuntu-latest
@@ -55,4 +61,4 @@ jobs:
           template: ${{ github.workspace }}/infrastructure/main.bicep
           failOnStdErr: false
           scope: resourcegroup
-          parameters: 'apiAppExists=${{ inputs.existing }} webAppExists=${{ inputs.existing }} environmentName=${{ inputs.environment }} apiKey=${{ secrets.apiKey }}'
+          parameters: 'apiAppExists=${{ inputs.existing }} webAppExists=${{ inputs.existing }} environmentName=${{ inputs.environment }} apiKey=${{ secrets.apiKey }} proxyAddress=${{ inputs.proxyAddress }} proxyUserName=${{ secrets.proxyUserName }} proxyPassword=${{ secrets.proxyPassword }}'
