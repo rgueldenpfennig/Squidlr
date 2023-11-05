@@ -30,15 +30,28 @@ internal static class InstagramServiceCollectionExtensions
             client.DefaultVersionPolicy = HttpVersionPolicy.RequestVersionOrLower;
             client.DefaultRequestVersion = HttpVersion.Version20;
         })
-            .ConfigurePrimaryHttpMessageHandler(() =>
+            .ConfigurePrimaryHttpMessageHandler((sp) =>
             {
-                return new SocketsHttpHandler
+                var options = sp.GetRequiredService<IOptions<SquidlrOptions>>().Value;
+                var handler = new SocketsHttpHandler
                 {
                     PooledConnectionLifetime = TimeSpan.FromMinutes(10),
+                    UseProxy = false,
                     UseCookies = false
                 };
+
+                if (options.ProxyOptions?.UseProxy == true)
+                {
+                    handler.UseProxy = true;
+                    handler.Proxy = new WebProxy(options.ProxyOptions.ProxyAddress);
+                    handler.DefaultProxyCredentials = new NetworkCredential(options.ProxyOptions.UserName, options.ProxyOptions.Password);
+                }
+
+                return handler;
             })
-            .AddPolicyHandler((services, request) => HttpPolicyExtensions.HandleTransientHttpError()
+            .AddPolicyHandler((services, request) => HttpPolicyExtensions
+                .HandleTransientHttpError()
+                .OrResult(response => response.StatusCode == HttpStatusCode.Unauthorized)
                 .WaitAndRetryAsync(new[]
                 {
                     TimeSpan.FromMilliseconds(100),

@@ -42,7 +42,10 @@ public sealed class ContentProvider
                 try
                 {
                     var content = await provider.GetContentAsync(contentIdentifier.Url, cancellationToken);
-                    _memoryCache.Set(contentIdentifier.Url, content, absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(15));
+                    if (content.Error == RequestContentResult.Success || content.Error == RequestContentResult.NotFound)
+                    {
+                        _memoryCache.Set(contentIdentifier.Url, content, absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(15));
+                    }
 
                     return content;
                 }

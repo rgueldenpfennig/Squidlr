@@ -14,6 +14,8 @@ public sealed class SquidlrOptions : IOptions<SquidlrOptions>, IValidatableObjec
     [Required]
     public Uri? TwitterApiHostUri { get; set; }
 
+    public ProxyOptions? ProxyOptions { get; set; }
+
     public SquidlrOptions Value => this;
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
