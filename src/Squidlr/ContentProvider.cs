@@ -44,7 +44,7 @@ public sealed class ContentProvider
                     var content = await provider.GetContentAsync(contentIdentifier.Url, cancellationToken);
                     if (content.Error == RequestContentResult.Success || content.Error == RequestContentResult.NotFound)
                     {
-                        _memoryCache.Set(contentIdentifier.Url, content, absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(15));
+                        _memoryCache.Set(contentIdentifier.Url, content, absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(60));
                     }
 
                     return content;
