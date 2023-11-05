@@ -36,6 +36,17 @@ public static class RateLimiterServiceCollectionExtensions
                             Window = TimeSpan.FromHours(1)
                         })));
 
+            options.AddPolicy("Content", ctx =>
+            {
+                return RateLimitPartition.GetFixedWindowLimiter(ctx.Connection.RemoteIpAddress?.ToString() ?? ctx.Request.Host.ToString(), partition =>
+                    new FixedWindowRateLimiterOptions
+                    {
+                        AutoReplenishment = true,
+                        PermitLimit = 3,
+                        Window = TimeSpan.FromSeconds(30)
+                    });
+            });
+
             options.AddPolicy("Video", ctx =>
             {
                 return RateLimitPartition.GetFixedWindowLimiter(ctx.Connection.RemoteIpAddress?.ToString() ?? ctx.Request.Host.ToString(), partition =>

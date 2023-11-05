@@ -50,6 +50,7 @@ internal static class ContentRouteExtensions
         })
         .ProducesValidationProblem()
         .Produces<TwitterContent>()
+        .RequireRateLimiting("Content")
         .RequireAuthorization();
     }
 
