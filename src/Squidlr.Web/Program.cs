@@ -49,6 +49,7 @@ public partial class Program
             builder.Services.AddTelemetry(o => o.IgnoreAbsolutePaths = new[] { "/health" });
 
             // Add services to the container.
+            builder.Services.AddHttpContextAccessor();
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
             builder.Services.AddResponseCompression(options => options.EnableForHttps = true);

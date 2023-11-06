@@ -12,12 +12,18 @@ public sealed class ApiClient
 
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly TelemetryHandler _telemetryHandler;
+    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILogger<ApiClient> _logger;
 
-    public ApiClient(IHttpClientFactory httpClientFactory, TelemetryHandler telemetryHandler, ILogger<ApiClient> logger)
+    public ApiClient(
+        IHttpClientFactory httpClientFactory,
+        TelemetryHandler telemetryHandler,
+        IHttpContextAccessor httpContextAccessor,
+        ILogger<ApiClient> logger)
     {
         _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
         _telemetryHandler = telemetryHandler ?? throw new ArgumentNullException(nameof(telemetryHandler));
+        _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
@@ -29,7 +35,17 @@ public sealed class ApiClient
         try
         {
             var client = _httpClientFactory.CreateClient(HttpClientName);
-            var response = await client.GetAsync($"/content?url={url}", HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+
+            var context = _httpContextAccessor.HttpContext;
+            var ipAddress = context?.Connection.RemoteIpAddress?.ToString();
+
+            var request = new HttpRequestMessage(HttpMethod.Get, $"/content?url={url}");
+            if (ipAddress != null)
+            {
+                request.Headers.Add("X-Forwarded-For", ipAddress);
+            }
+
+            var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
             if (response.IsSuccessStatusCode)
             {
                 if (!response.Headers.TryGetValues("X-Squidlr-Platform", out var headerValues))
