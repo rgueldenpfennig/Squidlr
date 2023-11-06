@@ -12,8 +12,6 @@
     const reconnectModalText = document.getElementById('reconnect-modal-text');
 
     const startReconnectionProcess = () => {
-        reconnectModal.style.display = 'block';
-
         let isCanceled = false;
 
         (async () => {
@@ -21,6 +19,7 @@
                 reconnectModalText.innerText = `Attempting to reconnect to the Squidlr server: ${i + 1} of ${maximumRetryCount}`;
 
                 await new Promise(resolve => setTimeout(resolve, retryIntervalMilliseconds));
+                reconnectModal.style.display = 'block';
 
                 if (isCanceled) {
                     return;
