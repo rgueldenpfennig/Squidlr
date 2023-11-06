@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Threading.RateLimiting;
 using Squidlr.Api;
+using Squidlr.Hosting.Extensions;
 
 namespace Microsoft.AspNetCore.Builder;
 
@@ -13,14 +14,14 @@ public static class RateLimiterServiceCollectionExtensions
             options.OnRejected = (ctx, ct) =>
             {
                 var logger = ctx.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
-                logger.LogWarning("Client '{RemoteIpAddress}' has reached the rate limit", ctx.HttpContext.Connection.RemoteIpAddress);
+                logger.LogWarning("Client '{RemoteIpAddress}' has reached the rate limit", ctx.HttpContext.GetClientIpAddress() ?? "unknown");
                 return ValueTask.CompletedTask;
             };
 
             options.RejectionStatusCode = (int)HttpStatusCode.TooManyRequests;
             options.GlobalLimiter = PartitionedRateLimiter.CreateChained(
                 PartitionedRateLimiter.Create<HttpContext, string>(ctx =>
-                    RateLimitPartition.GetFixedWindowLimiter(ctx.Connection.RemoteIpAddress?.ToString() ?? ctx.Request.Host.ToString(), partition =>
+                    RateLimitPartition.GetFixedWindowLimiter(ctx.GetClientIpAddress()!, partition =>
                         new FixedWindowRateLimiterOptions
                         {
                             AutoReplenishment = true,
@@ -28,7 +29,7 @@ public static class RateLimiterServiceCollectionExtensions
                             Window = TimeSpan.FromSeconds(30)
                         })),
                 PartitionedRateLimiter.Create<HttpContext, string>(ctx =>
-                    RateLimitPartition.GetFixedWindowLimiter(ctx.Connection.RemoteIpAddress?.ToString() ?? ctx.Request.Host.ToString(), partition =>
+                    RateLimitPartition.GetFixedWindowLimiter(ctx.GetClientIpAddress()!, partition =>
                         new FixedWindowRateLimiterOptions
                         {
                             AutoReplenishment = true,
@@ -38,7 +39,7 @@ public static class RateLimiterServiceCollectionExtensions
 
             options.AddPolicy("Content", ctx =>
             {
-                return RateLimitPartition.GetFixedWindowLimiter(ctx.Connection.RemoteIpAddress?.ToString() ?? ctx.Request.Host.ToString(), partition =>
+                return RateLimitPartition.GetFixedWindowLimiter(ctx.GetClientIpAddress()!, partition =>
                     new FixedWindowRateLimiterOptions
                     {
                         AutoReplenishment = true,
@@ -49,7 +50,7 @@ public static class RateLimiterServiceCollectionExtensions
 
             options.AddPolicy("Video", ctx =>
             {
-                return RateLimitPartition.GetFixedWindowLimiter(ctx.Connection.RemoteIpAddress?.ToString() ?? ctx.Request.Host.ToString(), partition =>
+                return RateLimitPartition.GetFixedWindowLimiter(ctx.GetClientIpAddress()!, partition =>
                     new FixedWindowRateLimiterOptions
                     {
                         AutoReplenishment = true,
