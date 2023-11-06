@@ -8,6 +8,15 @@
 @inject NavigationManager NavigationManager
 @inject VideoSearchQueryState State
 
+<ul class="nav nav-tabs border-0 fw-bold text-body-emphasis user-select-none">
+    <li class="nav-item">
+        <span class="@((IsActive(SocialMediaPlatform.Twitter) ? "nav-link active" : "nav-link"))">X / Twitter</span>
+    </li>
+    <li class="nav-item">
+        <span class="@((IsActive(SocialMediaPlatform.Instagram) ? "nav-link active" : "nav-link"))">Instagram</span>
+    </li>
+</ul>
+
 <div class="d-flex flex-column align-items-center">
     <div class="input-group mb-3">
         <button class="btn btn-primary" type="button" title="Paste from clipboard" @onclick="PasteClipboard">
@@ -39,6 +48,7 @@
 
     private ElementReference _inputReference;
 
+    private ContentIdentifier _contentIdentifier = ContentIdentifier.Unknown;
     private bool _downloadEnabled;
     private string? _errorMessage;
 
@@ -71,7 +81,8 @@
 
         if (!string.IsNullOrEmpty(State.Url))
         {
-            if (UrlResolver.ResolveUrl(State.Url) != ContentIdentifier.Unknown)
+            _contentIdentifier = UrlResolver.ResolveUrl(State.Url);
+            if (_contentIdentifier != ContentIdentifier.Unknown)
             {
                 _downloadEnabled = true;
                 _errorMessage = null;
@@ -104,5 +115,10 @@
         State.Url = null;
 
         NavigationManager.NavigateTo(QueryHelpers.AddQueryString("/download", "url", url!));
+    }
+
+    private bool IsActive(SocialMediaPlatform platform)
+    {
+        return _contentIdentifier.Platform == platform;
     }
 }
