@@ -4,7 +4,7 @@ public static class SeoProperties
 {
     public const string Title = "X / Twitter Video Downloader - Squidlr";
 
-    public const string Keywords = "x twitter video downloader";
+    public const string Keywords = "x twitter instagram video downloader";
 
     public const string Description = "Download any X / Twitter video simply right now";
 
