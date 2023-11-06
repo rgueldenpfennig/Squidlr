@@ -21,7 +21,7 @@ public static class RateLimiterServiceCollectionExtensions
             options.RejectionStatusCode = (int)HttpStatusCode.TooManyRequests;
             options.GlobalLimiter = PartitionedRateLimiter.CreateChained(
                 PartitionedRateLimiter.Create<HttpContext, string>(ctx =>
-                    RateLimitPartition.GetFixedWindowLimiter(ctx.GetClientIpAddress()!, partition =>
+                    RateLimitPartition.GetFixedWindowLimiter(ctx.GetClientIpAddress() ?? "unknown", partition =>
                         new FixedWindowRateLimiterOptions
                         {
                             AutoReplenishment = true,
@@ -29,7 +29,7 @@ public static class RateLimiterServiceCollectionExtensions
                             Window = TimeSpan.FromSeconds(30)
                         })),
                 PartitionedRateLimiter.Create<HttpContext, string>(ctx =>
-                    RateLimitPartition.GetFixedWindowLimiter(ctx.GetClientIpAddress()!, partition =>
+                    RateLimitPartition.GetFixedWindowLimiter(ctx.GetClientIpAddress() ?? "unknown", partition =>
                         new FixedWindowRateLimiterOptions
                         {
                             AutoReplenishment = true,
