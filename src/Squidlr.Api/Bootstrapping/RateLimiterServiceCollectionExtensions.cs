@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Text;
 using System.Threading.RateLimiting;
 using Squidlr.Api;
 using Squidlr.Hosting.Extensions;
@@ -15,6 +16,14 @@ public static class RateLimiterServiceCollectionExtensions
             {
                 var logger = ctx.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
                 logger.LogWarning("Client '{RemoteIpAddress}' has reached the rate limit", ctx.HttpContext.GetClientIpAddress() ?? "unknown");
+
+                var builder = new StringBuilder();
+                foreach (var header in ctx.HttpContext.Request.Headers)
+                {
+                    builder.AppendLine($"{header.Key}: {header.Value.ToString()}");
+                }
+                logger.LogWarning(builder.ToString());
+
                 return ValueTask.CompletedTask;
             };
 
