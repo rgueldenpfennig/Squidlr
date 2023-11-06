@@ -4,7 +4,7 @@ namespace Squidlr.Hosting.Extensions;
 
 public static class HttpContextExtensions
 {
-    private static readonly string _clientIpHeader = "X-Client-IP";
+    private static readonly string _clientIpHeader = "x-forwarded-for";
 
     public static string? GetClientIpAddress(this HttpContext context)
     {
