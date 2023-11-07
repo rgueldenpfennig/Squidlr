@@ -19,7 +19,7 @@ public class UrlUtilitiesTests
     public void IsValidInstagramUrl(string url, bool expectedResult)
     {
         // Act
-        var result = UrlUtilities.IsValidInstagramUrl(url);
+        var result = UrlUtilities.TryGetInstagramIdentifier(url, out _);
 
         // Assert
         Assert.Equal(expectedResult, result);
@@ -34,10 +34,10 @@ public class UrlUtilitiesTests
     public void GetInstagramIdentifier(string url, string expectedId, string expectedUrl)
     {
         // Act
-        var identifier = UrlUtilities.GetInstagramIdentifier(url);
+        Assert.True(UrlUtilities.TryGetInstagramIdentifier(url, out var identifier));
 
         // Assert
-        Assert.Equal(expectedId, identifier.Id);
-        Assert.Equal(expectedUrl, identifier.Url);
+        Assert.Equal(expectedId, identifier?.Id);
+        Assert.Equal(expectedUrl, identifier?.Url);
     }
 }
