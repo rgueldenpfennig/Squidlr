@@ -19,7 +19,19 @@ public static class SquidlrHostBuilderExtensions
             services.AddOptions<SquidlrOptions>()
                 .Bind(ctx.Configuration.GetSection("Squidlr"))
                 .ValidateDataAnnotations()
-                .ValidateOnStart();
+                .ValidateOnStart()
+                .PostConfigure<IServiceProvider>((options, sp) =>
+                {
+                    var logger = sp.GetRequiredService<ILogger<SquidlrOptions>>();
+                    if (options.ProxyOptions?.UseProxy == true)
+                    {
+                        logger.LogInformation("Using proxy: {ProxyAddress}", options.ProxyOptions.ProxyAddress);
+                    }
+                    else
+                    {
+                        logger.LogInformation("No proxy configured.");
+                    }
+                });
 
             services.AddMemoryCache();
             services.AddSingleton(sp => new UrlResolver(
