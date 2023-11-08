@@ -31,8 +31,15 @@ public sealed class ContentProvider
 
     public async ValueTask<Result<Content, RequestContentResult>> GetContentAsync(ContentIdentifier contentIdentifier, CancellationToken cancellationToken)
     {
-        if (_memoryCache.TryGetValue<Result<Content, RequestContentResult>>(contentIdentifier.Url, out var result))
+        var cacheKey = $"{contentIdentifier.Platform}-{contentIdentifier.Id}";
+        if (_memoryCache.TryGetValue<Result<Content, RequestContentResult>>(cacheKey, out var result))
+        {
+            _logger.LogInformation(
+                "Cache hit for {ContentId} at {ContentUrl} on {SocialMediaPlatform}",
+                contentIdentifier.Id, contentIdentifier.Url, contentIdentifier.Platform);
+
             return result;
+        }
 
         for (var i = 0; i < _contentProviders.Count; i++)
         {
@@ -41,10 +48,14 @@ public sealed class ContentProvider
             {
                 try
                 {
+                    _logger.LogInformation(
+                        "Loading content from {SocialMediaPlatform}: {ContentId} at {ContentUrl}",
+                        contentIdentifier.Platform, contentIdentifier.Id, contentIdentifier.Url);
+
                     var content = await provider.GetContentAsync(contentIdentifier.Url, cancellationToken);
                     if (content.Error == RequestContentResult.Success || content.Error == RequestContentResult.NotFound)
                     {
-                        _memoryCache.Set(contentIdentifier.Url, content, absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(60));
+                        _memoryCache.Set(cacheKey, content, absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(60));
                     }
 
                     return content;

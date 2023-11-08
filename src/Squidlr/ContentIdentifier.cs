@@ -2,14 +2,17 @@
 
 public struct ContentIdentifier : IEquatable<ContentIdentifier>
 {
-    public ContentIdentifier(SocialMediaPlatform platform, string url)
+    public ContentIdentifier(SocialMediaPlatform platform, string id, string url)
     {
         ArgumentNullException.ThrowIfNull(url);
         Platform = platform;
+        Id = id;
         Url = url;
     }
 
     public SocialMediaPlatform Platform { get; set; }
+
+    public string Id { get; set; }
 
     public string Url { get; set; }
 
@@ -20,12 +23,12 @@ public struct ContentIdentifier : IEquatable<ContentIdentifier>
 
     public bool Equals(ContentIdentifier other)
     {
-        return Url == other.Url;
+        return Id == other.Id;
     }
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(Url);
+        return HashCode.Combine(Id);
     }
 
     public static bool operator ==(ContentIdentifier left, ContentIdentifier right)
@@ -40,8 +43,13 @@ public struct ContentIdentifier : IEquatable<ContentIdentifier>
 
     public override string? ToString()
     {
-        return Url ?? base.ToString();
+        if (!string.IsNullOrEmpty(Id) && !string.IsNullOrEmpty(Url))
+        {
+            return $"ID: {Id} Url: {Url}";
+        }
+
+        return base.ToString();
     }
 
-    public readonly static ContentIdentifier Unknown = new(SocialMediaPlatform.Unknown, string.Empty);
+    public readonly static ContentIdentifier Unknown = new(SocialMediaPlatform.Unknown, string.Empty, string.Empty);
 }
