@@ -52,12 +52,9 @@ internal static class InstagramServiceCollectionExtensions
             .AddPolicyHandler((services, request) => HttpPolicyExtensions
                 .HandleTransientHttpError()
                 .OrResult(response => response.StatusCode == HttpStatusCode.Unauthorized)
-                .WaitAndRetryAsync(new[]
-                {
-                    TimeSpan.FromMilliseconds(100),
-                    TimeSpan.FromMilliseconds(200),
-                    TimeSpan.FromMilliseconds(300)
-                },
+                .WaitAndRetryAsync(
+                retryCount: 6,
+                sleepDurationProvider: _ => TimeSpan.FromMilliseconds(50),
                 onRetry: (outcome, timespan, retryAttempt, context) =>
                 {
                     services.GetService<ILogger<InstagramWebClient>>()?
