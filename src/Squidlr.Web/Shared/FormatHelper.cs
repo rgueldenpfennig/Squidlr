@@ -4,6 +4,13 @@ namespace Squidlr.Web.Shared;
 
 public static class FormatHelper
 {
+    public static string? FormatContentTitle(string? title)
+    {
+        if (string.IsNullOrEmpty(title)) return null;
+
+        return title.Truncate(20, Truncator.FixedNumberOfWords).Replace(Environment.NewLine, "");
+    }
+
     public static string FormatNumber(int value)
     {
         if (value >= 10_000)

@@ -7,7 +7,7 @@
 
 @if (Content is not null)
 {
-    var title = SeoProperties.CreatePageTitle($"{Content.FullName} on Instagram: " + Content.FullText?.Replace(Environment.NewLine, ""));
+    var title = SeoProperties.CreatePageTitle($"{Content.FullName} on Instagram: " + FormatHelper.FormatContentTitle(Content.FullText));
     string? displayUrl = null;
 
     <PageTitle>@title</PageTitle>

@@ -6,7 +6,7 @@
 
 @if (Content is not null)
 {
-    var title = SeoProperties.CreatePageTitle(Content.FullText?.Replace(Environment.NewLine, ""));
+    var title = SeoProperties.CreatePageTitle($"{Content.UserName} on X: " + FormatHelper.FormatContentTitle(Content.FullText));
     string? videoMediaUrl = null;
 
     <PageTitle>@title</PageTitle>
