@@ -4,6 +4,9 @@ using Serilog;
 using Serilog.Events;
 using Squidlr.Hosting.Telemetry;
 using Squidlr.Api.Authentication;
+using Squidlr.Telemetry;
+using Squidlr.Api.Telemetry;
+using Microsoft.ApplicationInsights;
 
 namespace Squidlr.Api;
 
@@ -46,6 +49,7 @@ public partial class Program
                     .ReadFrom.Services(serviceProvider));
 
             builder.Services.AddTelemetry(o => o.IgnoreAbsolutePaths = new[] { "/health" });
+            builder.Services.AddSingleton<ITelemetryService>(sp => new TelemetryService(sp.GetService<TelemetryClient>()));
 
             builder.Host.UseSquidlr();
 

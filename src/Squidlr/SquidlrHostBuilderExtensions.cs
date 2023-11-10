@@ -4,6 +4,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Squidlr.Abstractions;
 using Squidlr.Instagram;
+using Squidlr.Telemetry;
 using Squidlr.Twitter;
 
 namespace Squidlr;
@@ -39,6 +40,7 @@ public static class SquidlrHostBuilderExtensions
             services.AddSingleton(sp => new ContentProvider(
                 sp.GetServices<IContentProvider>().ToList().AsReadOnly(),
                 sp.GetRequiredService<IMemoryCache>(),
+                sp.GetRequiredService<ITelemetryService>(),
                 sp.GetRequiredService<ILogger<ContentProvider>>()));
 
             // add supported social media platforms

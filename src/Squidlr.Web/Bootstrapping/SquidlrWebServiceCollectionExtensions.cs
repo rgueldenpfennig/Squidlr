@@ -52,7 +52,6 @@ public static class SquidlrWebServiceCollectionExtensions
         services.AddScoped<TelemetryHandler>();
         services.AddScoped<ClipboardService>();
 
-
         services.AddSingleton(sp => new UrlResolver(
             sp.GetServices<IUrlResolver>().ToList().AsReadOnly()));
 

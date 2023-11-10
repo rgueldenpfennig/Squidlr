@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Squidlr.Instagram;
 using Squidlr.Twitter;
-using Squidlr.Web.Telemetry;
 
 namespace Squidlr.Web.Clients;
 
@@ -11,18 +10,15 @@ public sealed class ApiClient
     public const string HttpClientName = nameof(ApiClient);
 
     private readonly IHttpClientFactory _httpClientFactory;
-    private readonly TelemetryHandler _telemetryHandler;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ILogger<ApiClient> _logger;
 
     public ApiClient(
         IHttpClientFactory httpClientFactory,
-        TelemetryHandler telemetryHandler,
         IHttpContextAccessor httpContextAccessor,
         ILogger<ApiClient> logger)
     {
         _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
-        _telemetryHandler = telemetryHandler ?? throw new ArgumentNullException(nameof(telemetryHandler));
         _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
@@ -52,11 +48,6 @@ public sealed class ApiClient
                     throw new ApiClientException("Platform header is missing.");
 
                 var platform = Enum.Parse<SocialMediaPlatform>(headerValues.Single());
-                _telemetryHandler.TrackEvent("ContentRequested", new Dictionary<string, string>
-                {
-                    { "Url", url },
-                    { "SocialMediaPlatform", platform.ToString() }
-                });
 
                 return platform switch
                 {
