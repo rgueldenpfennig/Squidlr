@@ -16,7 +16,7 @@ public sealed class TweetContentParser
     private readonly ILogger<TweetContentParser> _logger;
 
     private readonly TwitterContent _tweetContent;
-    private JsonElement? _resultElement;
+    private JsonElement? _contentElement;
     private JsonElement _legacyElement;
     private JsonElement _extendedEntitiesElement;
     private JsonElement _cardElement;
@@ -67,17 +67,22 @@ public sealed class TweetContentParser
         using var document = JsonDocument.Parse(tweetDetailResult.Value);
         var root = document.RootElement;
 
-        _resultElement = root.GetPropertyOrNull("data")?
+        _contentElement = root.GetPropertyOrNull("data")?
                              .GetPropertyOrNull("tweetResult")?
                              .GetPropertyOrNull("result");
 
-        if (_resultElement == null)
+        if (_contentElement == null)
         {
             _logger.LogInformation("Could not find 'result' element in Tweet detail JSON contents. Tweet seems not to be found.");
             return RequestContentResult.NotFound;
         }
 
-        var reason = _resultElement.Value.GetPropertyOrNull("reason")?.GetString();
+        if (_contentElement.Value.TryGetProperty("tweet", out var tweetElement))
+        {
+            _contentElement = tweetElement;
+        }
+
+        var reason = _contentElement.Value.GetPropertyOrNull("reason")?.GetString();
         if (reason != null)
         {
             _logger.LogInformation("Unable to process Tweet due to reason '{Reason}'", reason);
@@ -91,14 +96,14 @@ public sealed class TweetContentParser
             };
         }
 
-        var restId = _resultElement.Value.GetPropertyOrNull("rest_id")?.GetString();
+        var restId = _contentElement.Value.GetPropertyOrNull("rest_id")?.GetString();
         if (!tweetIdentifier.Id.Equals(restId, StringComparison.OrdinalIgnoreCase))
         {
             _logger.LogWarning("Tweet ID does not match 'rest_id'.");
             return RequestContentResult.Error;
         }
 
-        _legacyElement = _resultElement.Value.GetProperty("legacy");
+        _legacyElement = _contentElement.Value.GetProperty("legacy");
         SetCoreTweetContentValues();
 
         if (_legacyElement.TryGetProperty("extended_entities", out _extendedEntitiesElement))
@@ -109,7 +114,7 @@ public sealed class TweetContentParser
         }
 
         // the requested Tweet contains a quoted Tweet
-        if (_resultElement.Value.TryGetProperty("quoted_status_result", out var quotedResult))
+        if (_contentElement.Value.TryGetProperty("quoted_status_result", out var quotedResult))
         {
             if (quotedResult.GetProperty("result").GetProperty("legacy").TryGetProperty("extended_entities", out _extendedEntitiesElement))
             {
@@ -142,7 +147,7 @@ public sealed class TweetContentParser
             }
         }
 
-        if (_resultElement.Value.TryGetProperty("card", out _cardElement))
+        if (_contentElement.Value.TryGetProperty("card", out _cardElement))
         {
             // matches card Tweets for example polls with integrated videos
             var nameElement = _cardElement.GetPropertyOrNull("legacy")?.GetPropertyOrNull("name");
@@ -194,7 +199,7 @@ public sealed class TweetContentParser
 
     private async ValueTask CreateFromExtendedEntitiesAsync(CancellationToken cancellationToken)
     {
-        if (_resultElement!.Value.TryGetProperty("views", out var views) &&
+        if (_contentElement!.Value.TryGetProperty("views", out var views) &&
             views.TryGetProperty("count", out var count))
         {
             _tweetContent.Views = Convert.ToInt32(count.GetString());
@@ -331,7 +336,7 @@ public sealed class TweetContentParser
 
     private void SetCoreTweetContentValues()
     {
-        _tweetContent.Source = _resultElement!.Value.GetProperty("source").GetString();
+        _tweetContent.Source = _contentElement!.Value.GetProperty("source").GetString();
         _tweetContent.CreatedAtUtc = _legacyElement.GetProperty("created_at").GetString()!.ParseToDateTimeOffset();
         _tweetContent.BookmarkCount = _legacyElement.GetProperty("bookmark_count").GetInt32();
         _tweetContent.FavoriteCount = _legacyElement.GetProperty("favorite_count").GetInt32();
@@ -339,7 +344,7 @@ public sealed class TweetContentParser
         _tweetContent.ReplyCount = _legacyElement.GetProperty("reply_count").GetInt32();
         _tweetContent.RetweetCount = _legacyElement.GetProperty("retweet_count").GetInt32();
         _tweetContent.FullText = _legacyElement.GetProperty("full_text").GetString();
-        _tweetContent.UserName = _resultElement!.Value.GetPropertyOrNull("core")?
+        _tweetContent.UserName = _contentElement!.Value.GetPropertyOrNull("core")?
                                                       .GetPropertyOrNull("user_results")?
                                                       .GetPropertyOrNull("result")?
                                                       .GetPropertyOrNull("legacy")?

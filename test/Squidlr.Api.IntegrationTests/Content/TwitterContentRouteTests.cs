@@ -48,6 +48,7 @@ public class TwitterContentRouteTests : IClassFixture<ApiWebApplicationFactory>
     [InlineData("https://twitter.com/Markus_Krall/status/1679960529484259329")]
     [InlineData("https://twitter.com/Srirachachau/status/1395079556562706435")]
     // default video Tweets
+    [InlineData("https://twitter.com/TheOneHoskyFan/status/1723111326640472137")]
     [InlineData("https://twitter.com/CAF_Online/status/1349365911120195585")]
     [InlineData("https://twitter.com/SamsungMobileSA/status/1348609186725289984")]
     [InlineData("https://twitter.com/SouthamptonFC/status/1347577658079641604")]
