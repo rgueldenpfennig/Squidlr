@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using System.Runtime.Serialization;
 
 namespace Squidlr.Web.Clients;
 
@@ -16,9 +15,4 @@ public class ApiClientException : Exception
     {
         StatusCode = statusCode;
     }
-
-    protected ApiClientException(
-      SerializationInfo info,
-      StreamingContext context) : base(info, context) { }
-
 }
