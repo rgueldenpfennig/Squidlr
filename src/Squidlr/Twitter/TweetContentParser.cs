@@ -147,6 +147,18 @@ public sealed class TweetContentParser
             }
         }
 
+        // the requested Tweet contains a quoted Tweet
+        if (_legacyElement.TryGetProperty("retweeted_status_result", out var retweetedStatusResult))
+        {
+            if (retweetedStatusResult.GetProperty("result")
+                                     .GetProperty("legacy")
+                                     .TryGetProperty("extended_entities", out _extendedEntitiesElement))
+            {
+                await CreateFromExtendedEntitiesAsync(cancellationToken);
+                return RequestContentResult.Success;
+            }
+        }
+
         if (_contentElement.Value.TryGetProperty("card", out _cardElement))
         {
             // matches card Tweets for example polls with integrated videos
