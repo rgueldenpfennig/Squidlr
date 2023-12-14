@@ -11,8 +11,8 @@ public sealed class ApiKeyAuthenticationHandler : AuthenticationHandler<ApiKeyAu
     private const string _apiKeyHeader = "X-API-KEY";
 
     public ApiKeyAuthenticationHandler(
-        IOptionsMonitor<ApiKeyAuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock)
-            : base(options, logger, encoder, clock)
+        IOptionsMonitor<ApiKeyAuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder)
+            : base(options, logger, encoder)
     {
     }
 
@@ -34,12 +34,11 @@ public sealed class ApiKeyAuthenticationHandler : AuthenticationHandler<ApiKeyAu
             }
         }
 
-        if (!Context.Request.Headers.ContainsKey(_apiKeyHeader))
+        if (!Context.Request.Headers.TryGetValue(_apiKeyHeader, out var apiKey))
         {
             return Task.FromResult(AuthenticateResult.Fail($"Missing {_apiKeyHeader} header"));
         }
 
-        var apiKey = Context.Request.Headers[_apiKeyHeader];
         if (Options.ApiKey!.Equals(apiKey, StringComparison.InvariantCulture))
         {
             var claims = new[] { new Claim(ClaimTypes.Name, "Authenticated API key user") };

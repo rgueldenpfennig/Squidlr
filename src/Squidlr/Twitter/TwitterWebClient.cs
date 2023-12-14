@@ -53,7 +53,7 @@ public sealed class TwitterWebClient
 
         if (httpContext.Request.Headers.TryGetValue("Range", out var rangeHeader))
         {
-            request.Headers.Range = RangeHeaderValue.Parse(rangeHeader);
+            request.Headers.Range = RangeHeaderValue.Parse(rangeHeader!);
         }
 
         using var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
@@ -65,10 +65,10 @@ public sealed class TwitterWebClient
             httpContext.Response.ContentType = response.Content.Headers.ContentType?.ToString();
             if (response.Headers.AcceptRanges?.Count > 0)
             {
-                httpContext.Response.Headers.Add("Accept-Ranges", response.Headers.AcceptRanges.ToString());
+                httpContext.Response.Headers.Append("Accept-Ranges", response.Headers.AcceptRanges.ToString());
             }
 
-            using var input = await response.Content.ReadAsStreamAsync();
+            using var input = await response.Content.ReadAsStreamAsync(cancellationToken);
             await CopyStream(httpContext.Response.Body, input, cancellationToken);
         }
     }
@@ -123,8 +123,7 @@ public sealed class TwitterWebClient
                 var responseStream = await response.Content.ReadAsStreamAsync(cancellationToken);
                 var json = JsonDocument.Parse(responseStream);
 
-                var guestToken = json.RootElement.GetProperty("guest_token").GetString();
-                if (guestToken == null)
+                var guestToken = json.RootElement.GetProperty("guest_token").GetString() ??
                     throw new InvalidOperationException("guest_token is null");
 
                 cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(60);
