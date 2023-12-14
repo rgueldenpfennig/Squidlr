@@ -1,11 +1,24 @@
 name: deployment-api
 
 on:
-  workflow_call:
+  push:
+    branches:
+      - dev
+      - main
+    paths:
+      - '.github/workflows/deployment-api.yml'
+      - 'src/Squidlr/**'
+      - 'src/Squidlr.Api/**'  
+  workflow_dispatch:
     inputs:
-      environment:
+      devStageBranch:
         required: true
         type: string
+        default: dev
+      prodStageBranch:
+        required: true
+        type: string
+        default: main
 
 env:
   # Disable the .NET logo in the console output.
@@ -29,6 +42,16 @@ jobs:
       DOTNET_NOLOGO: true
 
     steps:
+      - name: Set vars for dev stage
+        run: |
+          echo "ENVIRONMENT=staging" >> $GITHUB_ENV
+        if:  ${{ github.ref_name == inputs.devStageBranch }}
+
+      - name: Set vars for production stage
+        run: |
+          echo "ENVIRONMENT=prod" >> $GITHUB_ENV
+        if:  ${{ github.ref_name == inputs.prodStageBranch }}
+
       - name: Checkout
         uses: actions/checkout@v3
 
@@ -84,7 +107,7 @@ jobs:
       - name: Set environment variables
         uses: ./.github/actions/setvars
         with:
-            varFilePath: ./.github/variables/vars.${{ inputs.environment }}.env
+            varFilePath: ./.github/variables/vars.${{ env.ENVIRONMENT }}.env
 
       - name: Log in to Azure
         uses: azure/login@v1
