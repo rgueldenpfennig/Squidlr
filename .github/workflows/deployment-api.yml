@@ -8,17 +8,8 @@ on:
     paths:
       - '.github/workflows/deployment-api.yml'
       - 'src/Squidlr/**'
-      - 'src/Squidlr.Api/**'  
+      - 'src/Squidlr.Api/**'
   workflow_dispatch:
-    inputs:
-      devStageBranch:
-        required: true
-        type: string
-        default: dev
-      prodStageBranch:
-        required: true
-        type: string
-        default: main
 
 env:
   # Disable the .NET logo in the console output.
@@ -27,6 +18,8 @@ env:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   # Disable sending .NET CLI telemetry to Microsoft.
   DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DEV_STAGE_BRANCH: dev
+  PROD_STAGE_BRANCH: main
 
 jobs:
   build:
@@ -94,13 +87,13 @@ jobs:
       - name: Set vars for dev stage
         run: |
           echo "ENVIRONMENT=staging" >> $GITHUB_ENV
-        if:  ${{ github.ref_name == inputs.devStageBranch }}
+        if:  ${{ github.ref_name == env.DEV_STAGE_BRANCH }}
 
       - name: Set vars for production stage
         run: |
           echo "ENVIRONMENT=prod" >> $GITHUB_ENV
-        if:  ${{ github.ref_name == inputs.prodStageBranch }}
-        
+        if:  ${{ github.ref_name == env.PROD_STAGE_BRANCH }}
+
       - name: Checkout
         uses: actions/checkout@v3
 
