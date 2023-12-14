@@ -1,11 +1,15 @@
 name: deployment-web
 
 on:
-  workflow_call:
-    inputs:
-      environment:
-        required: true
-        type: string
+  push:
+    branches:
+      - dev
+      - main
+    paths:
+      - '.github/workflows/deployment-web.yml'
+      - 'src/Squidlr/**'
+      - 'src/Squidlr.Web/**'
+  workflow_dispatch:
 
 env:
   # Disable the .NET logo in the console output.
@@ -14,6 +18,8 @@ env:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   # Disable sending .NET CLI telemetry to Microsoft.
   DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DEV_STAGE_BRANCH: dev
+  PROD_STAGE_BRANCH: main
 
 jobs:
   build:
@@ -56,6 +62,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Set vars for dev stage
+        run: |
+          echo "ENVIRONMENT=staging" >> $GITHUB_ENV
+        if:  ${{ github.ref_name == env.DEV_STAGE_BRANCH }}
+
+      - name: Set vars for production stage
+        run: |
+          echo "ENVIRONMENT=prod" >> $GITHUB_ENV
+        if:  ${{ github.ref_name == env.PROD_STAGE_BRANCH }}
+        
       - name: Checkout
         uses: actions/checkout@v3
 
