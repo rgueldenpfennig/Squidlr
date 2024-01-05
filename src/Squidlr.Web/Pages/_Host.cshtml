@@ -12,11 +12,16 @@
     <meta name="content-language" content="en" />
     <meta name="description" content="@SeoProperties.Description" />
     <meta name="keywords" content="@SeoProperties.Keywords" />
-    <base href="~/" />
-    <link rel="icon" type="image/png" href="favicon-32-bg.png" />
+    <meta name="apple-mobile-web-app-title" content="@SeoProperties.AppName">
+    <link rel="icon" href="favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32-bg.png" />
+    <link rel="icon" type="image/png" sizes="256x256" href="images/favicon-256-bg.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="images/favicon-512-bg.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
     <link href="css/custom-bootstrap.css" rel="stylesheet" />
     <link href="css/site.css" rel="stylesheet" />
     <link href="Squidlr.Web.styles.css" rel="stylesheet" />
+    <base href="~/" />
     <component type="typeof(HeadOutlet)" render-mode="Server" />
 </head>
 <body>

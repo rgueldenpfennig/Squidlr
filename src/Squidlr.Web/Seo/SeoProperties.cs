@@ -2,6 +2,8 @@
 
 public static class SeoProperties
 {
+    public const string AppName = "Squidlr";
+
     public const string Title = "X / Twitter Video Downloader - Squidlr";
 
     public const string Keywords = "x twitter instagram video downloader";
