@@ -26,6 +26,8 @@ public class TwitterContentRouteTests : IClassFixture<ApiWebApplicationFactory>
     [InlineData("https://twitter.com/LouisVuitton/status/1671250425813815296", HttpStatusCode.NotFound)]
     // Tweet with adult content
     [InlineData("https://twitter.com/Rizdraws/status/1575199173472927762", HttpStatusCode.UnavailableForLegalReasons)]
+    [InlineData("https://twitter.com/freethenipple/status/643211948184596480", HttpStatusCode.UnavailableForLegalReasons)]
+    [InlineData("https://twitter.com/s2FAKER/status/1621117700482416640", HttpStatusCode.UnavailableForLegalReasons)]
     // Video Tweet including other quoted video
     [InlineData("https://twitter.com/DavidToons_/status/1578353380363501568")]
     // Twitter space recording
@@ -54,7 +56,6 @@ public class TwitterContentRouteTests : IClassFixture<ApiWebApplicationFactory>
     [InlineData("https://twitter.com/SamsungMobileSA/status/1348609186725289984")]
     [InlineData("https://twitter.com/SouthamptonFC/status/1347577658079641604")]
     [InlineData("https://twitter.com/CTVJLaidlaw/status/1600649710662213632")]
-    [InlineData("https://twitter.com/s2FAKER/status/1621117700482416640")]
     [InlineData("https://twitter.com/hlo_again/status/1599108751385972737")]
     [InlineData("https://twitter.com/MunTheShinobi/status/1600009574919962625")]
     [InlineData("https://twitter.com/liberdalau/status/1623739803874349067", Skip = "Account owner limits who can view their Tweets")]
@@ -65,7 +66,6 @@ public class TwitterContentRouteTests : IClassFixture<ApiWebApplicationFactory>
     [InlineData("https://twitter.com/news_al3alm/status/852138619213144067")]
     [InlineData("https://twitter.com/LisPower1/status/1001551623938805763")]
     [InlineData("https://twitter.com/jaydingeer/status/700207533655363584")]
-    [InlineData("https://twitter.com/freethenipple/status/643211948184596480")]
     public async Task RequestTweetContent(string tweetUrl, HttpStatusCode expectedStatusCode = HttpStatusCode.OK)
     {
         // Arrange & Act

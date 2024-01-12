@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AspNetCore.SassCompiler" Version="1.69.5" />
+    <PackageReference Include="AspNetCore.SassCompiler" Version="1.69.7" />
     <PackageReference Include="Humanizer.Core" Version="2.14.1" />
     <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="2.1.175" />
     <PackageReference Include="NetEscapades.AspNetCore.SecurityHeaders" Version="0.21.0" />
