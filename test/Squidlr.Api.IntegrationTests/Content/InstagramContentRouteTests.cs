@@ -16,6 +16,18 @@ public class InstagramContentRouteTests : IClassFixture<ApiWebApplicationFactory
         _client.DefaultRequestHeaders.Add("X-API-KEY", "foobar");
     }
 
+    [Theory(Skip = "Skip for now to test Instagram access from Azure cloud")]
+    // Post with adult content
+    [InlineData("https://www.instagram.com/reel/C1RyP_mtjee", HttpStatusCode.UnavailableForLegalReasons)]
+    public async Task RequestRestrictedInstagramContent(string postUrl, HttpStatusCode expectedStatusCode = HttpStatusCode.OK)
+    {
+        // Arrange & Act
+        var response = await _client.GetAsync($"/content?url={postUrl}");
+
+        // Assert
+        Assert.Equal(expectedStatusCode, response.StatusCode);
+    }
+
     public static IEnumerable<object[]> TestData
             => CreateTestData();
 

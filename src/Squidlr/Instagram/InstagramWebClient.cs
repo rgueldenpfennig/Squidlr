@@ -24,6 +24,16 @@ public sealed class InstagramWebClient
         return client.SendAsync(request, cancellationToken);
     }
 
+    public Task<HttpResponseMessage> GetInstagramResponseAsync(string url, CancellationToken cancellationToken)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, url);
+        request.Headers.Add("Referer", url);
+
+        var client = _clientFactory.CreateClient(HttpClientName);
+
+        return client.SendAsync(request, cancellationToken);
+    }
+
     public async ValueTask<(long?, string?)> GetVideoContentLengthAndTypeAsync(Uri videoFileUri, CancellationToken cancellationToken)
     {
         var client = _clientFactory.CreateClient(HttpClientName);

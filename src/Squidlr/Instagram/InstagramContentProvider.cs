@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using DotNext;
 using Microsoft.Extensions.Logging;
 using Squidlr.Abstractions;
@@ -8,7 +9,7 @@ using Squidlr.Instagram.Utilities;
 
 namespace Squidlr.Instagram;
 
-public sealed class InstagramContentProvider : IContentProvider
+public sealed partial class InstagramContentProvider : IContentProvider
 {
     private readonly InstagramWebClient _client;
     private readonly ILogger<InstagramContentProvider> _logger;
@@ -54,6 +55,12 @@ public sealed class InstagramContentProvider : IContentProvider
         var shortcode = shortcodeMedia?.GetPropertyOrNull("shortcode")?.GetString();
         if (shortcode == null || !shortcode.Equals(identifier.Id, StringComparison.OrdinalIgnoreCase))
         {
+            var restrictionResult = await HasRestrictedProfileAsync(identifier, cancellationToken);
+            if (restrictionResult.HasValue)
+            {
+                return new(restrictionResult.Value);
+            }
+
             _logger.LogWarning("The expected shortcode {InstagramShortCode} was not found.", identifier.Id);
             return new(RequestContentResult.NotFound);
         }
@@ -146,5 +153,57 @@ public sealed class InstagramContentProvider : IContentProvider
         });
 
         return video;
+    }
+
+    [GeneratedRegex(@"""media_id"":""(?<mediaId>\d+)"",""media_owner_id"":""(?<mediaOwnerId>\d+)""", RegexOptions.IgnoreCase)]
+    private static partial Regex MediaOwnerIdRegex();
+
+    private async ValueTask<RequestContentResult?> HasRestrictedProfileAsync(InstagramIdentifier identifier, CancellationToken cancellationToken)
+    {
+        using var response = await _client.GetInstagramResponseAsync(identifier.Url, cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            _logger.LogWarning(
+                "Received {InstagramHttpStatusCode} HTTP status code when trying to request Instagram raw post.",
+                response.StatusCode);
+
+            if (response.StatusCode == HttpStatusCode.NotFound)
+                return RequestContentResult.NotFound;
+
+            return RequestContentResult.GatewayError;
+        }
+
+        var htmlContent = await response.Content.ReadAsStringAsync(cancellationToken);
+        var match = MediaOwnerIdRegex().Match(htmlContent);
+        if (!match.Success)
+            return null;
+
+        var mediaId = match.Groups["mediaId"].Value;
+        var mediaOwnerId = match.Groups["mediaOwnerId"].Value;
+
+        using var rulingResponse = await _client.GetInstagramResponseAsync(
+            $"/api/v1/web/get_ruling_for_media_content_logged_out/?media_id={mediaId}&owner_id={mediaOwnerId}",
+            cancellationToken);
+
+        if (!rulingResponse.IsSuccessStatusCode)
+        {
+            _logger.LogWarning(
+                "Received {InstagramHttpStatusCode} HTTP status code when trying to request Instagram ruling content.",
+                rulingResponse.StatusCode);
+
+            if (rulingResponse.StatusCode == HttpStatusCode.NotFound)
+                return RequestContentResult.NotFound;
+
+            return RequestContentResult.GatewayError;
+        }
+
+        htmlContent = await rulingResponse.Content.ReadAsStringAsync(cancellationToken);
+        if (htmlContent.Contains("18 years", StringComparison.OrdinalIgnoreCase))
+        {
+            return RequestContentResult.AdultContent;
+        }
+
+        return RequestContentResult.Protected;
     }
 }

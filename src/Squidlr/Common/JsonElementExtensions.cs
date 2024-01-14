@@ -9,6 +9,9 @@ internal static class JsonElementExtensions
         ArgumentNullException.ThrowIfNull(element);
         ArgumentException.ThrowIfNullOrEmpty(elementName);
 
+        if (element.ValueKind == JsonValueKind.Null)
+            return null;
+
         if (element.TryGetProperty(elementName, out var property))
             return property;
 
