@@ -1,0 +1,29 @@
+﻿@using Microsoft.AspNetCore.Http
+@using Squidlr.Web.States
+@using Squidlr.Web.Telemetry
+
+@inject AppState AppState
+@inject IHttpContextAccessor HttpContextAccessor
+
+<Router AppAssembly="@typeof(App).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+    </Found>
+</Router>
+
+<TelemetryComponent />
+
+@code {
+    [Parameter]
+    public string? Referer { get; set; }
+
+    [Parameter]
+    public string? UserAgent { get; set; }
+
+    protected override void OnInitialized()
+    {
+        AppState.Referer = Referer ?? HttpContextAccessor?.HttpContext?.Request.Headers["Referer"].ToString() ?? "";
+        AppState.UserAgent = UserAgent ?? HttpContextAccessor?.HttpContext?.Request.Headers["User-Agent"].ToString() ?? "";
+    }
+}

@@ -5,16 +5,9 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
-    <RazorLanguageVersion>7</RazorLanguageVersion>
+    <RazorLanguageVersion>8</RazorLanguageVersion>
     <UserSecretsId>25f41a25-e49b-40ae-9094-6dfb6beab450</UserSecretsId>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="Shared\Twitter\**" />
-    <Content Remove="Shared\Twitter\**" />
-    <EmbeddedResource Remove="Shared\Twitter\**" />
-    <None Remove="Shared\Twitter\**" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AspNetCore.SassCompiler" Version="1.69.7" />
@@ -40,10 +33,6 @@
 
   <ItemGroup>
     <Content Include="Styles\custom-bootstrap.scss" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <UpToDateCheckInput Remove="Shared\Twitter\**" />
   </ItemGroup>
 
 </Project>

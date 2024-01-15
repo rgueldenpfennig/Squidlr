@@ -46,12 +46,13 @@ public partial class Program
                     .ReadFrom.Configuration(context.Configuration)
                     .ReadFrom.Services(serviceProvider));
 
-            builder.Services.AddTelemetry(o => o.IgnoreAbsolutePaths = new[] { "/health" });
+            builder.Services.AddTelemetry(o => o.IgnoreAbsolutePaths = ["/health"]);
 
             // Add services to the container.
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddRazorPages();
-            builder.Services.AddServerSideBlazor();
+            builder.Services.AddRazorComponents()
+                            .AddInteractiveServerComponents();
             builder.Services.AddResponseCompression(options => options.EnableForHttps = true);
 
             builder.Services.AddSquidlrWeb(builder.Configuration);
@@ -101,6 +102,8 @@ public partial class Program
 
             app.UseStaticFiles();
             app.UseRouting();
+            app.UseStatusCodePagesWithRedirects("/404");
+            app.UseAntiforgery();
             app.UseRateLimiter();
             app.MapHealthChecks("/health").RequireHost("*:5002");
 
@@ -110,8 +113,8 @@ public partial class Program
                    .AddRedirectToWww((int)HttpStatusCode.MovedPermanently, applicationOptions.Domain!));
             }
 
-            app.MapBlazorHub();
-            app.MapFallbackToPage("/_Host");
+            app.MapRazorComponents<App>()
+               .AddInteractiveServerRenderMode();
 
             app.Run();
             return 0;
