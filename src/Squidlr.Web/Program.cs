@@ -53,6 +53,12 @@ public partial class Program
             builder.Services.AddRazorPages();
             builder.Services.AddRazorComponents()
                             .AddInteractiveServerComponents();
+            builder.Services.AddAntiforgery(options =>
+            {
+                options.Cookie.Name = "X-XSRF-ANTIFORGERY";
+                options.HeaderName = "X-XSRF-TOKEN";
+                options.SuppressXFrameOptionsHeader = false;
+            });
             builder.Services.AddResponseCompression(options => options.EnableForHttps = true);
 
             builder.Services.AddSquidlrWeb(builder.Configuration);
@@ -73,7 +79,8 @@ public partial class Program
 
             app.UseSerilogRequestLogging(options =>
             {
-                options.GetLevel = (HttpContext ctx, double _, Exception? ex) => {
+                options.GetLevel = (HttpContext ctx, double _, Exception? ex) =>
+                {
                     var defaultLevel = ex != null
                                             ? LogEventLevel.Error
                                             : ctx.Response.StatusCode > 499
@@ -97,6 +104,13 @@ public partial class Program
             app.UseForwardedHeaders();
             app.UseSecurityHeaders(policies =>
                 policies.AddDefaultSecurityHeaders()
+                        .AddContentSecurityPolicy(builder =>
+                         {
+                             builder.AddObjectSrc().None();
+                             builder.AddFormAction().Self();
+                             builder.AddFrameAncestors().None();
+                             builder.AddScriptSrc().Self();
+                         })
                         .AddCustomHeader("Strict-Transport-Security", $"max-age={TimeSpan.FromDays(2 * 365).TotalSeconds}; includeSubDomains; preload")
             );
 
