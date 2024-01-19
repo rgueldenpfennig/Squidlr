@@ -114,6 +114,7 @@ public partial class Program
                                  builder.AddConnectSrc()
                                         .Self()
                                         .From("http://localhost:*")
+                                        .From("https://localhost:*")
                                         .From("ws://localhost:*")
                                         .From("wss://localhost:*");
                              }
@@ -129,7 +130,7 @@ public partial class Program
                              builder.AddObjectSrc().None();
                              builder.AddScriptSrc().Self();
                              builder.AddStyleSrc().Self();
-                             builder.AddStyleSrcAttr().None();
+                             builder.AddStyleSrcAttr().Self().UnsafeInline();
                              builder.AddStyleSrcElem().Self();
                          })
                         .AddCustomHeader("Strict-Transport-Security", $"max-age={TimeSpan.FromDays(2 * 365).TotalSeconds}; includeSubDomains; preload")
