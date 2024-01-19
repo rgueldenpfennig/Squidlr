@@ -56,6 +56,7 @@ public partial class Program
             builder.Services.AddAntiforgery(options =>
             {
                 options.Cookie.Name = "X-XSRF-ANTIFORGERY";
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.HeaderName = "X-XSRF-TOKEN";
                 options.SuppressXFrameOptionsHeader = false;
             });
@@ -106,10 +107,30 @@ public partial class Program
                 policies.AddDefaultSecurityHeaders()
                         .AddContentSecurityPolicy(builder =>
                          {
-                             builder.AddObjectSrc().None();
+                             builder.AddDefaultSrc().None();
+
+                             if (app.Environment.IsDevelopment())
+                             {
+                                 builder.AddConnectSrc()
+                                        .Self()
+                                        .From("http://localhost:*")
+                                        .From("ws://localhost:*")
+                                        .From("wss://localhost:*");
+                             }
+                             else
+                             {
+                                 builder.AddConnectSrc().Self();
+                             }
+
+                             builder.AddBaseUri().Self();
+                             builder.AddFontSrc().Self();
                              builder.AddFormAction().Self();
-                             builder.AddFrameAncestors().None();
+                             builder.AddImgSrc().Self().From("https://pbs.twimg.com");
+                             builder.AddObjectSrc().None();
                              builder.AddScriptSrc().Self();
+                             builder.AddStyleSrc().Self();
+                             builder.AddStyleSrcAttr().None();
+                             builder.AddStyleSrcElem().Self();
                          })
                         .AddCustomHeader("Strict-Transport-Security", $"max-age={TimeSpan.FromDays(2 * 365).TotalSeconds}; includeSubDomains; preload")
             );

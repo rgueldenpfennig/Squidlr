@@ -45,6 +45,7 @@ h1:focus {
 }
 
 #reconnect-modal {
+    display: none;
     position: fixed;
     inset: 0px;
     z-index: 1050;
