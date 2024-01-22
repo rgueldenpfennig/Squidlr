@@ -126,6 +126,7 @@ public partial class Program
                              builder.AddBaseUri().Self();
                              builder.AddFontSrc().Self();
                              builder.AddFormAction().Self();
+                             builder.AddFrameAncestors().None();
                              builder.AddImgSrc().Self().From("https://pbs.twimg.com");
                              builder.AddObjectSrc().None();
                              builder.AddScriptSrc().Self();
