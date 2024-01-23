@@ -2,6 +2,8 @@ using System.Net;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
+using Microsoft.Net.Http.Headers;
 using Serilog;
 using Serilog.Events;
 using Squidlr.Hosting.Telemetry;
@@ -80,6 +82,15 @@ public partial class Program
 
             app.UseSerilogRequestLogging(options =>
             {
+                options.EnrichDiagnosticContext = (diagnosticsContext, httpContext) =>
+                {
+                    var request = httpContext.Request;
+                    if (request.Headers.UserAgent != StringValues.Empty)
+                    {
+                        diagnosticsContext.Set(HeaderNames.UserAgent, request.Headers.UserAgent);
+                    }
+                };
+
                 options.GetLevel = (HttpContext ctx, double _, Exception? ex) =>
                 {
                     var defaultLevel = ex != null
