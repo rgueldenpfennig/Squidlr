@@ -1,9 +1,12 @@
 ﻿@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Http.Extensions
+@using Microsoft.Net.Http.Headers
 @using Squidlr.Web.States
 @using Squidlr.Web.Telemetry
 
 @inject AppState AppState
 @inject IHttpContextAccessor HttpContextAccessor
+@inject TelemetryHandler TelemetryHandler
 
 <Router AppAssembly="@typeof(App).Assembly">
     <Found Context="routeData">
@@ -15,15 +18,38 @@
 <TelemetryComponent />
 
 @code {
-    [Parameter]
-    public string? Referer { get; set; }
-
-    [Parameter]
-    public string? UserAgent { get; set; }
-
     protected override void OnInitialized()
     {
-        AppState.Referer = Referer ?? HttpContextAccessor?.HttpContext?.Request.Headers["Referer"].ToString() ?? "";
-        AppState.UserAgent = UserAgent ?? HttpContextAccessor?.HttpContext?.Request.Headers["User-Agent"].ToString() ?? "";
+        var httpContext = HttpContextAccessor.HttpContext;
+        if (httpContext != null)
+        {
+            InitializeAppState(httpContext);
+
+            if (httpContext.WebSockets.IsWebSocketRequest == false)
+            {
+                TelemetryHandler.TrackPageView(new Uri(httpContext.Request.GetEncodedUrl(), UriKind.Absolute));
+            }
+        }
+    }
+
+    private void InitializeAppState(HttpContext httpContext)
+    {
+        if (httpContext.Request.Cookies.ContainsKey(ApplicationOptions.SessionCookieName))
+        {
+            AppState.SessionId = httpContext.Request.Cookies[ApplicationOptions.SessionCookieName]!;
+        }
+        else
+        {
+            AppState.SessionId = Guid.NewGuid().ToString();
+            httpContext.Response.Cookies.Append(ApplicationOptions.SessionCookieName, AppState.SessionId, new()
+                {
+                    HttpOnly = true,
+                    SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Strict,
+                    Secure = true,
+                });
+        }
+
+        AppState.Referer = httpContext.Request.Headers[HeaderNames.Referer].ToString() ?? "";
+        AppState.UserAgent = httpContext.Request.Headers[HeaderNames.UserAgent].ToString() ?? "";
     }
 }

@@ -5,6 +5,8 @@ namespace Squidlr.Web;
 
 public sealed class ApplicationOptions : IOptions<ApplicationOptions>, IValidatableObject
 {
+    public static string SessionCookieName { get; } = "X-Squidlr-Session";
+
     [Required]
     public string? Domain { get; set; }
 

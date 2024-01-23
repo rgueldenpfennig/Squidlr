@@ -2,7 +2,7 @@
 
 public sealed class AppState
 {
-    public string SessionId { get; } = Guid.NewGuid().ToString();
+    public string? SessionId { get; set; }
 
     public string? Referer { get; set; }
 

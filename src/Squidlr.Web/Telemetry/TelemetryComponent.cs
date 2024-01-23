@@ -16,7 +16,6 @@ public sealed class TelemetryComponent : ComponentBase, IDisposable
         if (firstRender)
         {
             NavigationManager.LocationChanged += NavigationManagerOnLocationChanged;
-            TelemetryHandler.TrackPageView(new Uri(NavigationManager.Uri, UriKind.Absolute));
         }
     }
 
