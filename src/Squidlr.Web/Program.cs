@@ -87,7 +87,7 @@ public partial class Program
                     var request = httpContext.Request;
                     if (request.Headers.UserAgent != StringValues.Empty)
                     {
-                        diagnosticsContext.Set(HeaderNames.UserAgent, request.Headers.UserAgent);
+                        diagnosticsContext.Set(HeaderNames.UserAgent, request.Headers.UserAgent.ToString());
                     }
                 };
 
