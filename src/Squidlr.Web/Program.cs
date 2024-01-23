@@ -105,7 +105,6 @@ public partial class Program
             app.UseForwardedHeaders();
             app.UseSecurityHeaders(policies =>
                 policies.AddDefaultSecurityHeaders()
-                        .AddReferrerPolicyOrigin()
                         .AddContentSecurityPolicy(builder =>
                          {
                              builder.AddDefaultSrc().None();
