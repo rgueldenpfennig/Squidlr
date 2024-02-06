@@ -1,7 +1,9 @@
 ﻿using DotNext;
 using Microsoft.AspNetCore.Mvc;
 using Squidlr.Instagram;
+using Squidlr.Shared;
 using Squidlr.Twitter;
+using Squidlr.Web.States;
 
 namespace Squidlr.Web.Clients;
 
@@ -41,10 +43,20 @@ public sealed class ApiClient
                 request.Headers.Add("X-Forwarded-For", ipAddress);
             }
 
+            if (context?.Items.ContainsKey(nameof(AppState)) == true)
+            {
+                var appState = context.Items[nameof(AppState)] as AppState;
+                if (appState != null)
+                {
+                    request.Headers.Add(SquidlrHeaderNames.SessionId, appState.SessionId);
+                    request.Headers.Add(SquidlrHeaderNames.UserId, appState.UserId);
+                }
+            }
+
             var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
             if (response.IsSuccessStatusCode)
             {
-                if (!response.Headers.TryGetValues("X-Squidlr-Platform", out var headerValues))
+                if (!response.Headers.TryGetValues(SquidlrHeaderNames.Platform, out var headerValues))
                     throw new ApiClientException("Platform header is missing.");
 
                 var platform = Enum.Parse<SocialMediaPlatform>(headerValues.Single());

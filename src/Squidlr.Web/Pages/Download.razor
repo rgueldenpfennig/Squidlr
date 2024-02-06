@@ -13,14 +13,9 @@
 @using Squidlr.Web.Telemetry;
 @using Squidlr;
 
-@inject ILogger<Download> Logger
 @inject NavigationManager NavigationManager
 @inject RequestVideoState RequestVideoState
 @inject ApiClient ApiClient
-@inject IOptions<ApplicationOptions> ApplicationOptions
-@inject IHostEnvironment HostEnvironment
-@inject IJSRuntime JS
-@inject TelemetryHandler TelemetryHandler
 @inject UrlResolver UrlResolver
 
 @implements IDisposable

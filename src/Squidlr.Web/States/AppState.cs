@@ -2,6 +2,8 @@
 
 public sealed class AppState
 {
+    public string? UserId => SessionId;
+
     public string? SessionId { get; set; }
 
     public string? Referer { get; set; }

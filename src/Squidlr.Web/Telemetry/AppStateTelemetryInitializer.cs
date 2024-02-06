@@ -20,7 +20,7 @@ public sealed class AppStateTelemetryInitializer : TelemetryInitializerBase
         if (appState != null)
         {
             telemetry.Context.Session.Id = appState.SessionId;
-            telemetry.Context.User.Id = appState.SessionId;
+            telemetry.Context.User.Id = appState.UserId;
             // telemetry.Context.User.UserAgent is obsolete: https://github.com/microsoft/ApplicationInsights-dotnet/issues/2722
 
             if (telemetry is ISupportProperties telemetryWithProperties)

@@ -1,12 +1,13 @@
 using System.Text.Json.Serialization;
+using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.HttpOverrides;
 using Serilog;
 using Serilog.Events;
-using Squidlr.Hosting.Telemetry;
 using Squidlr.Api.Authentication;
-using Squidlr.Telemetry;
 using Squidlr.Api.Telemetry;
-using Microsoft.ApplicationInsights;
+using Squidlr.Hosting.Telemetry;
+using Squidlr.Telemetry;
 
 namespace Squidlr.Api;
 
@@ -48,8 +49,9 @@ public partial class Program
                     .ReadFrom.Configuration(context.Configuration)
                     .ReadFrom.Services(serviceProvider));
 
-            builder.Services.AddTelemetry(o => o.IgnoreAbsolutePaths = new[] { "/health" });
+            builder.Services.AddTelemetry(o => o.IgnoreAbsolutePaths = ["/health"]);
             builder.Services.AddSingleton<ITelemetryService>(sp => new TelemetryService(sp.GetService<TelemetryClient>()));
+            builder.Services.AddSingleton<ITelemetryInitializer, SquidlrHeadersTelemetryInitializer>();
 
             builder.Host.UseSquidlr();
 
