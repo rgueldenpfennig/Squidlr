@@ -1,4 +1,5 @@
 using System.Net;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Options;
@@ -7,6 +8,7 @@ using Microsoft.Net.Http.Headers;
 using Serilog;
 using Serilog.Events;
 using Squidlr.Hosting.Telemetry;
+using Squidlr.Web.Telemetry;
 
 namespace Squidlr.Web;
 
@@ -49,6 +51,7 @@ public partial class Program
                     .ReadFrom.Services(serviceProvider));
 
             builder.Services.AddTelemetry(o => o.IgnoreAbsolutePaths = ["/health"]);
+            builder.Services.AddSingleton<ITelemetryInitializer, AppStateTelemetryInitializer>();
 
             // Add services to the container.
             builder.Services.AddHttpContextAccessor();
