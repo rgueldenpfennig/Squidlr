@@ -56,7 +56,15 @@ public sealed class ContentProvider
                 contentIdentifier.Id, contentIdentifier.Url, contentIdentifier.Platform);
 
             eventProperties.Add("CacheHit", "true");
-            _telemetryService.TrackEvent("ContentRequestSucceeded", eventProperties);
+            if (result.Error == RequestContentResult.Success)
+            {
+                _telemetryService.TrackEvent("ContentRequestSucceeded", eventProperties);
+            }
+            else
+            {
+                eventProperties.Add("Reason", result.Error.ToString());
+                _telemetryService.TrackEvent("ContentRequestFailed", eventProperties);
+            }
 
             return result;
         }
@@ -83,10 +91,9 @@ public sealed class ContentProvider
                         eventProperties.Add("Reason", content.Error.ToString());
                         _telemetryService.TrackEvent("ContentRequestFailed", eventProperties);
 
-                        if (content.Error == RequestContentResult.NotFound)
+                        if (ShouldBeCached(content.Error))
                         {
-                            // TODO: Should we place 404 content request on a temporary blacklist?
-                            _memoryCache.Set(cacheKey, content, absoluteExpirationRelativeToNow: TimeSpan.FromDays(7));
+                            _memoryCache.Set(cacheKey, content, absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(60));
                         }
                     }
 
@@ -106,5 +113,16 @@ public sealed class ContentProvider
         eventProperties.Add("Reason", _platformNotSupportedResult.Error.ToString());
         _telemetryService.TrackEvent("ContentRequestFailed", eventProperties);
         return _platformNotSupportedResult;
+    }
+
+    private static bool ShouldBeCached(RequestContentResult error)
+    {
+        return error is RequestContentResult.NotFound
+                     or RequestContentResult.PlatformNotSupported
+                     or RequestContentResult.NoVideo
+                     or RequestContentResult.UnsupportedVideo
+                     or RequestContentResult.AccountSuspended
+                     or RequestContentResult.Protected
+                     or RequestContentResult.AdultContent;
     }
 }
