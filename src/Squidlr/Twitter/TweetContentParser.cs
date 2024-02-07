@@ -92,6 +92,7 @@ public sealed class TweetContentParser
                 "Suspended" => RequestContentResult.AccountSuspended,
                 "NsfwLoggedOut" => RequestContentResult.AdultContent,
                 "Protected" => RequestContentResult.Protected,
+                "BounceDeleted" => RequestContentResult.NoVideo,
                 _ => RequestContentResult.Error
             };
         }
