@@ -11,6 +11,7 @@ namespace Squidlr.Hosting.Telemetry
                 options.EnableActiveTelemetryConfigurationSetup = true;
                 options.EnableQuickPulseMetricStream = true;
             });
+            services.AddServiceProfiler();
             services.AddApplicationInsightsTelemetryProcessor<IgnorePathTelemetryProcessor>();
             services.Configure(options);
 
