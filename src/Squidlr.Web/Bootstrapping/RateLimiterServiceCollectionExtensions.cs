@@ -25,7 +25,7 @@ public static class RateLimiterServiceCollectionExtensions
                         new FixedWindowRateLimiterOptions
                         {
                             AutoReplenishment = true,
-                            PermitLimit = 60,
+                            PermitLimit = 120,
                             Window = TimeSpan.FromSeconds(30)
                         })),
                 PartitionedRateLimiter.Create<HttpContext, string>(ctx =>
