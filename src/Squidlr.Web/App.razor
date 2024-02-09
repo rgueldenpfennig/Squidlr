@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Components.Web;
+@using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 <!DOCTYPE html>
 <html lang="en">
@@ -17,9 +18,9 @@
     <link rel="icon" type="image/png" sizes="256x256" href="images/favicon-256-bg.png" />
     <link rel="icon" type="image/png" sizes="512x512" href="images/favicon-512-bg.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
-    <link href="css/custom-bootstrap.css" rel="stylesheet" />
-    <link href="css/site.css" rel="stylesheet" />
-    <link href="Squidlr.Web.styles.css" rel="stylesheet" />
+    <link href=@WithFileVersion("css/custom-bootstrap.css") rel="stylesheet" />
+    <link href=@WithFileVersion("css/site.css") rel="stylesheet" />
+    <link href=@WithFileVersion("Squidlr.Web.styles.css") rel="stylesheet" />
     <HeadOutlet @rendermode="InteractiveServer" />
 </head>
 
@@ -39,7 +40,19 @@
     <div id="reconnect-modal"></div>
 
     <script src="_framework/blazor.server.js" autostart="false"></script>
-    <script src="boot.js"></script>
+    <script src=@WithFileVersion("boot.js")></script>
 </body>
 
 </html>
+
+@inject IFileVersionProvider _fileVersionProvider
+
+@code {
+    private static string PathBase = "/";
+
+    private string WithFileVersion(string path)
+    {
+
+        return (_fileVersionProvider.AddFileVersionToPath(PathBase, path));
+    }
+}
