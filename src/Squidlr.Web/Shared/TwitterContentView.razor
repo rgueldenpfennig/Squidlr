@@ -35,7 +35,7 @@
                 @if (Content.FullText != null)
                 {
                     <blockquote class="blockquote">
-                        <p style="white-space: pre-line">@((MarkupString)Content.FullText)</p>
+                        <p class="content-text">@((MarkupString)Content.FullText)</p>
                         <footer class="blockquote-footer">@string.Format("@{0}", Content.UserName)</footer>
                     </blockquote>
                 }

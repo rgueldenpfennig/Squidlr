@@ -36,7 +36,7 @@
                 @if (Content.FullText != null)
                 {
                     <blockquote class="blockquote">
-                        <p style="white-space: pre-line">@((MarkupString)Content.FullText)</p>
+                        <p class="content-text">@((MarkupString)Content.FullText)</p>
                         <a href="@string.Format("https://www.instagram.com/{0}", Content.UserName)" style="text-decoration: none">
                             <footer class="blockquote-footer fw-bold">
                                 @string.Format("@{0}", Content.UserName)

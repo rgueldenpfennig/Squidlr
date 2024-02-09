@@ -12,9 +12,6 @@ h1:focus {
     box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
-.content {
-}
-
 .valid.modified:not([type=checkbox]) {
     outline: 1px solid #26b050;
 }
@@ -29,6 +26,11 @@ h1:focus {
 
 .content.container {
     padding-bottom: 100px;
+}
+
+.content-text {
+    white-space: pre-line;
+    word-break: break-word;
 }
 
 .overlay {
