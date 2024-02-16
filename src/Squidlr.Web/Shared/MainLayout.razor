@@ -2,30 +2,46 @@
 
 <PageTitle>@(SeoProperties.CreatePageTitle())</PageTitle>
 
-<div class="page">
-    <main>
-        <div class="container">
-            <header class="d-flex justify-content-center py-3">
-                <div class="d-flex align-items-center">
-                    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-                        <img src="images/favicon-256.png" height="52" width="52" class="d-inline-block align-top mx-1" alt="Squidlr Logo">
-                        <span class="px-1 fs-1">Squidlr</span>
+<main>
+    <header class="py-3 mb-4 border-bottom">
+        <div class="container d-flex flex-wrap justify-content-center">
+            <a href="/" class="d-flex align-items-center mb-3 mb-lg-0 me-lg-auto link-body-emphasis text-decoration-none">
+                <img src="images/favicon-256.png" class="align-top me-3 img-fluid" style="max-height: 52px" alt="Squidlr Logo">
+                <span class="fs-1 fw-semibold">Squidlr</span>
+            </a>
+            <ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0">
+                <li class="nav-item px-2">
+                    <a href="/x" class="nav-link px-2 link-body-emphasis text-decoration-none text-center fw-semibold">
+                        <img src="images/logos/x.svg" height="24" class="d-block mx-auto mb-1" alt="Official X logo" />
+                        X
                     </a>
-                </div>
-            </header>
-        </div>
-
-        <div class="content container">
-            @Body
-        </div>
-
-        <footer class="mt-auto py-2 bg-light">
-            <ul class="nav justify-content-center pb-1 mb-2">
-                <li class="nav-item"><a href="/privacy-policy" class="nav-link px-2 text-muted">Privacy Policy</a></li>
-                <li class="nav-item"><a href="/terms-of-use" class="nav-link px-2 text-muted">Terms Of Use</a></li>
-                <li class="nav-item"><a href="/legal-notice" class="nav-link px-2 text-muted">Legal Notice</a></li>
+                </li>
+                <li class="nav-item">
+                    <a href="/twitter" class="nav-link px-2 link-body-emphasis text-decoration-none text-center fw-semibold">
+                        <img src="images/logos/twitter.svg" height="24" class="d-block mx-auto mb-1" alt="Official Twitter logo" />
+                        Twitter
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/instagram" class="nav-link px-2 link-body-emphasis text-decoration-none text-center fw-semibold">
+                        <img src="images/logos/instagram.svg" height="24" class="d-block mx-auto mb-1" alt="Official Instagram logo" />
+                        Instagram
+                    </a>
+                </li>
             </ul>
-            <p class="text-center text-muted">Copyright &copy; Squidlr @DateTime.UtcNow.Year. All rights reserved.</p>
-        </footer>
-    </main>
-</div>
+        </div>
+    </header>
+
+    <div class="content container">
+        @Body
+    </div>
+
+    <footer class="mt-auto py-2 bg-light">
+        <ul class="nav justify-content-center pb-1 mb-2">
+            <li class="nav-item"><a href="/privacy-policy" class="nav-link px-2 text-muted">Privacy Policy</a></li>
+            <li class="nav-item"><a href="/terms-of-use" class="nav-link px-2 text-muted">Terms Of Use</a></li>
+            <li class="nav-item"><a href="/legal-notice" class="nav-link px-2 text-muted">Legal Notice</a></li>
+        </ul>
+        <p class="text-center text-muted">Copyright &copy; Squidlr @DateTime.UtcNow.Year. All rights reserved.</p>
+    </footer>
+</main>
