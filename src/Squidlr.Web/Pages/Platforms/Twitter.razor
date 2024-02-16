@@ -1,0 +1,48 @@
+﻿@page "/twitter"
+
+<PageTitle>@(SeoProperties.CreatePageTitle("Twitter"))</PageTitle>
+
+<div class="pb-4 my-4 text-center">
+    <h1 class="display-6 fw-bold text-body-emphasis">Download videos from Twitter</h1>
+    <div class="mx-auto text-center">
+        <p class="lead fs-5 mb-4">
+            By using Squidlr you can download any video or GIF animation from Twitter.<br />
+            Just choose your preferred resolution and save it locally on your device as a MP4 video file.
+        </p>
+        <VideoSearchQuery FocusInput=@true />
+    </div>
+</div>
+
+<div class="p-4 my-4">
+    <h2 class="display-7 text-center">How do I download a video from Twitter?</h2>
+    <div class="row g-4 pt-4 row-cols-1 row-cols-lg-3">
+        <div class="col d-flex align-items-start">
+            <div class="d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+                <span class="oi oi-link-intact" data-glyph="link-intact" title="Copy link" aria-hidden="true"></span>
+            </div>
+            <div>
+                <h3 class="fs-4 text-body-emphasis">1. Copy content link</h3>
+                <p>Copy the link of the post that contains the video you want to download.</p>
+            </div>
+        </div>
+        <div class="col d-flex align-items-start">
+            <div class="d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+                <span class="oi oi-share-boxed" data-glyph="share-boxed" title="Paste URL" aria-hidden="true"></span>
+            </div>
+            <div>
+                <h3 class="fs-4 text-body-emphasis">2. Paste the URL</h3>
+                <p>Now paste the copied link into the upper search bar and press the Download button.</p>
+            </div>
+        </div>
+        <div class="col d-flex align-items-start">
+            <div class="d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+                <span class="oi oi-cloud-download" data-glyph="cloud-download" title="Download" aria-hidden="true"></span>
+            </div>
+            <div>
+                <h3 class="fs-4 text-body-emphasis">3. Download the video</h3>
+                <p>The download page will display one or more videos that have been found.</p>
+                <p>Download your selection and enjoy!</p>
+            </div>
+        </div>
+    </div>
+</div>

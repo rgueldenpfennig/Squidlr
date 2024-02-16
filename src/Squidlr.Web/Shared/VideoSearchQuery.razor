@@ -8,14 +8,17 @@
 @inject NavigationManager NavigationManager
 @inject VideoSearchQueryState State
 
-<ul class="nav nav-tabs border-0 fw-bold text-body-emphasis user-select-none">
-    <li class="nav-item">
-        <span class="@((IsActive(SocialMediaPlatform.Twitter) ? "nav-link active" : "nav-link"))">X / Twitter</span>
-    </li>
-    <li class="nav-item">
-        <span class="@((IsActive(SocialMediaPlatform.Instagram) ? "nav-link active" : "nav-link"))">Instagram</span>
-    </li>
-</ul>
+@if (ShowPlatformTabs)
+{
+    <ul class="nav nav-tabs border-0 fw-bold text-body-emphasis user-select-none">
+        <li class="nav-item">
+            <span class="@((IsActive(SocialMediaPlatform.Twitter) ? "nav-link active" : "nav-link"))">X / Twitter</span>
+        </li>
+        <li class="nav-item">
+            <span class="@((IsActive(SocialMediaPlatform.Instagram) ? "nav-link active" : "nav-link"))">Instagram</span>
+        </li>
+    </ul>
+}
 
 <div class="d-flex flex-column align-items-center">
     <div class="input-group mb-3">
@@ -42,6 +45,9 @@
 @code {
     [Parameter]
     public bool ShowSample { get; set; }
+
+    [Parameter]
+    public bool ShowPlatformTabs { get; set; }
 
     [Parameter]
     public bool FocusInput { get; set; }
