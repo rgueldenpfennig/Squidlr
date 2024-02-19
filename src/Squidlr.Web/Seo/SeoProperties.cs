@@ -4,11 +4,11 @@ public static class SeoProperties
 {
     public const string AppName = "Squidlr";
 
-    public const string Title = "X / Twitter Video Downloader - Squidlr";
+    public const string Title = "Social Media Video Downloader - Squidlr";
 
     public const string Keywords = "x twitter instagram video downloader";
 
-    public const string Description = "Download any X / Twitter video simply right now";
+    public const string Description = "Download any video from X, Twitter and Instagram right now for free";
 
     public const string Domain = "squidlr.com";
 

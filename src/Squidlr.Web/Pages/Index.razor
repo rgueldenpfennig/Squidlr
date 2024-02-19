@@ -24,59 +24,70 @@
 
 <div class="pb-4 my-4 text-center border-bottom">
     <h1 class="display-6 fw-bold text-body-emphasis">Social Media Video Downloader</h1>
+
     <div class="mx-auto text-center">
         <p class="lead fs-5 mb-4">
-            Squidlr is your tool of choice to download any video or GIF animation from a various selection of Social Media platforms.<br />
-            Just paste the link, choose your resolution and save it locally on your device as a MP4 file.
+            Squidlr is your tool of choice to download any video or GIF animation from a various selection of social media platforms.<br />
+            Just paste the link below, choose your resolution and save it locally on your device as a MP4 file.
         </p>
-        <VideoSearchQuery ShowSample=@true ShowPlatformTabs=@true FocusInput=@true />
+
+        <div class="my-4">
+            <h2 class="display-7 text-center">Supported social media platforms</h2>
+            <PlatformNavigation />
+        </div>
+
+        <VideoSearchQuery ShowSample=@true ShowPlatformTabs=@false FocusInput=@true />
     </div>
 </div>
 
 <div class="p-4 my-4">
-    <h2 class="display-7 text-center">How do I download a video?</h2>
-    <div class="row g-4 pt-4 row-cols-1 row-cols-lg-3">
-        <div class="col d-flex align-items-start">
-            <div class="d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
-                <span class="oi oi-link-intact" data-glyph="link-intact" title="Copy link" aria-hidden="true"></span>
+    <section id="how-to">
+        <h2 class="display-7 text-center">How do I download a video?</h2>
+        <div class="row g-4 pt-4 row-cols-1 row-cols-lg-3">
+            <div class="col d-flex align-items-start">
+                <div class="d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+                    <span class="oi oi-link-intact" data-glyph="link-intact" title="Copy link" aria-hidden="true"></span>
+                </div>
+                <div>
+                    <h3 class="fs-4 text-body-emphasis">1. Copy content link</h3>
+                    <p>Copy the link of the post that contains the video you want to download.</p>
+                </div>
             </div>
-            <div>
-                <h3 class="fs-4 text-body-emphasis">1. Copy content link</h3>
-                <p>Copy the link of the post that contains the video you want to download.</p>
+            <div class="col d-flex align-items-start">
+                <div class="d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+                    <span class="oi oi-share-boxed" data-glyph="share-boxed" title="Paste URL" aria-hidden="true"></span>
+                </div>
+                <div>
+                    <h3 class="fs-4 text-body-emphasis">2. Paste the URL</h3>
+                    <p>Now paste the copied link into the upper search bar and press the Download button.</p>
+                </div>
             </div>
-        </div>
-        <div class="col d-flex align-items-start">
-            <div class="d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
-                <span class="oi oi-share-boxed" data-glyph="share-boxed" title="Paste URL" aria-hidden="true"></span>
-            </div>
-            <div>
-                <h3 class="fs-4 text-body-emphasis">2. Paste the URL</h3>
-                <p>Now paste the copied link into the upper search bar and press the Download button.</p>
-            </div>
-        </div>
-        <div class="col d-flex align-items-start">
-            <div class="d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
-                <span class="oi oi-cloud-download" data-glyph="cloud-download" title="Download" aria-hidden="true"></span>
-            </div>
-            <div>
-                <h3 class="fs-4 text-body-emphasis">3. Download the video</h3>
-                <p>The download page will display one or more videos that have been found.</p>
-                <p>Download your selection and enjoy!</p>
-            </div>
-        </div>
-    </div>
-    <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
-        <div class="col-10 col-sm-8 col-lg-6">
-            <img src="images/favicon-256.png" class="d-block mx-lg-auto img-fluid mx-auto" alt="Squidlr Logo" height="256" width="256" loading="lazy">
-        </div>
-        <div class="col-lg-6">
-            <h2 class="display-7 fw-bold text-body-emphasis lh-1 mb-3">What is Squidlr?</h2>
-            <div class="lead">
-                <p>Squidlr enables you to easily download videos and GIFs from <a href="https://www.x.com" rel="nofollow">X.com</a> (formerly Twitter). It's free of use and not bloated with advertisements.</p>
-                <p>In the future it is also planned so support additional platforms to download video files.</p>
+            <div class="col d-flex align-items-start">
+                <div class="d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+                    <span class="oi oi-cloud-download" data-glyph="cloud-download" title="Download" aria-hidden="true"></span>
+                </div>
+                <div>
+                    <h3 class="fs-4 text-body-emphasis">3. Download the video</h3>
+                    <p>The download page will display one or more videos that have been found.</p>
+                    <p>Download your selection and enjoy!</p>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
+    <section id="about">
+        <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+            <div class="col-10 col-sm-8 col-lg-6">
+                <img src="images/favicon-256.png" class="d-block mx-lg-auto img-fluid mx-auto" alt="Squidlr Logo" height="256" width="256" loading="lazy">
+            </div>
+            <div class="col-lg-6">
+                <h2 class="display-7 fw-bold text-body-emphasis lh-1 mb-3">What is Squidlr?</h2>
+                <div class="lead">
+                    <p>Squidlr enables you to easily download videos and GIFs from <a href="https://www.x.com" rel="nofollow">X.com</a> (formerly Twitter) and <a href="https://www.instagram.com" rel="nofollow">Instagram</a>. It's free of use and not bloated with advertisements.</p>
+                    <p>In the future it is also planned so support additional platforms to download video files.</p>
+                </div>
+            </div>
+        </div>
+    </section>
     <div class="row row-cols-1 pb-4 border-bottom">
         <h2 class="display-7 fw-bold text-body-emphasis mb-3">Latest update</h2>
         <div class="lead">
@@ -88,7 +99,7 @@
         </div>
         <div class="fw-lighter"><a href="updates">Previous udpates</a></div>
     </div>
-    <div class="row g-4 pt-4 row-cols-1">
+    <section id="faq" class="row g-4 pt-4 row-cols-1">
         <h2 class="display-7 fw-bold text-body-emphasis mb-3">Frequently asked questions</h2>
         <h3 class="text-body-emphasis mb-0">Is Squidlr free to use?</h3>
         <p>Yes, Squidlr is completely free to use. I want to provide a high-quality video download service without any cost for the average internet user.</p>
@@ -99,7 +110,7 @@
             Many existing services suffer from issues such as excessive advertisements, slow performance, and an overall unsatisfactory user interface.
             As the creator of Squidlr, I wanted to offer a platform that is free, fast, and provides a superior user experience compared to other services.
         </p>
-        
+
         <h3 class="text-body-emphasis mb-0">How can I support Squidlr?</h3>
         <div>
             <p>You can help in two ways:</p>
@@ -150,5 +161,5 @@
 
         <h3 class="text-body-emphasis mb-0">Is Squidlr affiliated with or endorsed by any social media platform?</h3>
         <p>No, Squidlr is not affiliated with or endorsed by any social media platform.</p>
-    </div>
+    </section>
 </div>
