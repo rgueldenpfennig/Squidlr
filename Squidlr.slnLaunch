@@ -1,0 +1,32 @@
+[
+  {
+    "Name": "Default",
+    "Projects": [
+      {
+        "Name": "src\\Squidlr.Api\\Squidlr.Api.csproj",
+        "Action": "Start",
+        "DebugTarget": ""
+      },
+      {
+        "Name": "src\\Squidlr.Web\\Squidlr.Web.csproj",
+        "Action": "Start",
+        "DebugTarget": ""
+      }
+    ]
+  },
+  {
+    "Name": "Web",
+    "Projects": [
+      {
+        "Name": "src\\Squidlr.Api\\Squidlr.Api.csproj",
+        "Action": "StartWithoutDebugging",
+        "DebugTarget": ""
+      },
+      {
+        "Name": "src\\Squidlr.Web\\Squidlr.Web.csproj",
+        "Action": "Start",
+        "DebugTarget": ""
+      }
+    ]
+  }
+]

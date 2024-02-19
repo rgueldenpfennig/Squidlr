@@ -38,15 +38,25 @@
 
     @if (errorMessage is not null)
     {
-        <h2 class="text-center mt-4">Oh no! Something went wrong :-(</h2>
-        <div class="alert alert-warning" role="alert">@errorMessage</div>
+        <h2 class="text-center mt-4">Oh no! Something went wrong 😓</h2>
+        <div class="alert alert-warning fs-5" role="alert">@errorMessage</div>
     }
 
-    <div class="container mt-4">
-        <h2 class="text-center">Want to download another video?</h2>
-
-        <VideoSearchQuery />
-    </div>
+    @if (isBusy)
+    {
+        <div class="mt-4">
+            <h2 class="text-center">Download in progress...</h2>
+            <p class="lead">Your requested video is being processed. Sit back and relax ☕</p>
+        </div>
+    }
+    else
+    {
+        <div class="container mt-4">
+            <h2 class="text-center">Let's download another video</h2>
+            <VideoSearchQuery />
+            <PlatformNavigation />
+        </div>
+    }
 
     <BusyIndicator IsBusy="@isBusy" />
 </div>
