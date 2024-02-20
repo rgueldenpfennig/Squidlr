@@ -8,21 +8,15 @@
 <HeadContent>
     <meta name="og:title" content="@SeoProperties.Title" />
     <meta name="og:description" content="@SeoProperties.Description" />
-    <meta name="og:type" content="website" />
-    <meta name="og:site_name" content="@SeoProperties.Domain" />
-    <meta name="og:url" content="@(NavigationManager.BaseUri)" />
-    <meta name="og:image" content="@(NavigationManager.BaseUri)images/social-header.png" />
-    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="og:url" content="@(NavigationManager.Uri)" />
+    <meta name="description" content="@SeoProperties.Description" />
+    <meta name="keywords" content="@SeoProperties.Keywords" />
     <meta name="twitter:title" content="@SeoProperties.Title" />
     <meta name="twitter:description" content="@SeoProperties.Description" />
-    <meta name="twitter:creator" content="@@SquidlrBot" />
-    <meta name="twitter:site" content="@@SquidlrBot" />
-    <meta name="twitter:image:src" content="@(NavigationManager.BaseUri)images/social-header.png" />
-    <meta name="twitter:domain" content="@SeoProperties.Domain">
     <link rel="sitemap" type="application/xml" title="Sitemap" href="@(NavigationManager.BaseUri)sitemap.xml" />
 </HeadContent>
 
-<div class="pb-4 my-4 text-center border-bottom">
+<section id="landing" class="pb-2 my-4 text-center border-bottom">
     <h1 class="display-6 fw-bold text-body-emphasis">Social Media Video Downloader</h1>
 
     <div class="mx-auto text-center">
@@ -38,128 +32,113 @@
 
         <VideoSearchQuery ShowSample=@true ShowPlatformTabs=@false FocusInput=@true />
     </div>
-</div>
+</section>
 
-<div class="p-4 my-4">
-    <section id="how-to">
-        <h2 class="display-7 text-center">How do I download a video?</h2>
-        <div class="row g-4 pt-4 row-cols-1 row-cols-lg-3">
-            <div class="col d-flex align-items-start">
-                <div class="d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
-                    <span class="oi oi-link-intact" data-glyph="link-intact" title="Copy link" aria-hidden="true"></span>
-                </div>
-                <div>
-                    <h3 class="fs-4 text-body-emphasis">1. Copy content link</h3>
-                    <p>Copy the link of the post that contains the video you want to download.</p>
-                </div>
+<section id="how-to">
+    <h2 class="display-7 text-center">How do I download a video?</h2>
+    <div class="row g-4 pt-4 row-cols-1 row-cols-lg-3">
+        <div class="col d-flex align-items-start">
+            <div class="d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+                <span class="oi oi-link-intact" data-glyph="link-intact" title="Copy link" aria-hidden="true"></span>
             </div>
-            <div class="col d-flex align-items-start">
-                <div class="d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
-                    <span class="oi oi-share-boxed" data-glyph="share-boxed" title="Paste URL" aria-hidden="true"></span>
-                </div>
-                <div>
-                    <h3 class="fs-4 text-body-emphasis">2. Paste the URL</h3>
-                    <p>Now paste the copied link into the upper search bar and press the Download button.</p>
-                </div>
-            </div>
-            <div class="col d-flex align-items-start">
-                <div class="d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
-                    <span class="oi oi-cloud-download" data-glyph="cloud-download" title="Download" aria-hidden="true"></span>
-                </div>
-                <div>
-                    <h3 class="fs-4 text-body-emphasis">3. Download the video</h3>
-                    <p>The download page will display one or more videos that have been found.</p>
-                    <p>Download your selection and enjoy!</p>
-                </div>
+            <div>
+                <h3 class="fs-4 text-body-emphasis">1. Copy content link</h3>
+                <p>Copy the link of the post that contains the video you want to download.</p>
             </div>
         </div>
-    </section>
-    <section id="about">
-        <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
-            <div class="col-10 col-sm-8 col-lg-6">
-                <img src="images/favicon-256.png" class="d-block mx-lg-auto img-fluid mx-auto" alt="Squidlr Logo" height="256" width="256" loading="lazy">
+        <div class="col d-flex align-items-start">
+            <div class="d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+                <span class="oi oi-share-boxed" data-glyph="share-boxed" title="Paste URL" aria-hidden="true"></span>
             </div>
-            <div class="col-lg-6">
-                <h2 class="display-7 fw-bold text-body-emphasis lh-1 mb-3">What is Squidlr?</h2>
-                <div class="lead">
-                    <p>Squidlr enables you to easily download videos and GIFs from <a href="https://www.x.com" rel="nofollow">X.com</a> (formerly Twitter) and <a href="https://www.instagram.com" rel="nofollow">Instagram</a>. It's free of use and not bloated with advertisements.</p>
-                    <p>In the future it is also planned so support additional platforms to download video files.</p>
-                </div>
+            <div>
+                <h3 class="fs-4 text-body-emphasis">2. Paste the URL</h3>
+                <p>Now paste the copied link into the upper search bar and press the Download button.</p>
             </div>
         </div>
-    </section>
-    <div class="row row-cols-1 pb-4 border-bottom">
-        <h2 class="display-7 fw-bold text-body-emphasis mb-3">Latest update</h2>
-        <div class="lead">
-            <h3 class="mb-1 text-body-emphasis">New Feature: Instagram Video Download</h3>
-            <p>I'm happy to announce that Squidlr now allows you to download videos from Instagram. With this new feature, you can easily save and enjoy your favorite Instagram videos offline.</p>
-            <div class="text-break text-muted fw-lighter">
-                <p>You can give it a try with an example <a href="/download?url=https%3A%2F%2Fwww.instagram.com%2Fp%2FBQ0eAlwhDrw">here.</a></p>
+        <div class="col d-flex align-items-start">
+            <div class="d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+                <span class="oi oi-cloud-download" data-glyph="cloud-download" title="Download" aria-hidden="true"></span>
+            </div>
+            <div>
+                <h3 class="fs-4 text-body-emphasis">3. Download the video</h3>
+                <p>The download page will display one or more videos that have been found.</p>
+                <p>Download your selection and enjoy!</p>
             </div>
         </div>
-        <div class="fw-lighter"><a href="updates">Previous udpates</a></div>
     </div>
-    <section id="faq" class="row g-4 pt-4 row-cols-1">
-        <h2 class="display-7 fw-bold text-body-emphasis mb-3">Frequently asked questions</h2>
-        <h3 class="text-body-emphasis mb-0">Is Squidlr free to use?</h3>
-        <p>Yes, Squidlr is completely free to use. I want to provide a high-quality video download service without any cost for the average internet user.</p>
-
-        <h3 class="text-body-emphasis mb-0">What sets Squidlr apart from other video download services?</h3>
-        <p>
-            Squidlr was created out of a need for a better user experience.
-            Many existing services suffer from issues such as excessive advertisements, slow performance, and an overall unsatisfactory user interface.
-            As the creator of Squidlr, I wanted to offer a platform that is free, fast, and provides a superior user experience compared to other services.
-        </p>
-
-        <h3 class="text-body-emphasis mb-0">How can I support Squidlr?</h3>
-        <div>
-            <p>You can help in two ways:</p>
-            <ul class="list-group list-group-flush mx-3 mb-3">
-                <li class="list-group-item-light"><b>Share Feedback:</b> I value your ideas and feedback. Reach out to me via <a href="mailto:contact@squidlr.com">email</a> with your thoughts.</li>
-                <li class="list-group-item-light"><b>Contribute:</b> Support Squidlr's hosting and development by donating to <a href="https://ko-fi.com/robingueldenpfennig">my Ko-Fi page</a>. Your contribution, big or small, makes a difference.</li>
-            </ul>
-            <p>Your support means a lot to me. Thank you!</p>
+</section>
+<section id="about" class="row flex-lg-row align-items-center g-5 py-5">
+    <div class="col-lg-6">
+        <h2 class="display-7 fw-bold text-body-emphasis lh-1 mb-3">What is Squidlr?</h2>
+        <div class="lead">
+            <p>Squidlr enables you to easily download videos and GIFs from <a href="https://www.x.com" rel="nofollow">X.com</a> (formerly Twitter) and <a href="https://www.instagram.com" rel="nofollow">Instagram</a>. It's free of use and not bloated with advertisements.</p>
+            <p>In the future it is also planned so support additional platforms to download video files.</p>
         </div>
+    </div>
+    <div class="col-10 col-sm-8 col-lg-6">
+        <img src="images/favicon-256.png" class="d-block mx-lg-auto img-fluid mx-auto" alt="Squidlr Logo" height="256" width="256" loading="lazy">
+    </div>
+</section>
+<section id="faq" class="row g-4 pt-4 row-cols-1">
+    <h2 class="display-7 fw-bold text-body-emphasis mb-3">Frequently asked questions</h2>
+    <h3 class="text-body-emphasis mb-0">Is Squidlr free to use?</h3>
+    <p>Yes, Squidlr is completely free to use. I want to provide a high-quality video download service without any cost for the average internet user.</p>
 
-        <h3 class="text-body-emphasis mb-0">Does Squidlr support social media platforms other than X / Twitter?</h3>
-        <div class="text-break">
-            <p>In addition to X, Squidlr currently supports Instagram, allowing you to download videos from both of these platforms. Simply provide the URL of the video you wish to download, and Squidlr will do the rest.</p>
-            <p>Squidlr aims to be your go-to solution for downloading videos from multiple social media platforms, making it a versatile tool for your video download needs.</p>
-            <p>For the next major update, it is planned to also support video downloads from TikTok. So stay tuned for this upcoming addition.</p>
-        </div>
+    <h3 class="text-body-emphasis mb-0">What sets Squidlr apart from other video download services?</h3>
+    <p>
+        Squidlr was created out of a need for a better user experience.
+        Many existing services suffer from issues such as excessive advertisements, slow performance, and an overall unsatisfactory user interface.
+        As the creator of Squidlr, I wanted to offer a platform that is free, fast, and provides a superior user experience compared to other services.
+    </p>
 
-        <h3 class="text-body-emphasis mb-0">Can I download private videos using Squidlr?</h3>
-        <p>
-            No, Squidlr operates strictly in an anonymized manner and does not utilize any user accounts.
-            The Squidlr bot can only access content available to the public on the internet.
-            Videos limited to specific audiences or marked as private cannot be downloaded as they are not accessible to the bot.
-        </p>
+    <h3 class="text-body-emphasis mb-0">How can I support Squidlr?</h3>
+    <div>
+        <p>You can help in two ways:</p>
+        <ul class="list-group list-group-flush mx-3 mb-3">
+            <li class="list-group-item-light"><b>Share Feedback:</b> I value your ideas and feedback. Reach out to me via <a href="mailto:contact@squidlr.com">email</a> with your thoughts.</li>
+            <li class="list-group-item-light"><b>Contribute:</b> Support Squidlr's hosting and development by donating to <a href="https://ko-fi.com/robingueldenpfennig">my Ko-Fi page</a>. Your contribution, big or small, makes a difference.</li>
+        </ul>
+        <p>Your support means a lot to me. Thank you!</p>
+    </div>
 
-        <h3 class="text-body-emphasis mb-0">Why am I unable to download a selected video?</h3>
-        <p>
-            Several reasons could lead to this issue. The most common one is that the URL you provided does not exist,
-            or the corresponding post has been deleted. Additionally, some videos may not be accessible anonymously.
-            It's also worth noting that videos containing mature or explicit content, as indicated by the social media platform's policies, cannot be downloaded.
-        </p>
+    <h3 class="text-body-emphasis mb-0">Does Squidlr support social media platforms other than X / Twitter?</h3>
+    <div class="text-break">
+        <p>In addition to X, Squidlr currently supports Instagram, allowing you to download videos from both of these platforms. Simply provide the URL of the video you wish to download, and Squidlr will do the rest.</p>
+        <p>Squidlr aims to be your go-to solution for downloading videos from multiple social media platforms, making it a versatile tool for your video download needs.</p>
+        <p>For the next major update, it is planned to also support video downloads from TikTok. So stay tuned for this upcoming addition.</p>
+    </div>
 
-        <h3 class="text-body-emphasis mb-0">What should I do if I encounter a technical issue or have a suggestion for improvement?</h3>
-        <p>
-            Squidlr is always evolving to provide the best service.
-            If you encounter limitations or have suggestions, feel free to <a href="mailto:contact@squidlr.com">reach out</a>.
-            While I prioritize user experience and reliability, certain constraints, such as platform policies or content accessibility, may limit the types of videos that can be downloaded.
-        </p>
+    <h3 class="text-body-emphasis mb-0">Can I download private videos using Squidlr?</h3>
+    <p>
+        No, Squidlr operates strictly in an anonymized manner and does not utilize any user accounts.
+        The Squidlr bot can only access content available to the public on the internet.
+        Videos limited to specific audiences or marked as private cannot be downloaded as they are not accessible to the bot.
+    </p>
 
-        <h3 class="text-body-emphasis mb-0">Can Squidlr be used on mobile devices?</h3>
-        <p>Yes, Squidlr is designed to be accessible on any device with a browser and internet connection, including mobile devices.</p>
+    <h3 class="text-body-emphasis mb-0">Why am I unable to download a selected video?</h3>
+    <p>
+        Several reasons could lead to this issue. The most common one is that the URL you provided does not exist,
+        or the corresponding post has been deleted. Additionally, some videos may not be accessible anonymously.
+        It's also worth noting that videos containing mature or explicit content, as indicated by the social media platform's policies, cannot be downloaded.
+    </p>
 
-        <h3 class="text-body-emphasis mb-0">Are there any limitations on the number or size of videos I can download?</h3>
-        <p>
-            You are directly downloading videos from the respective social media platform.
-            Any limitations would be determined by that specific provider.
-            Feel free to use Squidlr as much as you'd like, keeping in mind not to automate excessive requests within a short timeframe.
-        </p>
+    <h3 class="text-body-emphasis mb-0">What should I do if I encounter a technical issue or have a suggestion for improvement?</h3>
+    <p>
+        Squidlr is always evolving to provide the best service.
+        If you encounter limitations or have suggestions, feel free to <a href="mailto:contact@squidlr.com">reach out</a>.
+        While I prioritize user experience and reliability, certain constraints, such as platform policies or content accessibility, may limit the types of videos that can be downloaded.
+    </p>
 
-        <h3 class="text-body-emphasis mb-0">Is Squidlr affiliated with or endorsed by any social media platform?</h3>
-        <p>No, Squidlr is not affiliated with or endorsed by any social media platform.</p>
-    </section>
-</div>
+    <h3 class="text-body-emphasis mb-0">Can Squidlr be used on mobile devices?</h3>
+    <p>Yes, Squidlr is designed to be accessible on any device with a browser and internet connection, including mobile devices.</p>
+
+    <h3 class="text-body-emphasis mb-0">Are there any limitations on the number or size of videos I can download?</h3>
+    <p>
+        You are directly downloading videos from the respective social media platform.
+        Any limitations would be determined by that specific provider.
+        Feel free to use Squidlr as much as you'd like, keeping in mind not to automate excessive requests within a short timeframe.
+    </p>
+
+    <h3 class="text-body-emphasis mb-0">Is Squidlr affiliated with or endorsed by any social media platform?</h3>
+    <p>No, Squidlr is not affiliated with or endorsed by any social media platform.</p>
+</section>

@@ -1,6 +1,12 @@
 ﻿@page "/updates"
+@inject NavigationManager NavigationManager
 
 <PageTitle>@(SeoProperties.CreatePageTitle("Updates"))</PageTitle>
+
+<HeadContent>
+    <meta name="og:title" content="@(SeoProperties.CreatePageTitle("Updates"))" />
+    <meta name="og:url" content="@(NavigationManager.Uri)" />
+</HeadContent>
 
 <div class="pb-4 my-4 text-center">
     <h1 class="display-6 fw-bold text-body-emphasis">Updates and history of Squidlr</h1>
