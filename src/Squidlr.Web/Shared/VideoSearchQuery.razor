@@ -22,7 +22,7 @@
 
 <div class="d-flex flex-column align-items-center">
     <div class="input-group mb-3">
-        <button class="btn btn-primary" type="button" title="Paste from clipboard">
+        <button class="btn btn-primary" type="button" title="Paste from clipboard" @onclick="PasteClipboard">
             <span class="oi oi-clipboard" data-glyph="clipboard" aria-hidden="true"></span>
         </button>
         <input @ref=_inputReference type="text" autocomplete="on" class="form-control shadow-none" placeholder="Paste your link here" inputmode="url" aria-label="Download URL" aria-describedby="download-button" @bind:event="oninput" @bind:get="State.Url" @bind:set="HandleInput" @onkeypress="OnKeyPress" />
