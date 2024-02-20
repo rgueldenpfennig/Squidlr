@@ -1,6 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Components.Web;
 @using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
+@inject NavigationManager NavigationManager;
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,10 +10,16 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="content-language" content="en" />
-    <meta name="description" content="@SeoProperties.Description" />
-    <meta name="keywords" content="@SeoProperties.Keywords" />
     <meta name="application-name" content="@SeoProperties.AppName">
     <meta name="apple-mobile-web-app-title" content="@SeoProperties.AppName">
+    <meta name="og:type" content="website" />
+    <meta name="og:site_name" content="@SeoProperties.Domain" />
+    <meta name="og:image" content="@(NavigationManager.BaseUri)images/social-header.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:creator" content="@@SquidlrBot" />
+    <meta name="twitter:site" content="@@SquidlrBot" />
+    <meta name="twitter:image:src" content="@(NavigationManager.BaseUri)images/social-header.png" />
+    <meta name="twitter:domain" content="@SeoProperties.Domain">
     <base href="/" />
     <link rel="icon" href="favicon.ico" />
     <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32-bg.png" />

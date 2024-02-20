@@ -21,4 +21,14 @@ public static class SeoProperties
 
         return Title;
     }
+
+    public static string DescriptionFor(string? platformName)
+    {
+        return $"Download any video from {platformName} right now for free";
+    }
+
+    public static string KeywordsFor(string? platformName)
+    {
+        return $"{platformName?.ToLowerInvariant()} video downloader";
+    }
 }
