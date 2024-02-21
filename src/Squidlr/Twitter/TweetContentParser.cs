@@ -304,11 +304,13 @@ public sealed class TweetContentParser
         XNamespace ns = "http://twitter.com/schema/videoVMapV2.xsd";
         var videoVariants = xDoc.Descendants(ns + "videoVariants").Elements();
 
-        foreach (var videoVariant in videoVariants)
+        await Parallel.ForEachAsync(videoVariants, cancellationToken, async (videoVariant, ct) =>
         {
+            ct.ThrowIfCancellationRequested();
+
             var contentType = videoVariant.Attribute("content_type")?.Value;
             if (contentType == null || !contentType.Equals("video/mp4", StringComparison.OrdinalIgnoreCase))
-                continue;
+                return;
 
             var videoUrl = videoVariant.Attribute("url")?.Value;
             var bitrateAttribute = videoVariant.Attribute("bit_rate");
@@ -318,18 +320,21 @@ public sealed class TweetContentParser
             {
                 var decodedVideoUrl = HttpUtility.UrlDecode(videoUrl);
                 var uri = new Uri(decodedVideoUrl);
-                var contentLength = await _twitterClient.GetVideoContentLengthAsync(uri, cancellationToken);
+                var contentLength = await _twitterClient.GetVideoContentLengthAsync(uri, ct);
 
-                tweetMedia.VideoSources.Add(new()
+                lock (tweetMedia)
                 {
-                    Bitrate = bitrate,
-                    ContentType = contentType,
-                    ContentLength = contentLength,
-                    Size = UrlUtilities.ParseSizeFromVideoUrl(decodedVideoUrl),
-                    Url = uri
-                });
+                    tweetMedia.VideoSources.Add(new()
+                    {
+                        Bitrate = bitrate,
+                        ContentType = contentType,
+                        ContentLength = contentLength,
+                        Size = UrlUtilities.ParseSizeFromVideoUrl(decodedVideoUrl),
+                        Url = uri
+                    });
+                }
             }
-        }
+        });
 
         _tweetContent.AddMedia(tweetMedia);
 
@@ -391,8 +396,11 @@ public sealed class TweetContentParser
             tweetMediaVideo.Duration = TimeSpan.FromMilliseconds(durationProperty.GetInt32());
         }
 
-        foreach (var variant in videoInfo.GetProperty("variants").EnumerateArray())
+        var variants = videoInfo.GetProperty("variants").EnumerateArray();
+        await Parallel.ForEachAsync(variants, cancellationToken, async (variant, ct) =>
         {
+            ct.ThrowIfCancellationRequested();
+
             var contentType = variant.GetProperty("content_type").GetString();
             if (contentType != null && contentType.Equals("video/mp4", StringComparison.OrdinalIgnoreCase))
             {
@@ -404,17 +412,20 @@ public sealed class TweetContentParser
                     var uri = new Uri(videoUrl);
                     var contentLength = await _twitterClient.GetVideoContentLengthAsync(uri, cancellationToken);
 
-                    tweetMediaVideo.VideoSources.Add(new()
+                    lock (tweetMediaVideo)
                     {
-                        Bitrate = bitrate,
-                        ContentType = contentType,
-                        ContentLength = contentLength,
-                        Size = UrlUtilities.ParseSizeFromVideoUrl(videoUrl),
-                        Url = uri
-                    });
+                        tweetMediaVideo.VideoSources.Add(new()
+                        {
+                            Bitrate = bitrate,
+                            ContentType = contentType,
+                            ContentLength = contentLength,
+                            Size = UrlUtilities.ParseSizeFromVideoUrl(videoUrl),
+                            Url = uri
+                        });
+                    }
                 }
             }
-        }
+        });
 
         return tweetMediaVideo;
     }
