@@ -11,6 +11,9 @@ public sealed class ApplicationOptions : IOptions<ApplicationOptions>, IValidata
     public string? Domain { get; set; }
 
     [Required]
+    public string? InternalDomain { get; set; }
+
+    [Required]
     public string? ApiKey { get; set; }
 
     [Required]

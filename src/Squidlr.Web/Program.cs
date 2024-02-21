@@ -8,6 +8,7 @@ using Microsoft.Net.Http.Headers;
 using Serilog;
 using Serilog.Events;
 using Squidlr.Hosting.Telemetry;
+using Squidlr.Web.Bootstrapping;
 using Squidlr.Web.Telemetry;
 
 namespace Squidlr.Web;
@@ -161,7 +162,8 @@ public partial class Program
             if (app.Environment.IsProduction())
             {
                 app.UseRewriter(new RewriteOptions()
-                   .AddRedirectToWww((int)HttpStatusCode.MovedPermanently, applicationOptions.Domain!));
+                   .AddRedirectToWww((int)HttpStatusCode.MovedPermanently, applicationOptions.Domain!)
+                   .AddRedirectToHost(applicationOptions.InternalDomain!, applicationOptions.Domain!));
             }
 
             app.MapRazorComponents<App>()
