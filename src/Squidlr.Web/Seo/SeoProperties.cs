@@ -4,7 +4,7 @@ public static class SeoProperties
 {
     public const string AppName = "Squidlr";
 
-    public const string Title = "Social Media Video Downloader - Squidlr";
+    public const string Title = "Social Media Video Downloader | Squidlr";
 
     public const string Keywords = "x twitter instagram video downloader";
 
@@ -16,7 +16,7 @@ public static class SeoProperties
     {
         if (!string.IsNullOrEmpty(page))
         {
-            return $"{page} - {Title}";
+            return $"{page} | {Title}";
         }
 
         return Title;
