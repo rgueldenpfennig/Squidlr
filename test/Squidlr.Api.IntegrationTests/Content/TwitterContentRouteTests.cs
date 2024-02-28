@@ -68,6 +68,8 @@ public class TwitterContentRouteTests : IClassFixture<ApiWebApplicationFactory>
     [InlineData("https://twitter.com/jaydingeer/status/700207533655363584")]
     public async Task RequestTweetContent(string tweetUrl, HttpStatusCode expectedStatusCode = HttpStatusCode.OK)
     {
+        await Task.Delay(millisecondsDelay: 200);
+
         // Arrange & Act
         var response = await _client.GetAsync($"/content?url={tweetUrl}");
 
