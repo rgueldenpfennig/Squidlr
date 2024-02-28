@@ -6,6 +6,7 @@ using DotNext;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
+using Squidlr.Twitter.Utilities;
 
 namespace Squidlr.Twitter;
 
@@ -75,7 +76,7 @@ public sealed class TwitterWebClient
 
     public async Task<Result<Stream, RequestContentResult>> GetTweetDetailStreamAsync(TweetIdentifier tweet, CancellationToken cancellationToken)
     {
-        var guestToken = await GetOrCreateGuestTokenAsync(cancellationToken);
+        var guestToken = await GetOrCreateGuestTokenAsync(tweet, cancellationToken);
         if (guestToken == null)
         {
             return new(RequestContentResult.GatewayError);
@@ -110,23 +111,35 @@ public sealed class TwitterWebClient
         return streamCopy;
     }
 
-    private async ValueTask<string?> GetOrCreateGuestTokenAsync(CancellationToken cancellationToken)
+    private async ValueTask<string?> GetOrCreateGuestTokenAsync(TweetIdentifier tweet, CancellationToken cancellationToken)
     {
         try
         {
             return await _memoryCache.GetOrCreateAsync("TwitterGuestToken", async (cacheEntry) =>
             {
+                string? guestToken;
+                cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(60);
+
                 var client = _clientFactory.CreateClient(HttpClientName);
                 using var response = await client.PostAsync("/1.1/guest/activate.json", content: null, cancellationToken);
-                response.EnsureSuccessStatusCode();
 
-                var responseStream = await response.Content.ReadAsStreamAsync(cancellationToken);
+                if (!response.IsSuccessStatusCode)
+                {
+                    _logger.LogWarning("Twitter guest token API is probably deprecated.");
+                    client.DefaultRequestHeaders.Remove(Microsoft.Net.Http.Headers.HeaderNames.Authorization); // we must remove the Authorization header in that case
+                    var document = await client.GetStringAsync(tweet.Url, cancellationToken);
+
+                    guestToken = GuestTokenUtilities.ExtractGuestToken(document) ??
+                        throw new InvalidOperationException("Guest token not found in HTML document");
+
+                    return guestToken;
+                }
+
+                using var responseStream = await response.Content.ReadAsStreamAsync(cancellationToken);
                 var json = JsonDocument.Parse(responseStream);
 
-                var guestToken = json.RootElement.GetProperty("guest_token").GetString() ??
+                guestToken = json.RootElement.GetProperty("guest_token").GetString() ??
                     throw new InvalidOperationException("guest_token is null");
-
-                cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(60);
 
                 return guestToken;
             });

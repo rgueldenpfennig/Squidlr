@@ -21,11 +21,11 @@ internal static class TwitterServiceCollectionExtensions
             client.DefaultRequestHeaders.Add("authority", "twitter.com");
             client.DefaultRequestHeaders.Add("accept", "*/*");
             client.DefaultRequestHeaders.Add("accept-language", "en-US,en;q=0.9");
-            client.DefaultRequestHeaders.Add("sec-ch-ua", "Chromium\";v=\"112\", \"Google Chrome\";v=\"112\", \"Not:A-Brand\";v=\"99\"");
-            client.DefaultRequestHeaders.Add("sec-fetch-dest", "empty");
-            client.DefaultRequestHeaders.Add("sec-fetch-mode", "cors");
+            client.DefaultRequestHeaders.Add("sec-ch-ua", "Chromium\";v=\"121\", \"Google Chrome\";v=\"121\", \"Not:A-Brand\";v=\"99\"");
+            client.DefaultRequestHeaders.Add("sec-fetch-dest", "document");
+            client.DefaultRequestHeaders.Add("sec-fetch-mode", "navigate");
             client.DefaultRequestHeaders.Add("sec-fetch-site", "same-origin");
-            client.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36");
+            client.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36");
             client.DefaultRequestHeaders.Add("x-twitter-active-user", "yes");
             client.DefaultRequestHeaders.Add("x-twitter-client-language", "en");
 
