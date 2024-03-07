@@ -8,7 +8,7 @@ public sealed class VideoSource
 
     public required int Bitrate { get; set; }
 
-    public required long? ContentLength { get; set; }
+    public long? ContentLength { get; set; }
 
     public required string ContentType { get; set; }
 
