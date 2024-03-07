@@ -33,6 +33,7 @@
 </head>
 
 <body>
+    <div id="reconnect-modal"></div>
     <Routes @rendermode="InteractiveServer" />
     <div id="blazor-error-ui">
         <environment include="Staging,Production">
@@ -44,8 +45,6 @@
         <a href="" class="reload">Reload</a>
         <a href="" class="dismiss">🗙</a>
     </div>
-
-    <div id="reconnect-modal"></div>
 
     <script src="_framework/blazor.server.js" autostart="false"></script>
     <script src=@WithFileVersion("boot.js")></script>

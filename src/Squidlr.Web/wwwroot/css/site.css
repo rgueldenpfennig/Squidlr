@@ -48,14 +48,7 @@ h1:focus {
 
 #reconnect-modal {
     display: none;
-    position: fixed;
-    inset: 0px;
-    z-index: 1050;
-    overflow: hidden;
-    background-color: rgb(255, 255, 255);
-    opacity: 0.9;
     text-align: center;
-    font-weight: bold;
     transition: visibility 0s linear 500ms;
     visibility: visible;
 }

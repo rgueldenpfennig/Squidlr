@@ -4,9 +4,10 @@
     const reconnectModal = document.getElementById('reconnect-modal');
 
     reconnectModal.innerHTML =
-        '<div class="bg-danger" role="alert">' +
-            '<h2>Oh no! The connection to the Squidlr server is lost :-(</h2>' +
-            '<p id="reconnect-modal-text" class="fs-4"></p>' +
+        '<div class="p-1 text-bg-light">' +
+            '<p>The connection to the Squidlr server is lost. Functionality may be affected.</p>' +
+            '<p id="reconnect-modal-text"></p>' +
+            '<p id="reload-text" style="display: none">Reconnecting was not successful. Click <span id="reload-link" style="text-decoration: underline; cursor: pointer;">here</span> to reload the page.</p>' +
         '</div >';
 
     const reconnectModalText = document.getElementById('reconnect-modal-text');
@@ -16,7 +17,7 @@
 
         (async () => {
             for (let i = 0; i < maximumRetryCount; i++) {
-                reconnectModalText.innerText = `Attempting to reconnect to the Squidlr server: ${i + 1} of ${maximumRetryCount}`;
+                reconnectModalText.innerText = `Attempting to reconnect: ${i + 1} of ${maximumRetryCount}`;
 
                 await new Promise(resolve => setTimeout(resolve, retryIntervalMilliseconds));
                 reconnectModal.style.display = 'block';
@@ -40,8 +41,14 @@
                 }
             }
 
-            // Retried too many times; reload the page.
-            location.reload();
+            // Retried too many times; give the user the choice to reload the page.
+            reconnectModalText.style.display = 'none';
+            const reloadText = document.getElementById('reload-text');
+            reloadText.style.display = 'block';
+
+            document.getElementById('reload-link').addEventListener('click', function () {
+                location.reload();
+            });
         })();
 
         return {
