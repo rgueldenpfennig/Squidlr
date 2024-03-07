@@ -56,7 +56,7 @@ public class TwitterContentRouteTests : IClassFixture<ApiWebApplicationFactory>
     [InlineData("https://twitter.com/SamsungMobileSA/status/1348609186725289984")]
     [InlineData("https://twitter.com/SouthamptonFC/status/1347577658079641604")]
     [InlineData("https://twitter.com/CTVJLaidlaw/status/1600649710662213632")]
-    [InlineData("https://twitter.com/hlo_again/status/1599108751385972737")]
+    [InlineData("https://twitter.com/hlo_again/status/1599108751385972737", Skip = "Account owner limits who can view their Tweets")]
     [InlineData("https://twitter.com/MunTheShinobi/status/1600009574919962625")]
     [InlineData("https://twitter.com/liberdalau/status/1623739803874349067", Skip = "Account owner limits who can view their Tweets")]
     [InlineData("https://twitter.com/oshtru/status/1577855540407197696")]
