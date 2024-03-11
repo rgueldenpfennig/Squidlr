@@ -25,7 +25,7 @@
         <button class="btn btn-primary" type="button" title="Paste from clipboard" @onclick="PasteClipboard">
             <span class="oi oi-clipboard" data-glyph="clipboard" aria-hidden="true"></span>
         </button>
-        <input @ref=_inputReference type="text" autocomplete="on" class="form-control shadow-none" placeholder="Paste your link here" inputmode="url" aria-label="Download URL" aria-describedby="download-button" @bind:event="oninput" @bind:get="State.Url" @bind:set="HandleInput" @onkeypress="OnKeyPress" />
+        <input @ref=_inputReference type="text" autocomplete="on" name="url" id="url" class="form-control shadow-none" placeholder="Paste your link here" inputmode="url" aria-label="Download URL" aria-describedby="download-button" @bind:event="oninput" @bind:get="State.Url" @bind:set="HandleInput" @onkeypress="OnKeyPress" />
     </div>
     <div class="mb-4">
         <button class="btn btn-primary btn-lg" type="button" id="download-button" disabled="@(!_downloadEnabled)" @onclick="DownloadVideo">Download</button>
