@@ -14,14 +14,16 @@
     <meta name="apple-mobile-web-app-title" content="@SeoProperties.AppName">
     <meta name="og:type" content="website" />
     <meta name="og:site_name" content="@SeoProperties.Domain" />
-    <meta name="og:image" content="@(NavigationManager.BaseUri)images/social-header.png" />
+    <meta name="og:image" content="@(NavigationManager.BaseUri + WithFileVersion("images/social-header.png"))" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:creator" content="@@SquidlrBot" />
     <meta name="twitter:site" content="@@SquidlrBot" />
-    <meta name="twitter:image:src" content="@(NavigationManager.BaseUri)images/social-header.png" />
+    <meta name="twitter:image" content="@(NavigationManager.BaseUri + WithFileVersion("images/social-header.png"))" />
     <meta name="twitter:domain" content="@SeoProperties.Domain">
     <base href="/" />
-    <link rel="icon" href="favicon.ico" />
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16-bg.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32-bg.png" />
     <link rel="icon" type="image/png" sizes="256x256" href="images/favicon-256-bg.png" />
     <link rel="icon" type="image/png" sizes="512x512" href="images/favicon-512-bg.png" />
