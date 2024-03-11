@@ -9,5 +9,7 @@ public enum SocialMediaPlatform
 
     Twitter,
 
-    Instagram
+    Instagram,
+
+    Tiktok
 }
