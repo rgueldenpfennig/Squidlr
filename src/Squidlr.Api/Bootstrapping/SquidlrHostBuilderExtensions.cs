@@ -1,13 +1,11 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Squidlr;
 using Squidlr.Abstractions;
 using Squidlr.Instagram;
 using Squidlr.Telemetry;
 using Squidlr.Twitter;
 
-namespace Squidlr;
+namespace Microsoft.AspNetCore.Builder;
 
 public static class SquidlrHostBuilderExtensions
 {

@@ -9,7 +9,7 @@ using Squidlr.Twitter.Services;
 
 namespace Squidlr.Twitter;
 
-internal static class TwitterServiceCollectionExtensions
+public static class TwitterServiceCollectionExtensions
 {
     public static IServiceCollection AddTwitter(this IServiceCollection services)
     {

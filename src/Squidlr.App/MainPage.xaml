@@ -1,7 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Squidlr.App.MainPage">
+             xmlns:local="clr-namespace:Squidlr.App"
+             x:Class="Squidlr.App.MainPage"
+             x:DataType="local:MainPageViewModel">
+
+    <ContentPage.BindingContext>
+        <local:MainPageViewModel />
+    </ContentPage.BindingContext>
 
     <ScrollView>
         <VerticalStackLayout
@@ -21,8 +27,18 @@
             <Label
                 Text="Squidlr is your tool of choice to download any video or GIF animation from a various selection of social media platforms.
 Just paste the link below, choose your resolution and save it locally on your device as a MP4 file. "
-                HorizontalOptions="CenterAndExpand"
+                HorizontalTextAlignment="Center"
                 SemanticProperties.HeadingLevel="None" />
+
+            <Entry
+                ClearButtonVisibility="WhileEditing"
+                Placeholder="Paste your link here"
+                Keyboard="Url"
+                ReturnType="Go"
+                IsSpellCheckEnabled="False"
+                IsTextPredictionEnabled="False"
+                Text="{Binding Url}"
+                ReturnCommand="{Binding SubmitCommand}"/>
 
             <Label
                 Text="Supported platforms"

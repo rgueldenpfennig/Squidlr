@@ -4,6 +4,7 @@ using System.Net.Http.Headers;
 using System.Text.Json;
 using DotNext;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Squidlr.Twitter.Utilities;
@@ -126,7 +127,7 @@ public sealed class TwitterWebClient
                 if (!response.IsSuccessStatusCode)
                 {
                     _logger.LogWarning("Twitter guest token API is probably deprecated.");
-                    client.DefaultRequestHeaders.Remove(Microsoft.Net.Http.Headers.HeaderNames.Authorization); // we must remove the Authorization header in that case
+                    client.DefaultRequestHeaders.Remove("Authorization"); // we must remove the Authorization header in that case
                     var document = await client.GetStringAsync(tweet.Url, cancellationToken);
 
                     guestToken = GuestTokenUtilities.ExtractGuestToken(document) ??
