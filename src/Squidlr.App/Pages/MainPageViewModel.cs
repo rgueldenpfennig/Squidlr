@@ -43,8 +43,12 @@ public class MainPageViewModel : ObservableObject
 
     private async Task ExecuteDownloadCommandAsync()
     {
-        // SemanticScreenReader.Announce(...);
-        await Shell.Current.GoToAsync($"download?url={Url}");
+        // TODO: SemanticScreenReader.Announce(...)
+        var navigationParameter = new Dictionary<string, object>
+        {
+            { "contentIdentifier", _urlResolver.ResolveUrl(Url) }
+        };
+        await Shell.Current.GoToAsync("/download", navigationParameter);
     }
 
     private void OnUrlChanged(string? value)

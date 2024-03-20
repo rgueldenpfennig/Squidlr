@@ -20,20 +20,18 @@ public static class SquidlrHostBuilderExtensions
         var services = builder.Services;
 
         // pages and view models
-        builder.Services.AddTransient<MainPage>();
-        builder.Services.AddTransient<MainPageViewModel>();
+        services.AddTransient<MainPage>();
+        services.AddTransient<MainPageViewModel>();
 
-        builder.Services.AddTransient<DownloadPage>();
-        builder.Services.AddTransient<DownloadPageViewModel>();
+        services.AddTransient<DownloadPage>();
+        services.AddTransient<DownloadPageViewModel>();
 
-        services.AddSingleton(new SquidlrOptions
+        services.AddOptions<SquidlrOptions>().Configure(options =>
         {
-            InstagramHostUri = new Uri("https://www.instagram.com"),
-            TwitterApiHostUri = new Uri("https://api.twitter.com"),
-            TwitterAuthorizationBearerToken = "AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA"
+            options.InstagramHostUri = new Uri("https://www.instagram.com");
+            options.TwitterApiHostUri = new Uri("https://api.twitter.com");
+            options.TwitterAuthorizationBearerToken = "AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA";
         });
-
-        //services.AddLogging((a) => a.AddProvider())
 
         services.AddSingleton<ITelemetryService>(new TelemetryService());
 

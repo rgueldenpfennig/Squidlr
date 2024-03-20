@@ -5,6 +5,10 @@
              x:Class="Squidlr.App.Pages.MainPage"
              x:DataType="pages:MainPageViewModel">
 
+    <Shell.NavBarIsVisible>
+        false
+    </Shell.NavBarIsVisible>
+
     <ScrollView>
         <VerticalStackLayout
             Padding="30,0"

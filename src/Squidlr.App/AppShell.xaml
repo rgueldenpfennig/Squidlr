@@ -5,7 +5,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:Squidlr.App"
     xmlns:pages="clr-namespace:Squidlr.App.Pages"
-    Shell.FlyoutBehavior="Disabled">
+    Shell.FlyoutBehavior="Disabled"
+    Shell.NavBarIsVisible="True"
+    Shell.ForegroundColor="#2c1a4d"
+    Shell.TitleColor="#2c1a4d">
 
     <TabBar>
         <ShellContent

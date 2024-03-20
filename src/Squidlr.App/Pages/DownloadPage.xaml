@@ -4,11 +4,17 @@
              xmlns:pages="clr-namespace:Squidlr.App.Pages"
              x:Class="Squidlr.App.Pages.DownloadPage"
              x:DataType="pages:DownloadPageViewModel"
-             Title="DownloadPage">
+             Title="{Binding Title}">
+
     <VerticalStackLayout>
+        <VerticalStackLayout IsVisible="{Binding IsBusy}">
+            <ActivityIndicator IsRunning="{Binding IsBusy}" />
+            <Label Text="Your requested content is processed. Please wait a moment..." />
+        </VerticalStackLayout>
         <Label 
-            Text="{Binding Url}"
+            Text="{Binding ContentIdentifier.Url}"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
     </VerticalStackLayout>
+
 </ContentPage>
