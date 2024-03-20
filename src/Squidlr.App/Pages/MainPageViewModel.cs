@@ -46,7 +46,7 @@ public class MainPageViewModel : INotifyPropertyChanged
 
     private void ExecuteDownloadCommand(object arg)
     {
-
+        // SemanticScreenReader.Announce(...);
     }
 
     private void OnUrlChanged(string? value)
