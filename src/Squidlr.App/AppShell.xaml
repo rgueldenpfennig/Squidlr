@@ -9,12 +9,14 @@
 
     <TabBar>
         <ShellContent
-            Title="Squidlr"
+            Title="Download"
+            Route="home"
             ContentTemplate="{DataTemplate pages:MainPage}"
             Icon="{OnPlatform 'icon_notes.png', iOS='icon_notes_ios.png', MacCatalyst='icon_notes_ios.png'}" />
 
         <ShellContent
             Title="About"
+            Route="about"
             ContentTemplate="{DataTemplate pages:AboutPage}"
             Icon="{OnPlatform 'icon_about.png', iOS='icon_about_ios.png', MacCatalyst='icon_about_ios.png'}" />
     </TabBar>

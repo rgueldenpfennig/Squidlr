@@ -23,6 +23,9 @@ public static class SquidlrHostBuilderExtensions
         builder.Services.AddTransient<MainPage>();
         builder.Services.AddTransient<MainPageViewModel>();
 
+        builder.Services.AddTransient<DownloadPage>();
+        builder.Services.AddTransient<DownloadPageViewModel>();
+
         services.AddSingleton(new SquidlrOptions
         {
             InstagramHostUri = new Uri("https://www.instagram.com"),

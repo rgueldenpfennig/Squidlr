@@ -34,12 +34,12 @@ Just paste the link below, choose your resolution and save it locally on your de
                 IsSpellCheckEnabled="False"
                 IsTextPredictionEnabled="False"
                 Text="{Binding Url}"
-                ReturnCommand="{Binding DownloadCommand}"/>
+                ReturnCommand="{Binding DownloadCommand, Mode=OneWay}"/>
 
             <Button
                 Text="Download"
-                IsEnabled="{Binding IsValidUrl}"
-                Command="{Binding DownloadCommand}"
+                IsEnabled="{Binding IsValidUrl, Mode=OneWay}"
+                Command="{Binding DownloadCommand, Mode=OneWay}"
                 SemanticProperties.Hint="Starts the download process of the link you provided above."
                 HorizontalOptions="Fill" />
 

@@ -1,19 +1,16 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Windows.Input;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Squidlr.App.Pages;
 
-public class MainPageViewModel : INotifyPropertyChanged
+public class MainPageViewModel : ObservableObject
 {
     private string? _url;
 
     private bool _isValidUrl;
     private readonly UrlResolver _urlResolver;
 
-    public event PropertyChangedEventHandler? PropertyChanged;
-
-    public ICommand DownloadCommand { private set; get; }
+    public IAsyncRelayCommand DownloadCommand { private set; get; }
 
     public string? Url
     {
@@ -36,17 +33,18 @@ public class MainPageViewModel : INotifyPropertyChanged
     {
         _urlResolver = urlResolver ?? throw new ArgumentNullException(nameof(urlResolver));
 
-        DownloadCommand = new Command(
-            execute: ExecuteDownloadCommand,
-            canExecute: (_) =>
+        DownloadCommand = new AsyncRelayCommand(
+            execute: ExecuteDownloadCommandAsync,
+            canExecute: () =>
             {
                 return IsValidUrl;
             });
     }
 
-    private void ExecuteDownloadCommand(object arg)
+    private async Task ExecuteDownloadCommandAsync()
     {
         // SemanticScreenReader.Announce(...);
+        await Shell.Current.GoToAsync($"download?url={Url}");
     }
 
     private void OnUrlChanged(string? value)
@@ -60,20 +58,5 @@ public class MainPageViewModel : INotifyPropertyChanged
         {
             IsValidUrl = true;
         }
-    }
-
-    private bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string? propertyName = null)
-    {
-        if (Equals(storage, value))
-            return false;
-
-        storage = value;
-        OnPropertyChanged(propertyName);
-        return true;
-    }
-
-    protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
