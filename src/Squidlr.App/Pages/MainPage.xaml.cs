@@ -1,4 +1,4 @@
-﻿namespace Squidlr.App
+﻿namespace Squidlr.App.Pages
 {
     public partial class MainPage : ContentPage
     {

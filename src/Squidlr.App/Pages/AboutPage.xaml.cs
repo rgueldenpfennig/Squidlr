@@ -1,4 +1,4 @@
-namespace Squidlr.App.Views;
+namespace Squidlr.App.Pages;
 
 public partial class AboutPage : ContentPage
 {

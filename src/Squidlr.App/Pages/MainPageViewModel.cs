@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 
-namespace Squidlr.App;
+namespace Squidlr.App.Pages;
 
 public class MainPageViewModel : INotifyPropertyChanged
 {

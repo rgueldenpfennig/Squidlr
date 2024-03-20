@@ -3,7 +3,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Squidlr;
 using Squidlr.Abstractions;
-using Squidlr.App;
+using Squidlr.App.Pages;
 using Squidlr.App.Telemetry;
 using Squidlr.Instagram;
 using Squidlr.Telemetry;
