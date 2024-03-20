@@ -4,8 +4,9 @@
     {
         int count = 0;
 
-        public MainPage()
+        public MainPage(MainPageViewModel viewModel)
         {
+            BindingContext = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
             InitializeComponent();
         }
 
@@ -21,5 +22,4 @@
             SemanticScreenReader.Announce(CounterBtn.Text);
         }
     }
-
 }

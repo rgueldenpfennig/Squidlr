@@ -4,7 +4,7 @@ using System.Windows.Input;
 
 namespace Squidlr.App;
 
-internal class MainPageViewModel : INotifyPropertyChanged
+public class MainPageViewModel : INotifyPropertyChanged
 {
     private string? _url;
 
@@ -13,11 +13,11 @@ internal class MainPageViewModel : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public ICommand SubmitCommand { private set; get; }
+    public ICommand DownloadCommand { private set; get; }
 
     public string? Url
     {
-        private set
+        set
         {
             OnUrlChanged(value);
             SetProperty(ref _url, value);
@@ -36,15 +36,15 @@ internal class MainPageViewModel : INotifyPropertyChanged
     {
         _urlResolver = urlResolver ?? throw new ArgumentNullException(nameof(urlResolver));
 
-        SubmitCommand = new Command(
-            execute: ExecuteSubmitCommand,
+        DownloadCommand = new Command(
+            execute: ExecuteDownloadCommand,
             canExecute: (_) =>
             {
                 return IsValidUrl;
             });
     }
 
-    private void ExecuteSubmitCommand(object arg)
+    private void ExecuteDownloadCommand(object arg)
     {
 
     }
@@ -54,11 +54,11 @@ internal class MainPageViewModel : INotifyPropertyChanged
         var contentIdentifier = _urlResolver.ResolveUrl(value);
         if (contentIdentifier == ContentIdentifier.Unknown)
         {
-            IsValidUrl = true;
+            IsValidUrl = false;
         }
         else
         {
-            IsValidUrl = false;
+            IsValidUrl = true;
         }
     }
 

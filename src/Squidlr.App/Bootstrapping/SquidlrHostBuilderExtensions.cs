@@ -1,7 +1,10 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using CommunityToolkit.Maui;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Squidlr;
 using Squidlr.Abstractions;
+using Squidlr.App;
+using Squidlr.App.Telemetry;
 using Squidlr.Instagram;
 using Squidlr.Telemetry;
 using Squidlr.Twitter;
@@ -14,16 +17,12 @@ public static class SquidlrHostBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-    //    "Squidlr": {
-    //        "InstagramHostUri": "https://www.instagram.com",
-    //"TwitterAuthorizationBearerToken": "AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA",
-    //"TwitterApiHostUri": "https://api.twitter.com",
-    //"ProxyOptions": {
-    //            "UseProxy": true
-    //}
-    //    }
-
         var services = builder.Services;
+
+        // pages and view models
+        builder.Services.AddTransient<MainPage>();
+        builder.Services.AddTransient<MainPageViewModel>();
+
         services.AddSingleton(new SquidlrOptions
         {
             InstagramHostUri = new Uri("https://www.instagram.com"),
@@ -32,6 +31,8 @@ public static class SquidlrHostBuilderExtensions
         });
 
         //services.AddLogging((a) => a.AddProvider())
+
+        services.AddSingleton<ITelemetryService>(new TelemetryService());
 
         services.AddMemoryCache();
         services.AddSingleton(sp => new UrlResolver(

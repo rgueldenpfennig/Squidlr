@@ -5,10 +5,6 @@
              x:Class="Squidlr.App.MainPage"
              x:DataType="local:MainPageViewModel">
 
-    <ContentPage.BindingContext>
-        <local:MainPageViewModel />
-    </ContentPage.BindingContext>
-
     <ScrollView>
         <VerticalStackLayout
             Padding="30,0"
@@ -17,7 +13,7 @@
                 Source="logo_1024.png"
                 HeightRequest="185"
                 Aspect="AspectFit"
-                SemanticProperties.Description="dot net bot in a race car number eight" />
+                SemanticProperties.Description="logo of squidlr in form of a giant purple squid" />
 
             <Label
                 Text="Social Media Video Downloader"
@@ -25,8 +21,8 @@
                 SemanticProperties.HeadingLevel="Level1" />
 
             <Label
-                Text="Squidlr is your tool of choice to download any video or GIF animation from a various selection of social media platforms.
-Just paste the link below, choose your resolution and save it locally on your device as a MP4 file. "
+                Text="Squidlr is your tool of choice to download any video from a various selection of social media platforms.
+Just paste the link below, choose your resolution and save it locally on your device."
                 HorizontalTextAlignment="Center"
                 SemanticProperties.HeadingLevel="None" />
 
@@ -38,7 +34,7 @@ Just paste the link below, choose your resolution and save it locally on your de
                 IsSpellCheckEnabled="False"
                 IsTextPredictionEnabled="False"
                 Text="{Binding Url}"
-                ReturnCommand="{Binding SubmitCommand}"/>
+                ReturnCommand="{Binding DownloadCommand}"/>
 
             <Label
                 Text="Supported platforms"
