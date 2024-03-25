@@ -1,20 +1,148 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:twitter="clr-namespace:Squidlr.Twitter;assembly=Squidlr"
              xmlns:pages="clr-namespace:Squidlr.App.Pages"
+             xmlns:controls="clr-namespace:Squidlr.App.Controls"
+             xmlns:converters="clr-namespace:Squidlr.App.Converters"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="Squidlr.App.Pages.DownloadPage"
              x:DataType="pages:DownloadPageViewModel"
              Title="{Binding Title}">
 
-    <VerticalStackLayout>
-        <VerticalStackLayout IsVisible="{Binding IsBusy}">
-            <ActivityIndicator IsRunning="{Binding IsBusy}" />
-            <Label Text="Your requested content is processed. Please wait a moment..." />
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+            <toolkit:IsNotNullConverter x:Key="IsNotNullConverter" />
+            <converters:IntToMetricConverter x:Key="IntToMetricConverter" />
+            <Style x:Key="CaptionStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="Caption" />
+            </Style>
+        </ResourceDictionary>
+
+        <ControlTemplate x:Key="TwitterContentTemplate" x:DataType="twitter:TwitterContent">
+            <Frame BindingContext="{Binding Source={RelativeSource TemplatedParent}, Path=SocialMediaContent}"
+                   HasShadow="True">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <!-- profile picture & user name -->
+                        <RowDefinition />
+                        <!-- full text -->
+                        <RowDefinition />
+                        <!-- video preview -->
+                        <RowDefinition />
+                        <!-- date -->
+                        <RowDefinition />
+                        <!-- statistics -->
+                    </Grid.RowDefinitions>
+                    <HorizontalStackLayout Spacing="8">
+                        <Frame BorderColor="Black"
+                               CornerRadius="50"
+                               HeightRequest="40"
+                               WidthRequest="40"
+                               IsClippedToBounds="True"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center">
+                            <Image Source="logo_1024.png"
+                                   Aspect="Fill"
+                                   HeightRequest="40"
+                                   WidthRequest="40" />
+                        </Frame>
+                        <VerticalStackLayout VerticalOptions="Center">
+                            <Label Text="{Binding UserName, Mode=OneTime}" FontSize="Medium" />
+                            <Label Text="{Binding UserName, Mode=OneTime, StringFormat='@{0}'}" Style="{StaticResource CaptionStyle}" />
+                        </VerticalStackLayout>
+                    </HorizontalStackLayout>
+                    <Label Grid.Row="1" Margin="0,8,0,8" Text="{Binding FullText, Mode=OneTime}" />
+                    <StackLayout Grid.Row="2">
+                        <CarouselView ItemsSource="{Binding Media, Mode=OneTime}"
+                                      IndicatorView="IndicatorView"
+                                      Loop="False">
+                            <CarouselView.ItemTemplate>
+                                <DataTemplate x:DataType="twitter:TweetMediaVideo">
+                                    <Frame Margin="2,0" BorderColor="Black"
+                                           CornerRadius="10"
+                                           Padding="0"
+                                           HorizontalOptions="FillAndExpand"
+                                           VerticalOptions="CenterAndExpand">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <Image Source="{Binding MediaUrl, Mode=OneTime}"
+                                                   Aspect="AspectFill"
+                                                   HeightRequest="200"
+                                                   Grid.RowSpan="2" />
+                                            <Button Grid.Row="1" Text="Download video" HorizontalOptions="FillAndExpand" />
+                                        </Grid>
+                                    </Frame>
+                                </DataTemplate>
+                            </CarouselView.ItemTemplate>
+                        </CarouselView>
+                        <IndicatorView x:Name="IndicatorView"
+                                       Margin="0,8"
+                                       IndicatorColor="LightGray"
+                                       SelectedIndicatorColor="DarkGray"
+                                       HorizontalOptions="Center" />
+                    </StackLayout>
+                    <HorizontalStackLayout Grid.Row="3" Margin="0,0,0,8">
+                        <controls:HyperlinkLabel
+                            Text="{Binding CreatedAtUtc, Mode=OneTime, StringFormat='{0:h:mm tt · MMM d, yyyy}'}" Style="{StaticResource CaptionStyle}"
+                            TextDecorations="Underline"
+                            Url="{Binding SourceUrl, Mode=OneTime}"/>
+                        <Label IsVisible="{Binding Views, Mode=OneTime, Converter={StaticResource IsNotNullConverter}}"
+                               Style="{StaticResource CaptionStyle}">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text=" · " />
+                                    <Span Text="{Binding Views, Mode=OneTime, Converter={StaticResource IntToMetricConverter}}" FontAttributes="Bold" />
+                                    <Span Text=" " />
+                                    <Span Text="Views" />
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                    </HorizontalStackLayout>
+                    <VerticalStackLayout Grid.Row="4" Spacing="8">
+                        <BoxView BackgroundColor="Gray" HeightRequest="1" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Label Style="{StaticResource CaptionStyle}" Text="{Binding ReplyCount, Mode=OneTime, StringFormat='{0} Replies', Converter={StaticResource IntToMetricConverter}}" />
+                            <Label Grid.Column="1" Style="{StaticResource CaptionStyle}" Text="{Binding RetweetCount, Mode=OneTime, StringFormat='{0} Reposts', Converter={StaticResource IntToMetricConverter}}" />
+                            <Label Grid.Column="2" Style="{StaticResource CaptionStyle}" Text="{Binding FavoriteCount, Mode=OneTime, StringFormat='{0} Likes', Converter={StaticResource IntToMetricConverter}}" />
+                            <Label Grid.Column="3" Style="{StaticResource CaptionStyle}" Text="{Binding BookmarkCount, Mode=OneTime, StringFormat='{0} Bookmarks', Converter={StaticResource IntToMetricConverter}}" />
+                        </Grid>
+                        <BoxView BackgroundColor="Gray" HeightRequest="1" />
+                    </VerticalStackLayout>
+                </Grid>
+            </Frame>
+        </ControlTemplate>
+    </ContentPage.Resources>
+
+    <!-- TODO: use RefreshView (https://learn.microsoft.com/en-us/dotnet/maui/user-interface/controls/refreshview?view=net-maui-8.0) -->
+    <ScrollView>
+        <VerticalStackLayout Padding="15,0">
+            <!-- TOOD: use StateContainer (https://learn.microsoft.com/en-us/dotnet/communitytoolkit/maui/layouts/statecontainer) -->
+            <VerticalStackLayout IsVisible="{Binding IsBusy}" VerticalOptions="Center">
+                <ActivityIndicator IsRunning="{Binding IsBusy}" />
+                <Label HorizontalTextAlignment="Center"
+                       Text="Your requested content is processed.
+                       Please wait a moment..." />
+            </VerticalStackLayout>
+            <VerticalStackLayout
+                IsVisible="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+                Spacing="8">
+                <controls:SocialMediaContentView
+                    ControlTemplate="{StaticResource TwitterContentTemplate}"
+                    SocialMediaContent="{Binding Content}" />
+            </VerticalStackLayout>
         </VerticalStackLayout>
-        <Label 
-            Text="{Binding ContentIdentifier.Url}"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+    </ScrollView>
 
 </ContentPage>

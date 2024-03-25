@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Squidlr.App.Pages;
 
@@ -21,9 +22,12 @@ public sealed partial class DownloadPageViewModel : ObservableObject, IDisposabl
     [ObservableProperty]
     private bool _isBusy;
 
+    public IAsyncRelayCommand DownloadCommand { private set; get; }
+
     public DownloadPageViewModel(ContentProvider contentProvider)
     {
         _contentProvider = contentProvider ?? throw new ArgumentNullException(nameof(contentProvider));
+        //DownloadCommand = new AsyncRelayCommand()
     }
 
     public async ValueTask GetContentAsync()
@@ -40,7 +44,6 @@ public sealed partial class DownloadPageViewModel : ObservableObject, IDisposabl
         if (response.IsSuccessful)
         {
             Content = response.Value;
-            Title = Content.FullText ?? Title;
         }
         else
         {

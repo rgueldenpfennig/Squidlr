@@ -20,11 +20,8 @@ public static class SquidlrHostBuilderExtensions
         var services = builder.Services;
 
         // pages and view models
-        services.AddTransient<MainPage>();
-        services.AddTransient<MainPageViewModel>();
-
-        services.AddTransient<DownloadPage>();
-        services.AddTransient<DownloadPageViewModel>();
+        services.AddSingleton<MainPage, MainPageViewModel>();
+        services.AddSingleton<DownloadPage, DownloadPageViewModel>();
 
         services.AddOptions<SquidlrOptions>().Configure(options =>
         {
