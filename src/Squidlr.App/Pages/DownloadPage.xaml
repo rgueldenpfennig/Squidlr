@@ -75,7 +75,11 @@
                                                    Aspect="AspectFill"
                                                    HeightRequest="200"
                                                    Grid.RowSpan="2" />
-                                            <Button Grid.Row="1" Text="Download video" HorizontalOptions="FillAndExpand" />
+                                            <Button Grid.Row="1"
+                                                    Text="Download video"
+                                                    HorizontalOptions="FillAndExpand"
+                                                    Command="{Binding Source={RelativeSource TemplatedParent}, Path=DownloadCommand}"
+                                                    CommandParameter="{Binding}"/>
                                         </Grid>
                                     </Frame>
                                 </DataTemplate>
@@ -140,7 +144,8 @@
                 Spacing="8">
                 <controls:SocialMediaContentView
                     ControlTemplate="{StaticResource TwitterContentTemplate}"
-                    SocialMediaContent="{Binding Content}" />
+                    SocialMediaContent="{Binding Content}"
+                    DownloadCommand="{Binding DownloadCommand}"/>
             </VerticalStackLayout>
         </VerticalStackLayout>
     </ScrollView>
