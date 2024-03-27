@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Squidlr.Twitter;
 
 namespace Squidlr.App.Pages;
 
@@ -28,7 +27,7 @@ public sealed partial class DownloadPageViewModel : ObservableObject, IDisposabl
     public DownloadPageViewModel(ContentProvider contentProvider)
     {
         _contentProvider = contentProvider ?? throw new ArgumentNullException(nameof(contentProvider));
-        DownloadCommand = new AsyncRelayCommand<TweetMediaVideo>(
+        DownloadCommand = new AsyncRelayCommand<Video>(
             execute: async (video) => await Task.Delay(100),
             canExecute: (video) => _content is not null);
     }

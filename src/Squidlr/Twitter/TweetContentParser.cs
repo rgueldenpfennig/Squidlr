@@ -44,11 +44,11 @@ public sealed class TweetContentParser
             return new(RequestContentResult.Error);
         }
 
-        if (result == RequestContentResult.Success && _tweetContent.Media?.Count > 0)
+        if (result == RequestContentResult.Success && _tweetContent.Videos.Count > 0)
         {
             return _tweetContent;
         }
-        else if (result == RequestContentResult.Success && _tweetContent.Media?.Count == 0)
+        else if (result == RequestContentResult.Success && _tweetContent.Videos.Count == 0)
         {
             return new(RequestContentResult.NoVideo);
         }
@@ -221,7 +221,7 @@ public sealed class TweetContentParser
         var mediaArray = _extendedEntitiesElement.GetProperty("media");
         await foreach (var tweetMediaVideo in ExtractVideosFromMediaArrayAsync(mediaArray, cancellationToken))
             if (tweetMediaVideo != null)
-                _tweetContent.AddMedia(tweetMediaVideo);
+                _tweetContent.AddVideo(tweetMediaVideo);
     }
 
     private async ValueTask<RequestContentResult> CreateFromUnifiedCardAsync(CancellationToken cancellationToken)
@@ -248,7 +248,7 @@ public sealed class TweetContentParser
         {
             var tweetMediaVideo = await ExtractVideoFromMediaEntityAsync(mediaEntity.Value, cancellationToken);
             if (tweetMediaVideo != null)
-                _tweetContent.AddMedia(tweetMediaVideo);
+                _tweetContent.AddVideo(tweetMediaVideo);
         }
 
         return RequestContentResult.Success;
@@ -283,9 +283,9 @@ public sealed class TweetContentParser
             _logger.LogWarning("Could not find 'content_duration_seconds' in Tweet detail contents of a card.");
         }
 
-        var tweetMedia = new TweetMediaVideo
+        var video = new Video
         {
-            MediaUrl = new Uri(playerImageElement.Value.GetProperty("image_value").GetProperty("url").GetString()!),
+            DisplayUrl = new Uri(playerImageElement.Value.GetProperty("image_value").GetProperty("url").GetString()!),
             Duration = contentDurationElement.HasValue ? TimeSpan.FromSeconds(Convert.ToInt32(contentDurationElement.Value.GetProperty("string_value").GetString())) : null
         };
 
@@ -322,9 +322,9 @@ public sealed class TweetContentParser
                 var uri = new Uri(decodedVideoUrl);
                 var contentLength = await _twitterClient.GetVideoContentLengthAsync(uri, ct);
 
-                lock (tweetMedia)
+                lock (video)
                 {
-                    tweetMedia.VideoSources.Add(new()
+                    video.VideoSources.Add(new()
                     {
                         Bitrate = bitrate,
                         ContentType = contentType,
@@ -336,7 +336,7 @@ public sealed class TweetContentParser
             }
         });
 
-        _tweetContent.AddMedia(tweetMedia);
+        _tweetContent.AddVideo(video);
 
         return RequestContentResult.Success;
     }
@@ -369,7 +369,7 @@ public sealed class TweetContentParser
                                                       .GetPropertyOrNull("screen_name")?.GetString();
     }
 
-    private async IAsyncEnumerable<TweetMediaVideo?> ExtractVideosFromMediaArrayAsync(JsonElement mediaArray, [EnumeratorCancellation] CancellationToken cancellationToken)
+    private async IAsyncEnumerable<Video?> ExtractVideosFromMediaArrayAsync(JsonElement mediaArray, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         foreach (var mediaEntity in mediaArray.EnumerateArray())
         {
@@ -378,22 +378,22 @@ public sealed class TweetContentParser
         }
     }
 
-    private async ValueTask<TweetMediaVideo?> ExtractVideoFromMediaEntityAsync(JsonElement mediaEntity, CancellationToken cancellationToken)
+    private async ValueTask<Video?> ExtractVideoFromMediaEntityAsync(JsonElement mediaEntity, CancellationToken cancellationToken)
     {
         if (!mediaEntity.TryGetProperty("video_info", out var videoInfo))
             return null;
 
         var mediaUrlHttps = mediaEntity.GetProperty("media_url_https").GetString()!;
-        var tweetMediaVideo = new TweetMediaVideo
+        var video = new Video
         {
-            MediaUrl = new Uri(mediaUrlHttps),
+            DisplayUrl = new Uri(mediaUrlHttps),
             Monetizable = mediaEntity.GetPropertyOrNull("additional_media_info")?.GetPropertyOrNull("monetizable")?.GetBoolean(),
             Views = mediaEntity.GetPropertyOrNull("mediaStats")?.GetPropertyOrNull("viewCount")?.GetInt32()
         };
 
         if (videoInfo.TryGetProperty("duration_millis", out var durationProperty))
         {
-            tweetMediaVideo.Duration = TimeSpan.FromMilliseconds(durationProperty.GetInt32());
+            video.Duration = TimeSpan.FromMilliseconds(durationProperty.GetInt32());
         }
 
         var variants = videoInfo.GetProperty("variants").EnumerateArray();
@@ -412,9 +412,9 @@ public sealed class TweetContentParser
                     var uri = new Uri(videoUrl);
                     var contentLength = await _twitterClient.GetVideoContentLengthAsync(uri, cancellationToken);
 
-                    lock (tweetMediaVideo)
+                    lock (video)
                     {
-                        tweetMediaVideo.VideoSources.Add(new()
+                        video.VideoSources.Add(new()
                         {
                             Bitrate = bitrate,
                             ContentType = contentType,
@@ -427,6 +427,6 @@ public sealed class TweetContentParser
             }
         });
 
-        return tweetMediaVideo;
+        return video;
     }
 }

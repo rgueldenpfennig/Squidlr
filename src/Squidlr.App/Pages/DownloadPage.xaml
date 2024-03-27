@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:twitter="clr-namespace:Squidlr.Twitter;assembly=Squidlr"
+             xmlns:core="clr-namespace:Squidlr;assembly=Squidlr"
              xmlns:pages="clr-namespace:Squidlr.App.Pages"
              xmlns:controls="clr-namespace:Squidlr.App.Controls"
              xmlns:converters="clr-namespace:Squidlr.App.Converters"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:twitter="clr-namespace:Squidlr.Twitter;assembly=Squidlr"
              x:Class="Squidlr.App.Pages.DownloadPage"
              x:DataType="pages:DownloadPageViewModel"
              Title="{Binding Title}">
@@ -56,11 +57,11 @@
                     </HorizontalStackLayout>
                     <Label Grid.Row="1" Margin="0,8,0,8" Text="{Binding FullText, Mode=OneTime}" />
                     <StackLayout Grid.Row="2">
-                        <CarouselView ItemsSource="{Binding Media, Mode=OneTime}"
+                        <CarouselView ItemsSource="{Binding Videos, Mode=OneTime}"
                                       IndicatorView="IndicatorView"
                                       Loop="False">
                             <CarouselView.ItemTemplate>
-                                <DataTemplate x:DataType="twitter:TweetMediaVideo">
+                                <DataTemplate x:DataType="core:Video">
                                     <Frame Margin="2,0" BorderColor="Black"
                                            CornerRadius="10"
                                            Padding="0"
@@ -71,7 +72,7 @@
                                                 <RowDefinition Height="*" />
                                                 <RowDefinition Height="Auto" />
                                             </Grid.RowDefinitions>
-                                            <Image Source="{Binding MediaUrl, Mode=OneTime}"
+                                            <Image Source="{Binding DisplayUrl, Mode=OneTime}"
                                                    Aspect="AspectFill"
                                                    HeightRequest="200"
                                                    Grid.RowSpan="2" />

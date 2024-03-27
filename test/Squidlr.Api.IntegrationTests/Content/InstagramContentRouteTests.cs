@@ -45,16 +45,16 @@ public class InstagramContentRouteTests : IClassFixture<ApiWebApplicationFactory
         {
             var content = await response.Content.ReadFromJsonAsync<InstagramContent>();
             Assert.NotNull(content);
-            Assert.Equal(content.CreatedAtUtc, expectedContent.CreatedAtUtc);
+            Assert.Equal(expectedContent.CreatedAtUtc, content.CreatedAtUtc);
             Assert.InRange(content.FavoriteCount, expectedContent.FavoriteCount - 100, expectedContent.FavoriteCount + 100);
             Assert.InRange(content.ReplyCount, expectedContent.ReplyCount - 100, expectedContent.ReplyCount + 100);
-            Assert.Equal(content.FullText, expectedContent.FullText);
-            Assert.Equal(content.UserName, expectedContent.UserName);
-            Assert.Equal(content.FullName, expectedContent.FullName);
+            Assert.Equal(expectedContent.FullText, content.FullText);
+            Assert.Equal(expectedContent.UserName, content.UserName);
+            Assert.Equal(expectedContent.FullName, content.FullName);
 
             if (expectedContent.ProfilePictureUrl is not null)
             {
-                Assert.Equal(content.ProfilePictureUrl!.AbsolutePath, expectedContent.ProfilePictureUrl.OriginalString);
+                Assert.Equal(expectedContent.ProfilePictureUrl.OriginalString, content.ProfilePictureUrl!.AbsolutePath);
             }
 
             for (var i = 0; i < expectedContent.Videos.Count; i++)
@@ -65,8 +65,8 @@ public class InstagramContentRouteTests : IClassFixture<ApiWebApplicationFactory
                 var expectedVideo = expectedContent.Videos[i];
                 var video = content.Videos[i];
 
-                Assert.Equal(video.DisplayUrl.AbsolutePath, expectedVideo.DisplayUrl.OriginalString);
-                Assert.Equal(video.Duration, expectedVideo.Duration);
+                Assert.Equal(expectedVideo.DisplayUrl.OriginalString, video.DisplayUrl.AbsolutePath);
+                Assert.Equal(expectedVideo.Duration, video.Duration);
                 if (video.Views.HasValue)
                     Assert.InRange(video.Views.Value, expectedVideo.Views!.Value - 100, expectedVideo.Views!.Value + 100);
 
@@ -78,10 +78,10 @@ public class InstagramContentRouteTests : IClassFixture<ApiWebApplicationFactory
                     var expectedVideoSource = expectedVideo.VideoSources[j];
                     var videoSource = video.VideoSources[j];
 
-                    Assert.Equal(videoSource.ContentType, expectedVideoSource.ContentType);
-                    Assert.Equal(videoSource.ContentLength, expectedVideoSource.ContentLength);
-                    Assert.Equal(videoSource.Size, expectedVideoSource.Size);
-                    Assert.Equal(videoSource.Url.AbsolutePath, expectedVideoSource.Url.OriginalString);
+                    Assert.Equal(expectedVideoSource.ContentType, videoSource.ContentType);
+                    Assert.Equal(expectedVideoSource.Url.OriginalString, videoSource.Url.AbsolutePath);
+                    Assert.Equal(expectedVideoSource.Size, videoSource.Size);
+                    Assert.Equal(expectedVideoSource.ContentLength, videoSource.ContentLength);
                 }
             }
         }
@@ -101,22 +101,22 @@ public class InstagramContentRouteTests : IClassFixture<ApiWebApplicationFactory
                 UserName = "naomipq",
                 FullName = "B E A U T Y  F O R  A S H E S",
                 ProfilePictureUrl = new Uri("/v/t51.2885-19/350847933_1258485001453274_5980656859626345933_n.jpg", UriKind.Relative),
-                Videos = new InstagramVideoCollection
+                Videos = new VideoCollection
                 {
-                    new InstagramVideo
+                    new Video
                     {
                         DisplayUrl = new Uri("/v/t51.2885-15/11379094_104911659849817_249670488_n.jpg", UriKind.Relative),
-                        Duration = TimeSpan.Parse("00:00:08.7420000", CultureInfo.InvariantCulture),
+                        Duration = default(TimeSpan),
                         Views = 0,
                         VideoSources = new VideoSourceCollection
                         {
                             new VideoSource
                             {
                                 Bitrate = 0,
-                                ContentLength = 1017460,
+                                ContentLength = 1215377,
                                 ContentType = "video/mp4",
                                 Size = new(612, 612),
-                                Url = new Uri("/o1/v/t16/f1/m84/684E26483F3B131A73D2F28B764A74AF_video_dashinit.mp4", UriKind.Relative)
+                                Url = new Uri("/v/t50.2886-16/11539930_919766514753417_231041833_n.mp4", UriKind.Relative)
                             }
                         }
                     }
@@ -130,15 +130,15 @@ public class InstagramContentRouteTests : IClassFixture<ApiWebApplicationFactory
             new InstagramContent("https://www.instagram.com/marvelskies.fc/reel/CWqAgUZgCku/")
             {
                 CreatedAtUtc = DateTimeOffset.Parse("2021-11-24T11:09:53+00:00", CultureInfo.InvariantCulture),
-                FavoriteCount = 1011106,
+                FavoriteCount = 1001863,
                 FullText = "Have no home 😂\n\n. Follow @marvelskies.fc \n\n.Tags 🏷️\n#spiderman #spidermannowayhome #tomholland #loveyou3000 #robertdowneyjr #andrewgarfield\n#tobeymaguire #ironman #marvel\n\n. Credits to the Respective Owners",
                 ReplyCount = 1757,
                 UserName = "marvelskies.fc",
                 FullName = "Marvel Skies ©",
                 ProfilePictureUrl = new Uri("/v/t51.2885-19/274309756_327224209336121_2039447280632515378_n.jpg", UriKind.Relative),
-                Videos = new InstagramVideoCollection
+                Videos = new VideoCollection
                 {
-                    new InstagramVideo
+                    new Video
                     {
                         DisplayUrl = new Uri("/v/t51.2885-15/260249305_1070857066995434_1652989255370474274_n.jpg", UriKind.Relative),
                         Duration = TimeSpan.Parse("00:00:08.7660000", CultureInfo.InvariantCulture),
@@ -171,9 +171,9 @@ public class InstagramContentRouteTests : IClassFixture<ApiWebApplicationFactory
                 UserName = "instagram",
                 FullName = "Instagram",
                 ProfilePictureUrl = new Uri("/v/t51.2885-19/281440578_1088265838702675_6233856337905829714_n.jpg", UriKind.Relative),
-                Videos = new InstagramVideoCollection
+                Videos = new VideoCollection
                 {
-                    new InstagramVideo
+                    new Video
                     {
                         DisplayUrl = new Uri("/v/t51.2885-15/16906872_216119275459833_3186754343655178240_n.jpg", UriKind.Relative),
                         Duration = null,
@@ -190,7 +190,7 @@ public class InstagramContentRouteTests : IClassFixture<ApiWebApplicationFactory
                             }
                         }
                     },
-                    new InstagramVideo
+                    new Video
                     {
                         DisplayUrl = new Uri("/v/t51.2885-15/16789502_591697921028973_4609981019490091008_n.jpg", UriKind.Relative),
                         Duration = null,
@@ -207,7 +207,7 @@ public class InstagramContentRouteTests : IClassFixture<ApiWebApplicationFactory
                             }
                         }
                     },
-                    new InstagramVideo
+                    new Video
                     {
                         DisplayUrl = new Uri("/v/t51.2885-15/16583642_1900513553560916_3961845230180761600_n.jpg", UriKind.Relative),
                         Duration = null,

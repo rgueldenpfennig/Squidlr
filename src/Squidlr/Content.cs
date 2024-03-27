@@ -19,10 +19,18 @@ public abstract class Content
 
     public int ReplyCount { get; set; }
 
+    public VideoCollection Videos { get; set; } = [];
+
     protected Content(string sourceUrl, SocialMediaPlatform platform)
     {
         ArgumentException.ThrowIfNullOrEmpty(sourceUrl);
         SourceUrl = sourceUrl;
         Platform = platform;
+    }
+
+    public void AddVideo(Video video)
+    {
+        ArgumentNullException.ThrowIfNull(video);
+        Videos.Add(video);
     }
 }

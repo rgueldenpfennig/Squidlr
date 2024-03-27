@@ -2,7 +2,6 @@
 @using Squidlr.Shared;
 @using Squidlr.Twitter;
 
-@inject IJSRuntime JS
 @inject NavigationManager NavigationManager
 
 @if (Content is not null)
@@ -65,16 +64,17 @@
             @{
                 int videoNumber = 0;
             }
-            @foreach (var video in Content.Media.OfType<TweetMediaVideo>())
+            @foreach (var video in Content.Videos)
             {
                 videoNumber++;
                 <div class="card border-0 mb-3">
                     <div class="row g-0">
                         <div class="col-md-4">
-                            @{
-                                videoMediaUrl ??= video.MediaUrl.ToString();
+                            @if (video.DisplayUrl != null)
+                            {
+                                videoMediaUrl ??= video.DisplayUrl.ToString();
+                                <img src="@video.DisplayUrl" class="img-fluid rounded mb-2" alt="Video thumbnail">
                             }
-                            <img src="@video.MediaUrl" class="img-fluid rounded mb-2" alt="Video thumbnail">
                         </div>
                         <div class="col-md-8">
                             <div class="card-body pt-0">

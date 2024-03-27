@@ -14,16 +14,8 @@ public sealed class TwitterContent : Content
 
     public int? Views { get; set; }
 
-    public TweetMediaCollection Media { get; set; } = new TweetMediaCollection();
-
     public TwitterContent(TweetIdentifier tweetIdentifier) : base(tweetIdentifier.Url, SocialMediaPlatform.Twitter)
     {
         TweetIdentifier = tweetIdentifier;
-    }
-
-    public void AddMedia(TweetMedia media)
-    {
-        ArgumentNullException.ThrowIfNull(media);
-        Media.Add(media);
     }
 }
