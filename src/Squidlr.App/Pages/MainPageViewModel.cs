@@ -33,6 +33,10 @@ public class MainPageViewModel : ObservableObject
     {
         _urlResolver = urlResolver ?? throw new ArgumentNullException(nameof(urlResolver));
 
+#if DEBUG
+        Url = "https://twitter.com/sentdefender/status/1772514015790477667";
+#endif
+
         DownloadCommand = new AsyncRelayCommand(
             execute: ExecuteDownloadCommandAsync,
             canExecute: () =>
@@ -49,6 +53,7 @@ public class MainPageViewModel : ObservableObject
             { "contentIdentifier", _urlResolver.ResolveUrl(Url) }
         };
         await Shell.Current.GoToAsync("/download", navigationParameter);
+        Url = null;
     }
 
     private void OnUrlChanged(string? value)

@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Maui;
+using CommunityToolkit.Maui.Storage;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Squidlr;
@@ -22,6 +23,9 @@ public static class SquidlrHostBuilderExtensions
         // pages and view models
         services.AddSingleton<MainPage, MainPageViewModel>();
         services.AddSingleton<DownloadPage, DownloadPageViewModel>();
+
+        // MAUI toolkit
+        services.AddSingleton(FileSaver.Default);
 
         services.AddOptions<SquidlrOptions>().Configure(options =>
         {

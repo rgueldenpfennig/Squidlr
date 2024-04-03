@@ -137,8 +137,10 @@
             <VerticalStackLayout IsVisible="{Binding IsBusy}" VerticalOptions="Center">
                 <ActivityIndicator IsRunning="{Binding IsBusy}" />
                 <Label HorizontalTextAlignment="Center"
-                       Text="Your requested content is processed.
-                       Please wait a moment..." />
+                       Text="Please wait a moment... ☕" />
+                <Button Command="{Binding CancelDownloadCommand}"
+                        IsVisible="{Binding DownloadCommand.IsRunning, Mode=OneWay}"
+                        Text="Cancel" />
             </VerticalStackLayout>
             <VerticalStackLayout
                 IsVisible="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
