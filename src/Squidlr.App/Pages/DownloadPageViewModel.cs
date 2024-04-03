@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-using System.Windows.Input;
-using CommunityToolkit.Maui.Alerts;
+﻿using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -28,10 +26,6 @@ public sealed partial class DownloadPageViewModel : ObservableObject, IDisposabl
     [ObservableProperty]
     private bool _isBusy;
 
-    public IAsyncRelayCommand DownloadCommand { private set; get; }
-
-    public ICommand CancelDownloadCommand { private set; get; }
-
     public DownloadPageViewModel(
         ContentProvider contentProvider,
         IHttpClientFactory httpClientFactory,
@@ -40,11 +34,6 @@ public sealed partial class DownloadPageViewModel : ObservableObject, IDisposabl
         _contentProvider = contentProvider ?? throw new ArgumentNullException(nameof(contentProvider));
         _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
         _fileSaver = fileSaver ?? throw new ArgumentNullException(nameof(fileSaver));
-
-        DownloadCommand = new AsyncRelayCommand<Video>(
-            cancelableExecute: ExecuteDownloadCommandAsync,
-            canExecute: CanExecuteDownloadCommand);
-        CancelDownloadCommand = DownloadCommand.CreateCancelCommand();
     }
 
     public async ValueTask GetContentAsync()
@@ -70,18 +59,14 @@ public sealed partial class DownloadPageViewModel : ObservableObject, IDisposabl
         IsBusy = false;
     }
 
-    private bool CanExecuteDownloadCommand(Video? video)
+    private bool CanExecuteDownload(Video? video)
     {
         return Content is not null && video?.VideoSources.Count >= 1;
     }
 
-    private async Task ExecuteDownloadCommandAsync(Video? video, CancellationToken cancellationToken)
+    [RelayCommand(CanExecute = nameof(CanExecuteDownload), IncludeCancelCommand = true)]
+    private async Task DownloadAsync(Video? video, CancellationToken cancellationToken)
     {
-        if (!CanExecuteDownloadCommand(video) || DownloadCommand.IsRunning)
-        {
-            return;
-        }
-
         // TODO: modal dialog to choose desired resolution (VideoSource)
         //var result = await Shell.Current.DisplayActionSheet(
         //    "Select resolution",
@@ -94,10 +79,6 @@ public sealed partial class DownloadPageViewModel : ObservableObject, IDisposabl
 
         try
         {
-#if DEBUG
-            await Task.Delay(5000, cancellationToken);
-#endif
-
             var selectedVideoSource = video!.VideoSources.OrderByDescending(vs => vs.Bitrate).First();
             var client = _httpClientFactory.GetPlatformHttpClient(Content!.Platform);
             var fileName = ContentIdentifier.GetSafeVideoFileName(selectedVideoSource.Url);

@@ -138,7 +138,7 @@
                 <ActivityIndicator IsRunning="{Binding IsBusy}" />
                 <Label HorizontalTextAlignment="Center"
                        Text="Please wait a moment... ☕" />
-                <Button Command="{Binding CancelDownloadCommand}"
+                <Button Command="{Binding DownloadCancelCommand}"
                         IsVisible="{Binding DownloadCommand.IsRunning, Mode=OneWay}"
                         Text="Cancel" />
             </VerticalStackLayout>
