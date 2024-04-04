@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Maui.Alerts;
+﻿using System.Diagnostics;
+using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -7,12 +8,11 @@ using CommunityToolkit.Mvvm.Input;
 namespace Squidlr.App.Pages;
 
 [QueryProperty(nameof(ContentIdentifier), "contentIdentifier")]
-public sealed partial class DownloadPageViewModel : ObservableObject, IDisposable
+public sealed partial class DownloadPageViewModel : ObservableObject
 {
     private readonly ContentProvider _contentProvider;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IFileSaver _fileSaver;
-    private readonly CancellationTokenSource _cts = new();
 
     [ObservableProperty]
     private string _title = "Download";
@@ -23,9 +23,6 @@ public sealed partial class DownloadPageViewModel : ObservableObject, IDisposabl
     [ObservableProperty]
     private Content? _content;
 
-    [ObservableProperty]
-    private bool _isBusy;
-
     public DownloadPageViewModel(
         ContentProvider contentProvider,
         IHttpClientFactory httpClientFactory,
@@ -35,28 +32,61 @@ public sealed partial class DownloadPageViewModel : ObservableObject, IDisposabl
         _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
         _fileSaver = fileSaver ?? throw new ArgumentNullException(nameof(fileSaver));
     }
-
-    public async ValueTask GetContentAsync()
+    private bool CanExecuteCancel()
     {
-        if (ContentIdentifier.Platform == SocialMediaPlatform.Unknown)
+        return GetContentCommand.CanBeCanceled || DownloadCommand.CanBeCanceled;
+    }
+
+    [RelayCommand(CanExecute = nameof(CanExecuteCancel))]
+    private async Task CancelAsync()
+    {
+        if (GetContentCommand.CanBeCanceled)
         {
-            throw new InvalidOperationException("No valid platform content identifier was provided.");
+            GetContentCommand.Cancel();
+            await Shell.Current.GoToAsync("..");
         }
 
-        Title = $"Download from {ContentIdentifier.Platform}";
-        IsBusy = true;
-
-        var response = await _contentProvider.GetContentAsync(ContentIdentifier, _cts.Token);
-        if (response.IsSuccessful)
+        if (DownloadCommand.CanBeCanceled)
         {
-            Content = response.Value;
+            DownloadCommand.Cancel();
         }
-        else
+    }
+
+    private bool CanExecuteGetContent()
+    {
+        return ContentIdentifier.Platform != SocialMediaPlatform.Unknown;
+    }
+
+    [RelayCommand(CanExecute = nameof(CanExecuteGetContent))]
+    private async Task GetContentAsync(CancellationToken cancellationToken)
+    {
+        Title = $"Download from {ContentIdentifier.Platform.GetPlatformName()}";
+
+        string? errorMessage = null;
+        try
         {
-            // SetErrorMessage(response.Error);
+            var response = await _contentProvider.GetContentAsync(ContentIdentifier, cancellationToken);
+            if (response.IsSuccessful)
+            {
+                Content = response.Value;
+            }
+            else
+            {
+                errorMessage = GetErrorMessage(response.Error);
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.WriteLine(e);
+            errorMessage = "An error occurred. Please try again.";
         }
 
-        IsBusy = false;
+        if (errorMessage != null)
+        {
+            await Toast.Make(errorMessage, ToastDuration.Long)
+                       .Show(CancellationToken.None);
+            await Shell.Current.GoToAsync("..");
+        }
     }
 
     private bool CanExecuteDownload(Video? video)
@@ -64,7 +94,7 @@ public sealed partial class DownloadPageViewModel : ObservableObject, IDisposabl
         return Content is not null && video?.VideoSources.Count >= 1;
     }
 
-    [RelayCommand(CanExecute = nameof(CanExecuteDownload), IncludeCancelCommand = true)]
+    [RelayCommand(CanExecute = nameof(CanExecuteDownload))]
     private async Task DownloadAsync(Video? video, CancellationToken cancellationToken)
     {
         // TODO: modal dialog to choose desired resolution (VideoSource)
@@ -74,7 +104,6 @@ public sealed partial class DownloadPageViewModel : ObservableObject, IDisposabl
         //    "Destruction",
         //    video.VideoSources.Select(vs => vs.Size.ToString()).ToArray());
 
-        IsBusy = true;
         var canceled = false;
 
         try
@@ -104,9 +133,11 @@ public sealed partial class DownloadPageViewModel : ObservableObject, IDisposabl
         {
             canceled = true;
         }
-        finally
+        catch (Exception e)
         {
-            IsBusy = false;
+            Debug.WriteLine(e);
+            await Toast.Make("An error occurred. Please try again.")
+                       .Show(CancellationToken.None);
         }
 
         if (canceled)
@@ -116,9 +147,20 @@ public sealed partial class DownloadPageViewModel : ObservableObject, IDisposabl
         }
     }
 
-    public void Dispose()
+    private static string GetErrorMessage(RequestContentResult result)
     {
-        GC.SuppressFinalize(this);
-        _cts.Dispose();
+        return result switch
+        {
+            RequestContentResult.Canceled => "The request has been canceled.",
+            RequestContentResult.NotFound => "Unfortunately the requested content could not be found.",
+            RequestContentResult.PlatformNotSupported => "The requested content seems to belong to an unsupported social media platform.",
+            RequestContentResult.NoVideo => "It seems that the content does not contain any video.",
+            RequestContentResult.UnsupportedVideo => "The content contains an embedded video source which is not yet supported.",
+            RequestContentResult.AdultContent => "Age-restricted adult content. This content might not be appropriate for people under 18 years old.",
+            RequestContentResult.AccountSuspended => "The account containing the requested content has been suspended.",
+            RequestContentResult.Protected => "The account owner limits who can view its content.",
+            RequestContentResult.GatewayError => "The response from the social media servers was not what we expected. Please try again in a few minutes. In the meantime we will try to fix the issue.",
+            _ => "There was an unexpected error. We will try to fix that as soon as possible!"
+        };
     }
 }

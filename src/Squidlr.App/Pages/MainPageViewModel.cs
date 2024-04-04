@@ -53,7 +53,6 @@ public class MainPageViewModel : ObservableObject
             { "contentIdentifier", _urlResolver.ResolveUrl(Url) }
         };
         await Shell.Current.GoToAsync("/download", navigationParameter);
-        Url = null;
     }
 
     private void OnUrlChanged(string? value)

@@ -14,6 +14,9 @@ public partial class DownloadPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        await _viewModel.GetContentAsync();
+        if (_viewModel.GetContentCommand.CanExecute(null))
+        {
+            await _viewModel.GetContentCommand.ExecuteAsync(null);
+        }
     }
 }

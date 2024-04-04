@@ -15,6 +15,12 @@
         <ResourceDictionary>
             <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
             <toolkit:IsNotNullConverter x:Key="IsNotNullConverter" />
+            <toolkit:VariableMultiValueConverter 
+                x:Key="AnyMultiValueConverter"
+                ConditionType="Any" />
+            <toolkit:VariableMultiValueConverter 
+                x:Key="NoneMultiValueConverter"
+                ConditionType="None" />
             <converters:IntToMetricConverter x:Key="IntToMetricConverter" />
             <Style x:Key="CaptionStyle" TargetType="Label">
                 <Setter Property="FontSize" Value="Caption" />
@@ -134,17 +140,33 @@
     <ScrollView>
         <VerticalStackLayout Padding="15,0">
             <!-- TOOD: use StateContainer (https://learn.microsoft.com/en-us/dotnet/communitytoolkit/maui/layouts/statecontainer) -->
-            <VerticalStackLayout IsVisible="{Binding IsBusy}" VerticalOptions="Center">
-                <ActivityIndicator IsRunning="{Binding IsBusy}" />
+            <VerticalStackLayout VerticalOptions="Center">
+                <VerticalStackLayout.IsVisible>
+                    <MultiBinding Converter="{StaticResource AnyMultiValueConverter}">
+                        <Binding Path="DownloadCommand.IsRunning" />
+                        <Binding Path="GetContentCommand.IsRunning" />
+                    </MultiBinding>
+                </VerticalStackLayout.IsVisible>
+                <ActivityIndicator>
+                    <ActivityIndicator.IsRunning>
+                        <MultiBinding Converter="{StaticResource AnyMultiValueConverter}">
+                            <Binding Path="DownloadCommand.IsRunning" />
+                            <Binding Path="GetContentCommand.IsRunning" />
+                        </MultiBinding>
+                    </ActivityIndicator.IsRunning>
+                </ActivityIndicator>
                 <Label HorizontalTextAlignment="Center"
                        Text="Please wait a moment... ☕" />
-                <Button Command="{Binding DownloadCancelCommand}"
-                        IsVisible="{Binding DownloadCommand.IsRunning, Mode=OneWay}"
+                <Button Command="{Binding CancelCommand}"
                         Text="Cancel" />
             </VerticalStackLayout>
-            <VerticalStackLayout
-                IsVisible="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
-                Spacing="8">
+            <VerticalStackLayout Spacing="8">
+                <VerticalStackLayout.IsVisible>
+                    <MultiBinding Converter="{StaticResource NoneMultiValueConverter}">
+                        <Binding Path="DownloadCommand.IsRunning" />
+                        <Binding Path="GetContentCommand.IsRunning" />
+                    </MultiBinding>
+                </VerticalStackLayout.IsVisible>
                 <controls:SocialMediaContentView
                     ControlTemplate="{StaticResource TwitterContentTemplate}"
                     SocialMediaContent="{Binding Content}"
