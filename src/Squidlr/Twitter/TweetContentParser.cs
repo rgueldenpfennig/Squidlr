@@ -362,11 +362,20 @@ public sealed class TweetContentParser
         _tweetContent.ReplyCount = _legacyElement.GetProperty("reply_count").GetInt32();
         _tweetContent.RetweetCount = _legacyElement.GetProperty("retweet_count").GetInt32();
         _tweetContent.FullText = _legacyElement.GetProperty("full_text").GetString();
-        _tweetContent.UserName = _contentElement!.Value.GetPropertyOrNull("core")?
-                                                      .GetPropertyOrNull("user_results")?
-                                                      .GetPropertyOrNull("result")?
-                                                      .GetPropertyOrNull("legacy")?
-                                                      .GetPropertyOrNull("screen_name")?.GetString();
+
+        var legacyUserResult = _contentElement!.Value.GetPropertyOrNull("core")?
+                                                     .GetPropertyOrNull("user_results")?
+                                                     .GetPropertyOrNull("result")?
+                                                     .GetPropertyOrNull("legacy");
+        if (legacyUserResult != null)
+        {
+            _tweetContent.DisplayName = legacyUserResult.Value.GetPropertyOrNull("name")?.GetString();
+            _tweetContent.UserName = legacyUserResult.Value.GetPropertyOrNull("screen_name")?.GetString();
+            if (legacyUserResult.Value.TryGetProperty("profile_image_url_https", out var profileImageUrl) && profileImageUrl.GetString() != null)
+            {
+                _tweetContent.ProfileImageUri = new Uri(profileImageUrl.GetString()!, UriKind.Absolute);
+            }
+        }
     }
 
     private async IAsyncEnumerable<Video?> ExtractVideosFromMediaArrayAsync(JsonElement mediaArray, [EnumeratorCancellation] CancellationToken cancellationToken)

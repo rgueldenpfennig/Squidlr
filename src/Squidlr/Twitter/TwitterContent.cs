@@ -1,4 +1,5 @@
-﻿namespace Squidlr.Twitter;
+﻿
+namespace Squidlr.Twitter;
 
 public sealed class TwitterContent : Content
 {
@@ -13,6 +14,10 @@ public sealed class TwitterContent : Content
     public string? Source { get; set; }
 
     public int? Views { get; set; }
+
+    public string? DisplayName { get; set; }
+
+    public Uri? ProfileImageUri { get; set; }
 
     public TwitterContent(TweetIdentifier tweetIdentifier) : base(tweetIdentifier.Url, SocialMediaPlatform.Twitter)
     {
