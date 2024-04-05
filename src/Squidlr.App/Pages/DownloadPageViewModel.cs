@@ -110,7 +110,7 @@ public sealed partial class DownloadPageViewModel : ObservableObject
         {
             var selectedVideoSource = video!.VideoSources.OrderByDescending(vs => vs.Bitrate).First();
             var client = _httpClientFactory.GetPlatformHttpClient(Content!.Platform);
-            var fileName = ContentIdentifier.GetSafeVideoFileName(selectedVideoSource.Url);
+            var fileName = Content!.GetSafeVideoFileName(selectedVideoSource);
 
             using var stream = await client.GetStreamAsync(selectedVideoSource.Url, cancellationToken);
             var fileSaverResult = await _fileSaver.SaveAsync(fileName, stream, cancellationToken);

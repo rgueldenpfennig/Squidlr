@@ -33,4 +33,14 @@ public abstract class Content
         ArgumentNullException.ThrowIfNull(video);
         Videos.Add(video);
     }
+
+    public virtual string GetSafeVideoFileName(VideoSource video)
+    {
+        if (!string.IsNullOrEmpty(UserName))
+        {
+            return $"{Platform.GetPlatformName()}-{UserName}-{Path.GetFileName(video.Url.AbsolutePath)}";
+        }
+
+        return $"{Platform.GetPlatformName()}-{Path.GetFileName(video.Url.AbsolutePath)}";
+    }
 }
