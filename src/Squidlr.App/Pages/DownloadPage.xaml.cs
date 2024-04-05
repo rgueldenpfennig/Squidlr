@@ -4,19 +4,21 @@ public partial class DownloadPage : ContentPage
 {
     private readonly DownloadPageViewModel _viewModel;
 
+    public DownloadPageViewModel ViewModel => _viewModel;
+
     public DownloadPage(DownloadPageViewModel viewModel)
     {
         _viewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
-        BindingContext = _viewModel;
+        BindingContext = ViewModel;
         InitializeComponent();
     }
 
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        if (_viewModel.GetContentCommand.CanExecute(null))
+        if (ViewModel.GetContentCommand.CanExecute(null))
         {
-            await _viewModel.GetContentCommand.ExecuteAsync(null);
+            await ViewModel.GetContentCommand.ExecuteAsync(null);
         }
     }
 }
