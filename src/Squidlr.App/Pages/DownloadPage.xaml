@@ -15,6 +15,7 @@
         <ResourceDictionary>
             <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
             <toolkit:IsNotNullConverter x:Key="IsNotNullConverter" />
+            <toolkit:IntToBoolConverter x:Key="IntToBoolConverter"  />
             <toolkit:VariableMultiValueConverter 
                 x:Key="AnyMultiValueConverter"
                 ConditionType="Any" />
@@ -23,6 +24,10 @@
                 ConditionType="None" />
             <converters:IntToMetricConverter x:Key="IntToMetricConverter" />
             <Style x:Key="CaptionStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="Caption" />
+            </Style>
+            <Style x:Key="BoldCaptionStyle" TargetType="Label">
+                <Setter Property="FontAttributes" Value="Bold" />
                 <Setter Property="FontSize" Value="Caption" />
             </Style>
         </ResourceDictionary>
@@ -85,6 +90,7 @@
                                             <Button Grid.Row="1"
                                                     Text="Download video"
                                                     HorizontalOptions="FillAndExpand"
+                                                    CornerRadius="0"
                                                     Command="{Binding Source={RelativeSource TemplatedParent}, Path=DownloadCommand}"
                                                     CommandParameter="{Binding}"/>
                                         </Grid>
@@ -103,12 +109,13 @@
                             Text="{Binding CreatedAtUtc, Mode=OneTime, StringFormat='{0:h:mm tt · MMM d, yyyy}'}" Style="{StaticResource CaptionStyle}"
                             TextDecorations="Underline"
                             Url="{Binding SourceUrl, Mode=OneTime}"/>
+                        <!-- TODO: make text selectable (https://stackoverflow.com/questions/76057290/how-to-make-a-label-selectable-in-net-7-maui-with-xaml) -->
                         <Label IsVisible="{Binding Views, Mode=OneTime, Converter={StaticResource IsNotNullConverter}}"
                                Style="{StaticResource CaptionStyle}">
                             <Label.FormattedText>
                                 <FormattedString>
                                     <Span Text=" · " />
-                                    <Span Text="{Binding Views, Mode=OneTime, Converter={StaticResource IntToMetricConverter}}" FontAttributes="Bold" />
+                                    <Span Text="{Binding Views, Mode=OneTime, Converter={StaticResource IntToMetricConverter}}" Style="{StaticResource BoldCaptionStyle}" />
                                     <Span Text=" " />
                                     <Span Text="Views" />
                                 </FormattedString>
@@ -116,20 +123,26 @@
                         </Label>
                     </HorizontalStackLayout>
                     <VerticalStackLayout Grid.Row="4" Spacing="8">
-                        <BoxView BackgroundColor="Gray" HeightRequest="1" />
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
-                            <Label Style="{StaticResource CaptionStyle}" Text="{Binding ReplyCount, Mode=OneTime, StringFormat='{0} Replies', Converter={StaticResource IntToMetricConverter}}" />
-                            <Label Grid.Column="1" Style="{StaticResource CaptionStyle}" Text="{Binding RetweetCount, Mode=OneTime, StringFormat='{0} Reposts', Converter={StaticResource IntToMetricConverter}}" />
-                            <Label Grid.Column="2" Style="{StaticResource CaptionStyle}" Text="{Binding FavoriteCount, Mode=OneTime, StringFormat='{0} Likes', Converter={StaticResource IntToMetricConverter}}" />
-                            <Label Grid.Column="3" Style="{StaticResource CaptionStyle}" Text="{Binding BookmarkCount, Mode=OneTime, StringFormat='{0} Bookmarks', Converter={StaticResource IntToMetricConverter}}" />
-                        </Grid>
-                        <BoxView BackgroundColor="Gray" HeightRequest="1" />
+                        <BoxView BackgroundColor="LightGray" HeightRequest="1" />
+                        <FlexLayout JustifyContent="Start" Wrap="Wrap">
+                            <HorizontalStackLayout Margin="0,4,0,0" Spacing="4" IsVisible="{Binding ReplyCount, Mode=OneTime, Converter={StaticResource IntToBoolConverter}}">
+                                <Label Style="{StaticResource BoldCaptionStyle}" Text="{Binding ReplyCount, Mode=OneTime, Converter={StaticResource IntToMetricConverter}}" />
+                                <Label Style="{StaticResource CaptionStyle}" Text="Replies" />
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout Margin="0,4,0,0" Spacing="4" IsVisible="{Binding RetweetCount, Mode=OneTime, Converter={StaticResource IntToBoolConverter}}">
+                                <Label Style="{StaticResource BoldCaptionStyle}" Text="{Binding RetweetCount, Mode=OneTime, Converter={StaticResource IntToMetricConverter}}" />
+                                <Label Style="{StaticResource CaptionStyle}" Text="Reposts" />
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout Margin="0,4,0,0" Spacing="4" IsVisible="{Binding FavoriteCount, Mode=OneTime, Converter={StaticResource IntToBoolConverter}}">
+                                <Label Style="{StaticResource BoldCaptionStyle}" Text="{Binding FavoriteCount, Mode=OneTime, Converter={StaticResource IntToMetricConverter}}" />
+                                <Label Style="{StaticResource CaptionStyle}" Text="Likes" />
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout Margin="0,4,0,0" Spacing="4" IsVisible="{Binding BookmarkCount, Mode=OneTime, Converter={StaticResource IntToBoolConverter}}">
+                                <Label Style="{StaticResource BoldCaptionStyle}" Text="{Binding BookmarkCount, Mode=OneTime, Converter={StaticResource IntToMetricConverter}}" />
+                                <Label Style="{StaticResource CaptionStyle}" Text="Bookmarks" />
+                            </HorizontalStackLayout>
+                        </FlexLayout>
+                        <BoxView BackgroundColor="LightGray" HeightRequest="1" />
                     </VerticalStackLayout>
                 </Grid>
             </Border>
