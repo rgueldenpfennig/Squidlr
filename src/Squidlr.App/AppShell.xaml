@@ -7,15 +7,24 @@
     xmlns:pages="clr-namespace:Squidlr.App.Pages"
     Shell.FlyoutBehavior="Disabled"
     Shell.NavBarIsVisible="True"
+    Shell.TabBarIsVisible="False"
     Shell.ForegroundColor="#2c1a4d"
     Shell.TitleColor="#2c1a4d">
 
+    <!-- See: https://learn.microsoft.com/en-us/dotnet/maui/user-interface/toolbaritem -->
+    <Shell.ToolbarItems>
+        <ToolbarItem Order="Secondary" Text="How to download?" />
+        <ToolbarItem Order="Secondary" Text="Settings" />
+        <ToolbarItem Order="Secondary" Text="FAQ" />
+        <ToolbarItem Order="Secondary" Text="About" />
+    </Shell.ToolbarItems>
+
     <TabBar>
         <ShellContent
-            Title="Download"
             Route="home"
             ContentTemplate="{DataTemplate pages:MainPage}"
-            Icon="{OnPlatform 'icon_notes.png', iOS='icon_notes_ios.png', MacCatalyst='icon_notes_ios.png'}" />
+            Icon="{OnPlatform 'icon_notes.png', iOS='icon_notes_ios.png', MacCatalyst='icon_notes_ios.png'}">
+        </ShellContent>
 
         <ShellContent
             Title="About"

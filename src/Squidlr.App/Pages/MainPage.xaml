@@ -6,18 +6,20 @@
              x:DataType="pages:MainPageViewModel">
 
     <Shell.NavBarIsVisible>
-        false
+        true
     </Shell.NavBarIsVisible>
+
+    <Shell.TitleView>
+        <HorizontalStackLayout Spacing="8">
+            <Image HeightRequest="32" Source="logo_1024.png" />
+            <Label Text="Squidlr" FontSize="Large" FontAttributes="Bold" VerticalOptions="Center" />
+        </HorizontalStackLayout>
+    </Shell.TitleView>
 
     <ScrollView>
         <VerticalStackLayout
             Padding="30,0"
             Spacing="25">
-            <Image
-                Source="logo_1024.png"
-                HeightRequest="185"
-                Aspect="AspectFit"
-                SemanticProperties.Description="logo of squidlr in form of a giant purple squid" />
 
             <Label
                 Text="Social Media Video Downloader"
