@@ -9,6 +9,7 @@ public class MainPageViewModel : ObservableObject
 
     private bool _isValidUrl;
     private readonly UrlResolver _urlResolver;
+    private readonly IClipboard _clipboard;
 
     public IAsyncRelayCommand DownloadCommand { private set; get; }
 
@@ -29,9 +30,12 @@ public class MainPageViewModel : ObservableObject
         get => _isValidUrl;
     }
 
-    public MainPageViewModel(UrlResolver urlResolver)
+    public MainPageViewModel(UrlResolver urlResolver, IClipboard clipboard)
     {
         _urlResolver = urlResolver ?? throw new ArgumentNullException(nameof(urlResolver));
+        _clipboard = clipboard ?? throw new ArgumentNullException(nameof(clipboard));
+
+        _clipboard.ClipboardContentChanged += OnClipboardContentChangedAsync;
 
 #if DEBUG
         Url = "https://twitter.com/sentdefender/status/1772514015790477667";
@@ -43,6 +47,19 @@ public class MainPageViewModel : ObservableObject
             {
                 return IsValidUrl;
             });
+    }
+
+    private async void OnClipboardContentChangedAsync(object? sender, EventArgs e)
+    {
+        if (_clipboard.HasText)
+        {
+            var text = await _clipboard.GetTextAsync();
+            var contentIdentifier = _urlResolver.ResolveUrl(text);
+            if (contentIdentifier != ContentIdentifier.Unknown)
+            {
+                Url = text;
+            }
+        }
     }
 
     private async Task ExecuteDownloadCommandAsync()

@@ -24,8 +24,9 @@ public static class SquidlrHostBuilderExtensions
         services.AddSingleton<MainPage, MainPageViewModel>();
         services.AddSingleton<DownloadPage, DownloadPageViewModel>();
 
-        // MAUI toolkit
+        // MAUI components
         services.AddSingleton(FileSaver.Default);
+        services.AddSingleton(Clipboard.Default);
 
         services.AddOptions<SquidlrOptions>().Configure(options =>
         {

@@ -125,19 +125,19 @@
                     <VerticalStackLayout Grid.Row="4" Spacing="8">
                         <BoxView BackgroundColor="LightGray" HeightRequest="1" />
                         <FlexLayout JustifyContent="Start" Wrap="Wrap">
-                            <HorizontalStackLayout Margin="0,4,0,0" Spacing="4" IsVisible="{Binding ReplyCount, Mode=OneTime, Converter={StaticResource IntToBoolConverter}}">
+                            <HorizontalStackLayout Margin="0,0,4,0" Spacing="4" IsVisible="{Binding ReplyCount, Mode=OneTime, Converter={StaticResource IntToBoolConverter}}">
                                 <Label Style="{StaticResource BoldCaptionStyle}" Text="{Binding ReplyCount, Mode=OneTime, Converter={StaticResource IntToMetricConverter}}" />
                                 <Label Style="{StaticResource CaptionStyle}" Text="Replies" />
                             </HorizontalStackLayout>
-                            <HorizontalStackLayout Margin="0,4,0,0" Spacing="4" IsVisible="{Binding RetweetCount, Mode=OneTime, Converter={StaticResource IntToBoolConverter}}">
+                            <HorizontalStackLayout Margin="0,0,4,0" Spacing="4" IsVisible="{Binding RetweetCount, Mode=OneTime, Converter={StaticResource IntToBoolConverter}}">
                                 <Label Style="{StaticResource BoldCaptionStyle}" Text="{Binding RetweetCount, Mode=OneTime, Converter={StaticResource IntToMetricConverter}}" />
                                 <Label Style="{StaticResource CaptionStyle}" Text="Reposts" />
                             </HorizontalStackLayout>
-                            <HorizontalStackLayout Margin="0,4,0,0" Spacing="4" IsVisible="{Binding FavoriteCount, Mode=OneTime, Converter={StaticResource IntToBoolConverter}}">
+                            <HorizontalStackLayout Margin="0,0,4,0" Spacing="4" IsVisible="{Binding FavoriteCount, Mode=OneTime, Converter={StaticResource IntToBoolConverter}}">
                                 <Label Style="{StaticResource BoldCaptionStyle}" Text="{Binding FavoriteCount, Mode=OneTime, Converter={StaticResource IntToMetricConverter}}" />
                                 <Label Style="{StaticResource CaptionStyle}" Text="Likes" />
                             </HorizontalStackLayout>
-                            <HorizontalStackLayout Margin="0,4,0,0" Spacing="4" IsVisible="{Binding BookmarkCount, Mode=OneTime, Converter={StaticResource IntToBoolConverter}}">
+                            <HorizontalStackLayout Margin="0,0,4,0" Spacing="4" IsVisible="{Binding BookmarkCount, Mode=OneTime, Converter={StaticResource IntToBoolConverter}}">
                                 <Label Style="{StaticResource BoldCaptionStyle}" Text="{Binding BookmarkCount, Mode=OneTime, Converter={StaticResource IntToMetricConverter}}" />
                                 <Label Style="{StaticResource CaptionStyle}" Text="Bookmarks" />
                             </HorizontalStackLayout>
