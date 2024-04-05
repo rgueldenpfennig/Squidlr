@@ -84,7 +84,7 @@ public class MainPageViewModel : ObservableObject
                 await downloadPage.ViewModel.GetContentCommand.ExecuteAsync(null);
             }
         }
-        else
+        else if (Shell.Current.CurrentPage is MainPage)
         {
             Debug.WriteLine($"Navigating to {nameof(DownloadPage)}");
             var navigationParameter = new Dictionary<string, object>
