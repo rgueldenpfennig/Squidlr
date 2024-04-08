@@ -68,7 +68,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Controls\VideoView.xaml.cs">
+	    <DependentUpon>VideoView.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
 	  <MauiXaml Update="Controls\SocialMediaContentView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Controls\VideoView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\AboutPage.xaml">

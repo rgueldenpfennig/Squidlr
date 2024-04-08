@@ -4,6 +4,7 @@ using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Squidlr.App.Controls;
 
 namespace Squidlr.App.Pages;
 
@@ -89,30 +90,23 @@ public sealed partial class DownloadPageViewModel : ObservableObject
         }
     }
 
-    private bool CanExecuteDownload(Video? video)
+    private bool CanExecuteDownload(VideoView videoView)
     {
-        return Content is not null && video?.VideoSources.Count >= 1;
+        return Content != null && videoView.VideoSource != null;
     }
 
     [RelayCommand(CanExecute = nameof(CanExecuteDownload))]
-    private async Task DownloadAsync(Video? video, CancellationToken cancellationToken)
+    private async Task DownloadAsync(VideoView videoViewModel, CancellationToken cancellationToken)
     {
-        // TODO: modal dialog to choose desired resolution (VideoSource)
-        //var result = await Shell.Current.DisplayActionSheet(
-        //    "Select resolution",
-        //    "Cancel",
-        //    "Destruction",
-        //    video.VideoSources.Select(vs => vs.Size.ToString()).ToArray());
-
         var canceled = false;
+        var videoSource = videoViewModel.VideoSource;
 
         try
         {
-            var selectedVideoSource = video!.VideoSources.OrderByDescending(vs => vs.Bitrate).First();
             var client = _httpClientFactory.GetPlatformHttpClient(Content!.Platform);
-            var fileName = Content!.GetSafeVideoFileName(selectedVideoSource);
+            var fileName = Content!.GetSafeVideoFileName(videoSource);
 
-            using var stream = await client.GetStreamAsync(selectedVideoSource.Url, cancellationToken);
+            using var stream = await client.GetStreamAsync(videoSource.Url, cancellationToken);
             var fileSaverResult = await _fileSaver.SaveAsync(fileName, stream, cancellationToken);
             if (fileSaverResult.IsSuccessful)
             {

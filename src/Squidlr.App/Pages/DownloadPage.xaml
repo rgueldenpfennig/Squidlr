@@ -73,28 +73,8 @@
                                       Loop="False">
                             <CarouselView.ItemTemplate>
                                 <DataTemplate x:DataType="core:Video">
-                                    <Border Stroke="Black"
-                                            StrokeShape="RoundRectangle 10"
-                                            Padding="0"
-                                            HorizontalOptions="FillAndExpand"
-                                            VerticalOptions="CenterAndExpand">
-                                        <Grid>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="*" />
-                                                <RowDefinition Height="Auto" />
-                                            </Grid.RowDefinitions>
-                                            <Image Source="{Binding DisplayUrl, Mode=OneTime}"
-                                                   Aspect="AspectFill"
-                                                   HeightRequest="200"
-                                                   Grid.RowSpan="2" />
-                                            <Button Grid.Row="1"
-                                                    Text="Download video"
-                                                    HorizontalOptions="FillAndExpand"
-                                                    CornerRadius="0"
-                                                    Command="{Binding Source={RelativeSource TemplatedParent}, Path=DownloadCommand}"
-                                                    CommandParameter="{Binding}"/>
-                                        </Grid>
-                                    </Border>
+                                    <controls:VideoView Video="{Binding}"
+                                                        DownloadCommand="{Binding Source={RelativeSource TemplatedParent}, Path=DownloadCommand}" />
                                 </DataTemplate>
                             </CarouselView.ItemTemplate>
                         </CarouselView>
