@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
     <RazorLanguageVersion>8</RazorLanguageVersion>
     <UserSecretsId>25f41a25-e49b-40ae-9094-6dfb6beab450</UserSecretsId>
