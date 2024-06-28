@@ -3,14 +3,12 @@
     "Name": "Default",
     "Projects": [
       {
-        "Name": "src\\Squidlr.Api\\Squidlr.Api.csproj",
-        "Action": "Start",
-        "DebugTarget": ""
+        "Path": "src\\Squidlr.Api\\Squidlr.Api.csproj",
+        "Action": "Start"
       },
       {
-        "Name": "src\\Squidlr.Web\\Squidlr.Web.csproj",
-        "Action": "Start",
-        "DebugTarget": ""
+        "Path": "src\\Squidlr.Web\\Squidlr.Web.csproj",
+        "Action": "Start"
       }
     ]
   },
@@ -18,14 +16,12 @@
     "Name": "Web",
     "Projects": [
       {
-        "Name": "src\\Squidlr.Api\\Squidlr.Api.csproj",
-        "Action": "StartWithoutDebugging",
-        "DebugTarget": ""
+        "Path": "src\\Squidlr.Api\\Squidlr.Api.csproj",
+        "Action": "StartWithoutDebugging"
       },
       {
-        "Name": "src\\Squidlr.Web\\Squidlr.Web.csproj",
-        "Action": "Start",
-        "DebugTarget": ""
+        "Path": "src\\Squidlr.Web\\Squidlr.Web.csproj",
+        "Action": "Start"
       }
     ]
   }
