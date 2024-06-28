@@ -8,7 +8,7 @@ services:
       APPLICATION__APIKEY: foobar
       ASPNETCORE_URLS: http://*:80;http://*:5001
     ports:
-      - "8080:80"
+      - "8081:80"
       - "5001:5001"
   web:
     build:
@@ -20,5 +20,5 @@ services:
       APPLICATION__APIKEY: foobar
       ASPNETCORE_URLS: http://*:80;http://*:5002
     ports:
-      - "8090:80"
+      - "8091:80"
       - "5002:5002"
