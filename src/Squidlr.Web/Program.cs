@@ -7,6 +7,7 @@ using Microsoft.Extensions.Primitives;
 using Microsoft.Net.Http.Headers;
 using Serilog;
 using Serilog.Events;
+using Serilog.Sinks.ApplicationInsights.TelemetryConverters;
 using Squidlr.Hosting.Telemetry;
 using Squidlr.Web.Bootstrapping;
 using Squidlr.Web.Telemetry;
@@ -39,10 +40,16 @@ public partial class Program
                 Environment.OSVersion);
 
             var config = GetConfiguration(args);
+            var loggerConfig = new LoggerConfiguration().ReadFrom.Configuration(config);
 
-            _logger = new LoggerConfiguration()
-                .ReadFrom.Configuration(config)
-                .CreateBootstrapLogger().ForContext<Program>();
+            var addTelemetry = false;
+            if (config["APPLICATIONINSIGHTS_CONNECTION_STRING"] is not null)
+            {
+                addTelemetry = true;
+                loggerConfig.WriteTo.ApplicationInsights(new TraceTelemetryConverter());
+            }
+
+            _logger = loggerConfig.CreateBootstrapLogger().ForContext<Program>();
 
             var builder = WebApplication.CreateBuilder(args);
             builder.WebHost.ConfigureKestrel(options => options.AddServerHeader = false);
@@ -51,8 +58,11 @@ public partial class Program
                     .ReadFrom.Configuration(context.Configuration)
                     .ReadFrom.Services(serviceProvider));
 
-            builder.Services.AddTelemetry(o => o.IgnoreAbsolutePaths = ["/health"]);
-            builder.Services.AddSingleton<ITelemetryInitializer, AppStateTelemetryInitializer>();
+            if (addTelemetry)
+            {
+                builder.Services.AddTelemetry(o => o.IgnoreAbsolutePaths = ["/health"]);
+                builder.Services.AddSingleton<ITelemetryInitializer, AppStateTelemetryInitializer>();
+            }
 
             // Add services to the container.
             builder.Services.AddHttpContextAccessor();
@@ -62,7 +72,7 @@ public partial class Program
             builder.Services.AddAntiforgery(options =>
             {
                 options.Cookie.Name = "X-XSRF-ANTIFORGERY";
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.SecurePolicy = builder.Environment.IsDevelopment() ? CookieSecurePolicy.None : CookieSecurePolicy.Always;
                 options.HeaderName = "X-XSRF-TOKEN";
                 options.SuppressXFrameOptionsHeader = false;
             });
@@ -191,6 +201,7 @@ public partial class Program
            .AddJsonFile("appsettings.json", false)
            .AddJsonFile($"appsettings.{environmentName}.json", true)
            .AddCommandLine(args)
+           .AddUserSecrets<Program>()
            .AddEnvironmentVariables();
 
         return configBuilder.Build();

@@ -8,6 +8,9 @@ EXPOSE 5002
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
+# copy Directory.Packages.props file for Central Package Management
+COPY Directory.Packages.props /
+
 # copy csproj and restore as distinct layers
 COPY src/Squidlr.Hosting/Squidlr.Hosting.csproj Squidlr.Hosting/
 COPY src/Squidlr/Squidlr.csproj Squidlr/
