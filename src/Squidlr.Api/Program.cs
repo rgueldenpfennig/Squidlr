@@ -68,6 +68,7 @@ public partial class Program
             }
 
             builder.Host.UseSquidlr();
+            builder.Services.AddSingleton<HttpFileStreamService>();
 
             builder.Services.AddProblemDetails();
             builder.Services.AddHttpContextAccessor();

@@ -42,12 +42,12 @@ public static class TwitterServiceCollectionExtensions
                 };
             })
             .AddPolicyHandler((services, request) => HttpPolicyExtensions.HandleTransientHttpError()
-                .WaitAndRetryAsync(new[]
-                {
+                .WaitAndRetryAsync(
+                [
                     TimeSpan.FromMilliseconds(100),
                     TimeSpan.FromMilliseconds(200),
                     TimeSpan.FromMilliseconds(300)
-                },
+                ],
                 onRetry: (outcome, timespan, retryAttempt, context) =>
                 {
                     services.GetService<ILogger<TwitterWebClient>>()?
@@ -57,7 +57,6 @@ public static class TwitterServiceCollectionExtensions
 
         services.AddSingleton<TwitterWebClient>();
         services.AddSingleton<TweetContentParserFactory>();
-        services.AddSingleton<TweetMediaService>();
         services.AddSingleton<IUrlResolver, TwitterUrlResolver>();
         services.AddSingleton<IContentProvider, TwitterContentProvider>();
 

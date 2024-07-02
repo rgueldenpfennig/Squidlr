@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Serilog.Context;
-using Squidlr.Twitter.Services;
+using Squidlr.Twitter;
 using Squidlr.Twitter.Utilities;
 
 namespace Squidlr.Api;
@@ -14,7 +14,7 @@ internal static class VideoRouteExtensions
 
     private static RouteHandlerBuilder AddGetVideo(this IEndpointRouteBuilder builder)
     {
-        return builder.MapGet("/video", async (string tweetId, string url, [FromServices] TweetMediaService service, HttpContext context, CancellationToken cancellationToken) =>
+        return builder.MapGet("/video", async (string tweetId, string url, [FromServices] HttpFileStreamService service, HttpContext context, CancellationToken cancellationToken) =>
         {
             if (string.IsNullOrEmpty(tweetId))
                 return Results.Problem(new()
@@ -34,7 +34,7 @@ internal static class VideoRouteExtensions
 
             using (LogContext.PushProperty("TweetId", tweetId))
             {
-                await service.CopyTweetVideoStreamAsync(tweetId, new Uri(url, UriKind.Absolute), context, cancellationToken);
+                await service.CopyFileStreamAsync(context, TwitterWebClient.HttpClientName, tweetId, new Uri(url, UriKind.Absolute), cancellationToken);
                 return Results.Empty;
             }
         })

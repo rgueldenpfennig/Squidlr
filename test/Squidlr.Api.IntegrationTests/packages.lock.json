@@ -195,15 +195,6 @@
           "Microsoft.Net.Http.Headers": "2.1.1"
         }
       },
-      "Microsoft.AspNetCore.Http.Abstractions": {
-        "type": "Transitive",
-        "resolved": "2.1.1",
-        "contentHash": "kQUEVOU4loc8CPSb2WoHFTESqwIa8Ik7ysCBfTwzHAd0moWovc9JQLmhDIHlYLjHbyexqZAlkq/FPRUZqokebw==",
-        "dependencies": {
-          "Microsoft.AspNetCore.Http.Features": "2.1.1",
-          "System.Text.Encodings.Web": "4.5.0"
-        }
-      },
       "Microsoft.AspNetCore.Http.Extensions": {
         "type": "Transitive",
         "resolved": "2.1.1",
@@ -1448,6 +1439,7 @@
         "type": "Project",
         "dependencies": {
           "DotNext": "[5.7.0, )",
+          "Humanizer.Core": "[2.14.1, )",
           "Microsoft.Extensions.Caching.Memory": "[8.0.0, )",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[8.0.1, )",
           "Microsoft.Extensions.Hosting": "[8.0.0, )",
@@ -1505,6 +1497,12 @@
           "System.IO.Hashing": "8.0.0"
         }
       },
+      "Humanizer.Core": {
+        "type": "CentralTransitive",
+        "requested": "[2.14.1, )",
+        "resolved": "2.14.1",
+        "contentHash": "lQKvtaTDOXnoVJ20ibTuSIOf2i0uO0MPbDhd1jm238I+U/2ZnRENj0cktKZhtchBMtCUSRQ5v4xBCUbKNmyVMw=="
+      },
       "Microsoft.ApplicationInsights.AspNetCore": {
         "type": "CentralTransitive",
         "requested": "[2.22.0, )",
@@ -1553,6 +1551,16 @@
           "Microsoft.Extensions.Options": "3.1.22",
           "Microsoft.Extensions.Options.ConfigurationExtensions": "3.1.22",
           "System.Diagnostics.PerformanceCounter": "4.7.0"
+        }
+      },
+      "Microsoft.AspNetCore.Http.Abstractions": {
+        "type": "CentralTransitive",
+        "requested": "[2.1.1, )",
+        "resolved": "2.1.1",
+        "contentHash": "kQUEVOU4loc8CPSb2WoHFTESqwIa8Ik7ysCBfTwzHAd0moWovc9JQLmhDIHlYLjHbyexqZAlkq/FPRUZqokebw==",
+        "dependencies": {
+          "Microsoft.AspNetCore.Http.Features": "2.1.1",
+          "System.Text.Encodings.Web": "4.5.0"
         }
       },
       "Microsoft.AspNetCore.OpenApi": {

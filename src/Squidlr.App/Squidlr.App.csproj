@@ -56,39 +56,39 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="CommunityToolkit.Maui" Version="7.0.1" />
-		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
-		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
-		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
+		<PackageReference Include="CommunityToolkit.Maui" Version="7.0.1" IsImplicitlyDefined="true" />
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" IsImplicitlyDefined="true" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" IsImplicitlyDefined="true" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" IsImplicitlyDefined="true" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" IsImplicitlyDefined="true" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Squidlr\Squidlr.csproj" />
+		<ProjectReference Include="..\Squidlr\Squidlr.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="Controls\VideoView.xaml.cs">
-	    <DependentUpon>VideoView.xaml</DependentUpon>
-	  </Compile>
+		<Compile Update="Controls\VideoView.xaml.cs">
+			<DependentUpon>VideoView.xaml</DependentUpon>
+		</Compile>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="Controls\SocialMediaContentView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Controls\VideoView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Pages\AboutPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Pages\DownloadPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Pages\DownloadVideoPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
+		<MauiXaml Update="Controls\SocialMediaContentView.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Controls\VideoView.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Pages\AboutPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Pages\DownloadPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Pages\DownloadVideoPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 	</ItemGroup>
 
 </Project>

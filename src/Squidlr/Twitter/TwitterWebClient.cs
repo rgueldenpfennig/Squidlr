@@ -1,10 +1,6 @@
-﻿using System.Buffers;
-using System.Net;
-using System.Net.Http.Headers;
+﻿using System.Net;
 using System.Text.Json;
 using DotNext;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Squidlr.Twitter.Utilities;
@@ -14,8 +10,6 @@ namespace Squidlr.Twitter;
 public sealed class TwitterWebClient
 {
     public const string HttpClientName = nameof(TwitterWebClient);
-
-    private const int _defaultBufferSize = 65_536;
 
     private readonly IHttpClientFactory _clientFactory;
     private readonly IMemoryCache _memoryCache;
@@ -46,33 +40,6 @@ public sealed class TwitterWebClient
         }
 
         return null;
-    }
-
-    public async ValueTask CopyFileStreamAsync(Uri fileUri, HttpContext httpContext, CancellationToken cancellationToken)
-    {
-        var client = _clientFactory.CreateClient(HttpClientName);
-        var request = new HttpRequestMessage(HttpMethod.Get, fileUri);
-
-        if (httpContext.Request.Headers.TryGetValue("Range", out var rangeHeader))
-        {
-            request.Headers.Range = RangeHeaderValue.Parse(rangeHeader!);
-        }
-
-        using var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
-        httpContext.Response.StatusCode = (int)response.StatusCode;
-
-        if (response.IsSuccessStatusCode && response.Content.Headers.ContentLength is not null)
-        {
-            httpContext.Response.ContentLength = response.Content.Headers.ContentLength;
-            httpContext.Response.ContentType = response.Content.Headers.ContentType?.ToString();
-            if (response.Headers.AcceptRanges?.Count > 0)
-            {
-                httpContext.Response.Headers.Append("Accept-Ranges", response.Headers.AcceptRanges.ToString());
-            }
-
-            using var input = await response.Content.ReadAsStreamAsync(cancellationToken);
-            await CopyStream(httpContext.Response.Body, input, cancellationToken);
-        }
     }
 
     public async Task<Result<Stream, RequestContentResult>> GetTweetDetailStreamAsync(TweetIdentifier tweet, CancellationToken cancellationToken)
@@ -149,60 +116,6 @@ public sealed class TwitterWebClient
         {
             _logger.LogError(e, "Could not request new Twitter guest token.");
             return null;
-        }
-    }
-
-    private static async ValueTask CopyStream(Stream output, Stream input, CancellationToken cancellationToken)
-    {
-        // stream copying taken from https://github.com/microsoft/reverse-proxy/blob/main/src/ReverseProxy/Forwarder/StreamCopier.cs
-        var buffer = ArrayPool<byte>.Shared.Rent(_defaultBufferSize);
-        int read;
-        long contentLength = 0;
-        try
-        {
-            while (true)
-            {
-                read = 0;
-
-                // Issue a zero-byte read to the input stream to defer buffer allocation until data is available.
-                // Note that if the underlying stream does not supporting blocking on zero byte reads, then this will
-                // complete immediately and won't save any memory, but will still function correctly.
-                var zeroByteReadTask = input.ReadAsync(Memory<byte>.Empty, cancellationToken);
-                if (zeroByteReadTask.IsCompletedSuccessfully)
-                {
-                    // Consume the ValueTask's result in case it is backed by an IValueTaskSource
-                    _ = zeroByteReadTask.Result;
-                }
-                else
-                {
-                    // Take care not to return the same buffer to the pool twice in case zeroByteReadTask throws
-                    var bufferToReturn = buffer;
-                    buffer = null;
-                    ArrayPool<byte>.Shared.Return(bufferToReturn);
-
-                    await zeroByteReadTask;
-
-                    buffer = ArrayPool<byte>.Shared.Rent(_defaultBufferSize);
-                }
-
-                read = await input.ReadAsync(buffer.AsMemory(), cancellationToken);
-                contentLength += read;
-
-                // End of the source stream.
-                if (read == 0)
-                {
-                    break;
-                }
-
-                await output.WriteAsync(buffer.AsMemory(0, read), cancellationToken);
-            }
-        }
-        finally
-        {
-            if (buffer is not null)
-            {
-                ArrayPool<byte>.Shared.Return(buffer);
-            }
         }
     }
 }
