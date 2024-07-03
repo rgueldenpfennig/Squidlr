@@ -7,6 +7,7 @@
 @inject AppState AppState
 @inject IHttpContextAccessor HttpContextAccessor
 @inject TelemetryHandler TelemetryHandler
+@inject NavigationManager NavigationManager
 
 <Router AppAssembly="@typeof(App).Assembly">
     <Found Context="routeData">
@@ -15,6 +16,7 @@
     </Found>
 </Router>
 
+<NavigationLock OnBeforeInternalNavigation="OnBeforeInternalNavigationAsync" />
 <TelemetryComponent />
 
 @code {
@@ -53,5 +55,17 @@
         AppState.UserAgent = httpContext.Request.Headers[HeaderNames.UserAgent].ToString() ?? "";
 
         httpContext.Items[nameof(AppState)] = AppState;
+    }
+
+
+
+    private Task OnBeforeInternalNavigationAsync(LocationChangingContext context)
+    {
+        if (context.TargetLocation.Equals(NavigationManager.Uri, StringComparison.OrdinalIgnoreCase))
+        {
+            context.PreventNavigation();
+        }
+
+        return Task.CompletedTask;
     }
 }
