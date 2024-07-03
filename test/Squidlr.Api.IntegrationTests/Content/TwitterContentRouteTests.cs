@@ -49,7 +49,7 @@ public class TwitterContentRouteTests : IClassFixture<ApiWebApplicationFactory>
     // quoted Tweet with video
     [InlineData("https://twitter.com/Markus_Krall/status/1679960529484259329")]
     [InlineData("https://twitter.com/Srirachachau/status/1395079556562706435")]
-    [InlineData("https://twitter.com/i24news_en/status/1727307276057456875")]
+    [InlineData("https://twitter.com/i24news_en/status/1727307276057456875", HttpStatusCode.NotFound)]
     // default video Tweets
     [InlineData("https://twitter.com/TheOneHoskyFan/status/1723111326640472137")]
     [InlineData("https://twitter.com/CAF_Online/status/1349365911120195585")]
