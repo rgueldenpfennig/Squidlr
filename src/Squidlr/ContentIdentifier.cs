@@ -16,17 +16,17 @@ public struct ContentIdentifier : IEquatable<ContentIdentifier>
 
     public string Url { get; set; }
 
-    public override bool Equals(object? obj)
+    public override readonly bool Equals(object? obj)
     {
         return obj is ContentIdentifier identifier && Equals(identifier);
     }
 
-    public bool Equals(ContentIdentifier other)
+    public readonly bool Equals(ContentIdentifier other)
     {
         return Id == other.Id;
     }
 
-    public override int GetHashCode()
+    public override readonly int GetHashCode()
     {
         return HashCode.Combine(Id);
     }
@@ -41,7 +41,7 @@ public struct ContentIdentifier : IEquatable<ContentIdentifier>
         return !(left == right);
     }
 
-    public override string? ToString()
+    public override readonly string? ToString()
     {
         if (!string.IsNullOrEmpty(Id) && !string.IsNullOrEmpty(Url))
         {

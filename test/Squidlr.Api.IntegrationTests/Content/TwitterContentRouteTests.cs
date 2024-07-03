@@ -43,7 +43,7 @@ public class TwitterContentRouteTests : IClassFixture<ApiWebApplicationFactory>
     // promo_video_convo card
     [InlineData("https://twitter.com/poco_dandy/status/1047395834013384704")]
     // video_direct_message card
-    [InlineData("https://twitter.com/qarev001/status/1348948114569269251")]
+    [InlineData("https://twitter.com/qarev001/status/1348948114569269251", Skip = "Doesn't contain a video anymore")]
     // GIF
     [InlineData("https://twitter.com/starwars/status/1654199211410477056")]
     // quoted Tweet with video

@@ -1,6 +1,6 @@
 ﻿using Humanizer;
 
-namespace Squidlr.Web.Shared;
+namespace Squidlr.Shared;
 
 public static class FormatHelper
 {

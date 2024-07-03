@@ -1,6 +1,4 @@
-﻿using System.Collections.ObjectModel;
-
-namespace Squidlr.Instagram;
+﻿namespace Squidlr.Instagram;
 
 public sealed class InstagramContent : Content
 {
@@ -12,29 +10,8 @@ public sealed class InstagramContent : Content
 
     public Uri? ProfilePictureUrl { get; set; }
 
-    public InstagramVideoCollection Videos { get; set; } = new();
-
     public override string ToString()
     {
         return SourceUrl;
     }
-}
-
-public sealed class InstagramVideo
-{
-    public required Uri DisplayUrl { get; init; }
-
-    public TimeSpan? Duration { get; set; }
-
-    public int? Views { get; set; }
-
-    public VideoSourceCollection VideoSources { get; set; } = new();
-
-    public InstagramVideo()
-    {
-    }
-}
-
-public sealed class InstagramVideoCollection : Collection<InstagramVideo>
-{
 }

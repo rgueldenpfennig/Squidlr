@@ -24,7 +24,6 @@ public sealed class ContentProvider
     {
         ArgumentNullException.ThrowIfNull(contentProviders);
         ArgumentNullException.ThrowIfNull(memoryCache);
-        ArgumentNullException.ThrowIfNull(memoryCache);
         ArgumentNullException.ThrowIfNull(logger);
         if (contentProviders.Count == 0)
         {

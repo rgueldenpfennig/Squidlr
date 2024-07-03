@@ -8,7 +8,7 @@ using Squidlr.Abstractions;
 
 namespace Squidlr.Instagram;
 
-internal static class InstagramServiceCollectionExtensions
+public static class InstagramServiceCollectionExtensions
 {
     public static IServiceCollection AddInstagram(this IServiceCollection services)
     {

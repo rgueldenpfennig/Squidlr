@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:pages="clr-namespace:Squidlr.App.Pages"
+             x:Class="Squidlr.App.Pages.MainPage"
+             x:DataType="pages:MainPageViewModel">
+
+    <Shell.NavBarIsVisible>
+        true
+    </Shell.NavBarIsVisible>
+
+    <Shell.TitleView>
+        <HorizontalStackLayout Spacing="8">
+            <Image HeightRequest="32" Source="logo_1024.png" />
+            <Label Text="Squidlr" FontSize="Large" FontAttributes="Bold" VerticalOptions="Center" />
+        </HorizontalStackLayout>
+    </Shell.TitleView>
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="30,0"
+            Spacing="25">
+
+            <Label
+                Text="Social Media Video Downloader"
+                Style="{StaticResource Headline}"
+                SemanticProperties.HeadingLevel="Level1" />
+
+            <Label
+                Text="Squidlr is your tool of choice to download any video from a various selection of social media platforms.
+Just paste the link below, choose your resolution and save it locally on your device."
+                HorizontalTextAlignment="Center"
+                SemanticProperties.HeadingLevel="None" />
+
+            <Entry
+                ClearButtonVisibility="WhileEditing"
+                Placeholder="Paste your link here"
+                Keyboard="Url"
+                ReturnType="Go"
+                IsSpellCheckEnabled="False"
+                IsTextPredictionEnabled="False"
+                Text="{Binding Url}"
+                ReturnCommand="{Binding DownloadCommand, Mode=OneWay}"/>
+
+            <Button
+                Text="Download"
+                IsEnabled="{Binding IsValidUrl, Mode=OneWay}"
+                Command="{Binding DownloadCommand, Mode=OneWay}"
+                SemanticProperties.Hint="Starts the download process of the link you provided above."
+                HorizontalOptions="Fill" />
+
+            <Label
+                Text="Supported platforms"
+                Style="{StaticResource SubHeadline}"
+                SemanticProperties.HeadingLevel="Level2"
+                SemanticProperties.Description="Supported platforms" />
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

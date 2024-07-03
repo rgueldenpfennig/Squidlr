@@ -10,7 +10,6 @@
 
   <ItemGroup>
     <PackageReference Include="AspNetCore.SassCompiler" />
-    <PackageReference Include="Humanizer.Core" />
     <PackageReference Include="Microsoft.Web.LibraryManager.Build" />
     <PackageReference Include="NetEscapades.AspNetCore.SecurityHeaders" />
     <PackageReference Include="Serilog.AspNetCore" />

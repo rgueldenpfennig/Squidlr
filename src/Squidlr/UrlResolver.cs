@@ -19,7 +19,7 @@ public sealed class UrlResolver
 
     public ContentIdentifier ResolveUrl(string? url)
     {
-        if (url == null)
+        if (string.IsNullOrWhiteSpace(url))
             return ContentIdentifier.Unknown;
 
         for (var i = 0; i < _urlResolvers.Count; i++)
