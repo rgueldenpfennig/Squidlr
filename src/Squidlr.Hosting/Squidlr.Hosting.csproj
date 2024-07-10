@@ -13,6 +13,7 @@
     <PackageReference Include="Microsoft.ApplicationInsights.Profiler.AspNetCore" />
     <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
+    <PackageReference Include="System.Text.Json" />
   </ItemGroup>
 
   <ItemGroup>
