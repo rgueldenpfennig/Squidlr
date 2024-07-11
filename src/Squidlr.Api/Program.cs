@@ -6,6 +6,7 @@ using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.ApplicationInsights.TelemetryConverters;
 using Squidlr.Api.Authentication;
+using Squidlr.Api.Endpoints;
 using Squidlr.Api.Telemetry;
 using Squidlr.Hosting.Telemetry;
 using Squidlr.Telemetry;
@@ -128,8 +129,8 @@ public partial class Program
             app.UseAuthorization();
 
             app.MapHealthChecks("/health").RequireHost("*:5001").AllowAnonymous();
-            app.MapContentRoutes(app.Environment);
-            app.MapVideoRoutes();
+            app.MapContentEndpoints(app.Environment);
+            app.MapVideoEndpoints();
 
             app.Run();
             return 0;

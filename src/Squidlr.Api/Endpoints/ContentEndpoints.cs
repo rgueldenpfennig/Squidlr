@@ -1,57 +1,32 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Squidlr.Shared;
-using Squidlr.Twitter;
 
-namespace Squidlr.Api;
+namespace Squidlr.Api.Endpoints;
 
-internal static class ContentRouteExtensions
+internal static class ContentEndpoints
 {
-    public static RouteHandlerBuilder MapContentRoutes(this IEndpointRouteBuilder builder, IWebHostEnvironment environment)
+    public static RouteHandlerBuilder MapContentEndpoints(this IEndpointRouteBuilder builder, IWebHostEnvironment environment)
     {
         return builder.AddGetContent(environment);
     }
 
     private static RouteHandlerBuilder AddGetContent(this IEndpointRouteBuilder builder, IWebHostEnvironment environment)
     {
-        var handler = builder.MapGet("/content",
-            async (
-                string url,
-                [FromServices] UrlResolver urlResolver,
-                [FromServices] ContentProvider contentProvider,
-                HttpContext context,
-                CancellationToken cancellationToken) =>
-        {
-            var identifier = urlResolver.ResolveUrl(url);
-            if (identifier.Platform == SocialMediaPlatform.Unknown)
+        var handler = builder.MapGet("/content", GetContentAsync)
+            .WithName("GetContent")
+            .WithOpenApi(operation =>
             {
-                return CreateProblemResult(RequestContentResult.PlatformNotSupported);
-            }
+                var parameter = operation.Parameters[0];
+                parameter.Description = "The content URL of a social media platform.";
 
-            var result = await contentProvider.GetContentAsync(identifier, cancellationToken);
-            if (!result.IsSuccessful)
-            {
-                return CreateProblemResult(result.Error);
-            }
+                operation.Summary = "Provides the content details of the requested content URL.";
+                operation.Description = "If a valid social media content URL is provided this API will respond with the details containing all video variants.";
 
-            var content = result.Value;
-            context.Response.Headers.Append(SquidlrHeaderNames.Platform, content.Platform.ToString());
-
-            return Results.Ok(content);
-        })
-        .WithName("GetContent")
-        .WithOpenApi(operation =>
-        {
-            var parameter = operation.Parameters[0];
-            parameter.Description = "The content URL of a social media platform.";
-
-            operation.Summary = "Provides the content details of the requested content URL.";
-            operation.Description = "If a valid social media content URL is provided this API will respond with the details containing all video variants.";
-
-            return operation;
-        })
-        .ProducesValidationProblem()
-        .Produces<TwitterContent>()
-        .RequireAuthorization();
+                return operation;
+            })
+            .ProducesValidationProblem()
+            .Produces<Content>()
+            .RequireAuthorization();
 
         if (!environment.IsDevelopment())
         {
@@ -59,6 +34,31 @@ internal static class ContentRouteExtensions
         }
 
         return handler;
+    }
+
+    private static async ValueTask<IResult> GetContentAsync(
+        string url,
+        [FromServices] UrlResolver urlResolver,
+        [FromServices] ContentProvider contentProvider,
+        HttpContext context,
+        CancellationToken cancellationToken)
+    {
+        var identifier = urlResolver.ResolveUrl(url);
+        if (identifier.Platform == SocialMediaPlatform.Unknown)
+        {
+            return CreateProblemResult(RequestContentResult.PlatformNotSupported);
+        }
+
+        var result = await contentProvider.GetContentAsync(identifier, cancellationToken);
+        if (!result.IsSuccessful)
+        {
+            return CreateProblemResult(result.Error);
+        }
+
+        var content = result.Value;
+        context.Response.Headers.Append(SquidlrHeaderNames.Platform, content.Platform.ToString());
+
+        return Results.Ok(content);
     }
 
     private static IResult CreateProblemResult(RequestContentResult result)
