@@ -17,21 +17,14 @@ public class TwitterContentProvider : IContentProvider
 
     public async ValueTask<Result<Content, RequestContentResult>> GetContentAsync(string url, CancellationToken cancellationToken)
     {
-        try
+        var identifier = UrlUtilities.CreateTweetIdentifierFromUrl(url);
+        var parser = _tweetContentParserFactory.CreateTweetContentParser(identifier);
+        var result = await parser.CreateTweetContentAsync(cancellationToken);
+        if (result.IsSuccessful)
         {
-            var identifier = UrlUtilities.CreateTweetIdentifierFromUrl(url);
-            var parser = _tweetContentParserFactory.CreateTweetContentParser(identifier);
-            var result = await parser.CreateTweetContentAsync(cancellationToken);
-            if (result.IsSuccessful)
-            {
-                return new(result.Value);
-            }
+            return new(result.Value);
+        }
 
-            return new(result.Error);
-        }
-        catch (OperationCanceledException)
-        {
-            return new(RequestContentResult.Canceled);
-        }
+        return new(result.Error);
     }
 }
