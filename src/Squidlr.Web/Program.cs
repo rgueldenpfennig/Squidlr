@@ -1,6 +1,8 @@
+using System.IO.Compression;
 using System.Net;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
@@ -8,6 +10,7 @@ using Microsoft.Net.Http.Headers;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.ApplicationInsights.TelemetryConverters;
+using Squidlr.Hosting.Compression;
 using Squidlr.Hosting.Telemetry;
 using Squidlr.Web.Bootstrapping;
 using Squidlr.Web.Telemetry;
@@ -76,7 +79,19 @@ public partial class Program
                 options.HeaderName = "X-XSRF-TOKEN";
                 options.SuppressXFrameOptionsHeader = false;
             });
-            builder.Services.AddResponseCompression(options => options.EnableForHttps = true);
+
+            builder.Services.AddResponseCompression(options =>
+            {
+                options.EnableForHttps = true;
+                options.Providers.Add<ZstdCompressionProvider>();
+                options.Providers.Add<BrotliCompressionProvider>();
+                options.Providers.Add<GzipCompressionProvider>();
+            });
+
+            builder.Services.Configure<ZstdCompressionProviderOptions>(options =>
+            {
+                options.Level = CompressionLevel.Optimal;
+            });
 
             builder.Services.AddSquidlrWeb(builder.Configuration);
 

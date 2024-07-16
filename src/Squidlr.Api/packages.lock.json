@@ -1382,7 +1382,8 @@
           "Microsoft.ApplicationInsights.Profiler.AspNetCore": "[2.7.1, )",
           "Microsoft.IdentityModel.JsonWebTokens": "[7.6.3, )",
           "System.IdentityModel.Tokens.Jwt": "[7.6.3, )",
-          "System.Text.Json": "[8.0.4, )"
+          "System.Text.Json": "[8.0.4, )",
+          "ZstdSharp.Port": "[0.8.1, )"
         }
       },
       "Azure.Identity": {
@@ -1595,6 +1596,12 @@
         "dependencies": {
           "System.Text.Encodings.Web": "8.0.0"
         }
+      },
+      "ZstdSharp.Port": {
+        "type": "CentralTransitive",
+        "requested": "[0.8.1, )",
+        "resolved": "0.8.1",
+        "contentHash": "19tNz33kn2EkyViFXuxfVn338UJaRmkwBphVqP2dVJIYQUQgFrgG5h061mxkRRg1Ax6r+6WOj1FxaFZ5qaWqqg=="
       }
     }
   }

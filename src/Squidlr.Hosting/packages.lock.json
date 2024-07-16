@@ -95,6 +95,12 @@
           "System.Text.Encodings.Web": "8.0.0"
         }
       },
+      "ZstdSharp.Port": {
+        "type": "Direct",
+        "requested": "[0.8.1, )",
+        "resolved": "0.8.1",
+        "contentHash": "19tNz33kn2EkyViFXuxfVn338UJaRmkwBphVqP2dVJIYQUQgFrgG5h061mxkRRg1Ax6r+6WOj1FxaFZ5qaWqqg=="
+      },
       "Azure.Core": {
         "type": "Transitive",
         "resolved": "1.40.0",
