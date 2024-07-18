@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:core="clr-namespace:Squidlr;assembly=Squidlr"
+             xmlns:pages="clr-namespace:Squidlr.App.Pages"
+             xmlns:controls="clr-namespace:Squidlr.App.Controls"
+             xmlns:converters="clr-namespace:Squidlr.App.Converters"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:twitter="clr-namespace:Squidlr.Twitter;assembly=Squidlr"
+             x:Class="Squidlr.App.Pages.DownloadPage"
+             x:DataType="pages:DownloadPageViewModel"
+             Title="{Binding Title}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+            <toolkit:IsNotNullConverter x:Key="IsNotNullConverter" />
+            <toolkit:IntToBoolConverter x:Key="IntToBoolConverter"  />
+            <toolkit:VariableMultiValueConverter 
+                x:Key="AnyMultiValueConverter"
+                ConditionType="Any" />
+            <toolkit:VariableMultiValueConverter 
+                x:Key="NoneMultiValueConverter"
+                ConditionType="None" />
+            <converters:IntToMetricConverter x:Key="IntToMetricConverter" />
+            <Style x:Key="CaptionStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="Caption" />
+            </Style>
+            <Style x:Key="BoldCaptionStyle" TargetType="Label">
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="FontSize" Value="Caption" />
+            </Style>
+        </ResourceDictionary>
+
+        <ControlTemplate x:Key="TwitterContentTemplate" x:DataType="twitter:TwitterContent">
+            <Border BindingContext="{Binding Source={RelativeSource TemplatedParent}, Path=SocialMediaContent}"
+                    StrokeShape="RoundRectangle 10">
+                <Grid Margin="16">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <!-- profile picture & user name -->
+                        <RowDefinition />
+                        <!-- full text -->
+                        <RowDefinition />
+                        <!-- video preview -->
+                        <RowDefinition />
+                        <!-- date -->
+                        <RowDefinition />
+                        <!-- statistics -->
+                    </Grid.RowDefinitions>
+                    <HorizontalStackLayout Spacing="8">
+                        <Border Stroke="Gray"
+                                StrokeShape="RoundRectangle 20"
+                                StrokeThickness="1"
+                                HeightRequest="40"
+                                WidthRequest="40"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center">
+                            <Image Source="{Binding ProfileImageUri, Mode=OneTime}"
+                                   Aspect="Fill"
+                                   HeightRequest="40"
+                                   WidthRequest="40" />
+                        </Border>
+                        <VerticalStackLayout VerticalOptions="Center">
+                            <Label Text="{Binding DisplayName, Mode=OneTime}" FontSize="Medium" FontAttributes="Bold" />
+                            <Label Text="{Binding UserName, Mode=OneTime, StringFormat='@{0}'}" Style="{StaticResource CaptionStyle}" />
+                        </VerticalStackLayout>
+                    </HorizontalStackLayout>
+                    <Label Grid.Row="1" Margin="0,8,0,8" Text="{Binding FullText, Mode=OneTime}" />
+                    <StackLayout Grid.Row="2">
+                        <CarouselView ItemsSource="{Binding Videos, Mode=OneTime}"
+                                      IndicatorView="IndicatorView"
+                                      Loop="False">
+                            <CarouselView.ItemTemplate>
+                                <DataTemplate x:DataType="core:Video">
+                                    <controls:VideoView Video="{Binding}"
+                                                        DownloadCommand="{Binding Source={RelativeSource TemplatedParent}, Path=DownloadCommand}" />
+                                </DataTemplate>
+                            </CarouselView.ItemTemplate>
+                        </CarouselView>
+                        <IndicatorView x:Name="IndicatorView"
+                                       Margin="0,8"
+                                       IndicatorColor="LightGray"
+                                       SelectedIndicatorColor="DarkGray"
+                                       HorizontalOptions="Center" />
+                    </StackLayout>
+                    <HorizontalStackLayout Grid.Row="3" Margin="0,0,0,8">
+                        <controls:HyperlinkLabel
+                            Text="{Binding CreatedAtUtc, Mode=OneTime, StringFormat='{0:h:mm tt · MMM d, yyyy}'}" Style="{StaticResource CaptionStyle}"
+                            TextDecorations="Underline"
+                            Url="{Binding SourceUrl, Mode=OneTime}"/>
+                        <!-- TODO: make text selectable (https://stackoverflow.com/questions/76057290/how-to-make-a-label-selectable-in-net-7-maui-with-xaml) -->
+                        <Label IsVisible="{Binding Views, Mode=OneTime, Converter={StaticResource IsNotNullConverter}}"
+                               Style="{StaticResource CaptionStyle}">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text=" · " />
+                                    <Span Text="{Binding Views, Mode=OneTime, Converter={StaticResource IntToMetricConverter}}" Style="{StaticResource BoldCaptionStyle}" />
+                                    <Span Text=" " />
+                                    <Span Text="Views" />
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                    </HorizontalStackLayout>
+                    <VerticalStackLayout Grid.Row="4" Spacing="8">
+                        <BoxView BackgroundColor="LightGray" HeightRequest="1" />
+                        <FlexLayout JustifyContent="Start" Wrap="Wrap">
+                            <HorizontalStackLayout Margin="0,0,4,0" Spacing="4" IsVisible="{Binding ReplyCount, Mode=OneTime, Converter={StaticResource IntToBoolConverter}}">
+                                <Label Style="{StaticResource BoldCaptionStyle}" Text="{Binding ReplyCount, Mode=OneTime, Converter={StaticResource IntToMetricConverter}}" />
+                                <Label Style="{StaticResource CaptionStyle}" Text="Replies" />
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout Margin="0,0,4,0" Spacing="4" IsVisible="{Binding RetweetCount, Mode=OneTime, Converter={StaticResource IntToBoolConverter}}">
+                                <Label Style="{StaticResource BoldCaptionStyle}" Text="{Binding RetweetCount, Mode=OneTime, Converter={StaticResource IntToMetricConverter}}" />
+                                <Label Style="{StaticResource CaptionStyle}" Text="Reposts" />
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout Margin="0,0,4,0" Spacing="4" IsVisible="{Binding FavoriteCount, Mode=OneTime, Converter={StaticResource IntToBoolConverter}}">
+                                <Label Style="{StaticResource BoldCaptionStyle}" Text="{Binding FavoriteCount, Mode=OneTime, Converter={StaticResource IntToMetricConverter}}" />
+                                <Label Style="{StaticResource CaptionStyle}" Text="Likes" />
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout Margin="0,0,4,0" Spacing="4" IsVisible="{Binding BookmarkCount, Mode=OneTime, Converter={StaticResource IntToBoolConverter}}">
+                                <Label Style="{StaticResource BoldCaptionStyle}" Text="{Binding BookmarkCount, Mode=OneTime, Converter={StaticResource IntToMetricConverter}}" />
+                                <Label Style="{StaticResource CaptionStyle}" Text="Bookmarks" />
+                            </HorizontalStackLayout>
+                        </FlexLayout>
+                        <BoxView BackgroundColor="LightGray" HeightRequest="1" />
+                    </VerticalStackLayout>
+                </Grid>
+            </Border>
+        </ControlTemplate>
+    </ContentPage.Resources>
+
+    <!-- TODO: use RefreshView (https://learn.microsoft.com/en-us/dotnet/maui/user-interface/controls/refreshview?view=net-maui-8.0) -->
+    <ScrollView>
+        <VerticalStackLayout Padding="15,0">
+            <!-- TOOD: use StateContainer (https://learn.microsoft.com/en-us/dotnet/communitytoolkit/maui/layouts/statecontainer) -->
+            <VerticalStackLayout VerticalOptions="Center">
+                <VerticalStackLayout.IsVisible>
+                    <MultiBinding Converter="{StaticResource AnyMultiValueConverter}">
+                        <Binding Path="DownloadCommand.IsRunning" />
+                        <Binding Path="GetContentCommand.IsRunning" />
+                    </MultiBinding>
+                </VerticalStackLayout.IsVisible>
+                <ActivityIndicator>
+                    <ActivityIndicator.IsRunning>
+                        <MultiBinding Converter="{StaticResource AnyMultiValueConverter}">
+                            <Binding Path="DownloadCommand.IsRunning" />
+                            <Binding Path="GetContentCommand.IsRunning" />
+                        </MultiBinding>
+                    </ActivityIndicator.IsRunning>
+                </ActivityIndicator>
+                <Label HorizontalTextAlignment="Center"
+                       Text="Please wait a moment... ☕" />
+                <Button Command="{Binding CancelCommand}"
+                        Text="Cancel" />
+            </VerticalStackLayout>
+            <VerticalStackLayout Spacing="8">
+                <VerticalStackLayout.IsVisible>
+                    <MultiBinding Converter="{StaticResource NoneMultiValueConverter}">
+                        <Binding Path="DownloadCommand.IsRunning" />
+                        <Binding Path="GetContentCommand.IsRunning" />
+                    </MultiBinding>
+                </VerticalStackLayout.IsVisible>
+                <controls:SocialMediaContentView
+                    ControlTemplate="{StaticResource TwitterContentTemplate}"
+                    SocialMediaContent="{Binding Content}"
+                    DownloadCommand="{Binding DownloadCommand}"/>
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

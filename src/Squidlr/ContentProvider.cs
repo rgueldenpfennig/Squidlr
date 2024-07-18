@@ -24,7 +24,6 @@ public sealed class ContentProvider
     {
         ArgumentNullException.ThrowIfNull(contentProviders);
         ArgumentNullException.ThrowIfNull(memoryCache);
-        ArgumentNullException.ThrowIfNull(memoryCache);
         ArgumentNullException.ThrowIfNull(logger);
         if (contentProviders.Count == 0)
         {
@@ -58,12 +57,11 @@ public sealed class ContentProvider
             eventProperties.Add("CacheHit", "true");
             if (result.Error == RequestContentResult.Success)
             {
-                _telemetryService.TrackEvent("ContentRequestSucceeded", eventProperties);
+                TrackContentRequestSucceeded(eventProperties);
             }
             else
             {
-                eventProperties.Add("Reason", result.Error.ToString());
-                _telemetryService.TrackEvent("ContentRequestFailed", eventProperties);
+                TrackContentRequestFailed(result.Error.ToString(), eventProperties);
             }
 
             return result;
@@ -83,13 +81,12 @@ public sealed class ContentProvider
                     var content = await provider.GetContentAsync(contentIdentifier.Url, cancellationToken);
                     if (content.Error == RequestContentResult.Success)
                     {
-                        _telemetryService.TrackEvent("ContentRequestSucceeded", eventProperties);
+                        TrackContentRequestSucceeded(eventProperties);
                         _memoryCache.Set(cacheKey, content, absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(60));
                     }
                     else
                     {
-                        eventProperties.Add("Reason", content.Error.ToString());
-                        _telemetryService.TrackEvent("ContentRequestFailed", eventProperties);
+                        TrackContentRequestFailed(content.Error.ToString(), eventProperties);
 
                         if (ShouldBeCached(content.Error))
                         {
@@ -99,10 +96,14 @@ public sealed class ContentProvider
 
                     return content;
                 }
+                catch (OperationCanceledException)
+                {
+                    TrackContentRequestFailed(RequestContentResult.Canceled.ToString(), eventProperties);
+                    return new(RequestContentResult.Canceled);
+                }
                 catch (Exception e)
                 {
-                    eventProperties.Add("Reason", e.Message);
-                    _telemetryService.TrackEvent("ContentRequestFailed", eventProperties);
+                    TrackContentRequestFailed(e.Message, eventProperties);
                     _logger.LogError(e, "An unexpected error occurred while using the {SocialMediaPlatform} content provider.", provider.Platform);
 
                     return new(RequestContentResult.Error);
@@ -110,9 +111,19 @@ public sealed class ContentProvider
             }
         }
 
-        eventProperties.Add("Reason", _platformNotSupportedResult.Error.ToString());
-        _telemetryService.TrackEvent("ContentRequestFailed", eventProperties);
+        TrackContentRequestFailed(_platformNotSupportedResult.Error.ToString(), eventProperties);
         return _platformNotSupportedResult;
+    }
+
+    private void TrackContentRequestSucceeded(Dictionary<string, string> eventProperties)
+    {
+        _telemetryService.TrackEvent("ContentRequestSucceeded", eventProperties);
+    }
+
+    private void TrackContentRequestFailed(string reason, Dictionary<string, string> eventProperties)
+    {
+        eventProperties.Add("Reason", reason);
+        _telemetryService.TrackEvent("ContentRequestFailed", eventProperties);
     }
 
     private static bool ShouldBeCached(RequestContentResult error)

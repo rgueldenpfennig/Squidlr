@@ -39,7 +39,7 @@
 
     @if (errorMessage is not null)
     {
-        <h2 class="text-center mt-4">Oh no! Something went wrong 😓</h2>
+        <h2 class="mt-4 text-center">Oh no! Something went wrong 😓</h2>
         <div class="alert alert-warning fs-5" role="alert">@errorMessage</div>
     }
 
@@ -49,17 +49,16 @@
             <h2>Download in progress...</h2>
             <p class="lead">Your requested video is being processed.<br>Sit back and relax ☕</p>
         </div>
+        <BusyIndicator IsBusy="@isBusy" />
     }
     else
     {
-        <div class="container mt-4">
+        <div class="mt-4 container">
             <h2 class="text-center">Let's download another video</h2>
             <VideoSearchQuery />
             <PlatformNavigation />
         </div>
     }
-
-    <BusyIndicator IsBusy="@isBusy" />
 </div>
 
 @code {
@@ -102,6 +101,10 @@
                 SetErrorMessage(response.Error);
             }
         }
+        catch (OperationCanceledException)
+        {
+            SetErrorMessage(RequestContentResult.Canceled);
+        }
         catch (ApiClientException e)
         {
             SetErrorMessage(e);
@@ -124,6 +127,7 @@
             RequestContentResult.AccountSuspended => "The account containing the requested content has been suspended.",
             RequestContentResult.Protected => "The account owner limits who can view its content.",
             RequestContentResult.GatewayError => "The response from the social media servers was not what we expected. Please try again in a few minutes. In the meantime we will try to fix the issue.",
+            RequestContentResult.Canceled => "The request has been canceled.",
             _ => "There was an unexpected error. We will try to fix that as soon as possible!"
         };
     }
@@ -139,6 +143,7 @@
 
     void IDisposable.Dispose()
     {
+        cts.Cancel();
         cts.Dispose();
     }
 }

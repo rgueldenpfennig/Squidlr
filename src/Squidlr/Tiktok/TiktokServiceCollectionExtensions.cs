@@ -5,7 +5,7 @@ using Squidlr.Abstractions;
 
 namespace Squidlr.Tiktok;
 
-internal static class TiktokServiceCollectionExtensions
+public static class TiktokServiceCollectionExtensions
 {
     public static IServiceCollection AddTiktok(this IServiceCollection services)
     {

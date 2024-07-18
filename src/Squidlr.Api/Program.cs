@@ -4,7 +4,9 @@ using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.HttpOverrides;
 using Serilog;
 using Serilog.Events;
+using Serilog.Sinks.ApplicationInsights.TelemetryConverters;
 using Squidlr.Api.Authentication;
+using Squidlr.Api.Endpoints;
 using Squidlr.Api.Telemetry;
 using Squidlr.Hosting.Telemetry;
 using Squidlr.Telemetry;
@@ -37,10 +39,16 @@ public partial class Program
                 Environment.OSVersion);
 
             var config = GetConfiguration(args);
+            var loggerConfig = new LoggerConfiguration().ReadFrom.Configuration(config);
 
-            _logger = new LoggerConfiguration()
-                .ReadFrom.Configuration(config)
-                .CreateBootstrapLogger().ForContext<Program>();
+            var addTelemetry = false;
+            if (config["APPLICATIONINSIGHTS_CONNECTION_STRING"] is not null)
+            {
+                addTelemetry = true;
+                loggerConfig.WriteTo.ApplicationInsights(new TraceTelemetryConverter());
+            }
+
+            _logger = loggerConfig.CreateBootstrapLogger().ForContext<Program>();
 
             var builder = WebApplication.CreateBuilder(args);
             builder.WebHost.ConfigureKestrel(options => options.AddServerHeader = false);
@@ -49,11 +57,19 @@ public partial class Program
                     .ReadFrom.Configuration(context.Configuration)
                     .ReadFrom.Services(serviceProvider));
 
-            builder.Services.AddTelemetry(o => o.IgnoreAbsolutePaths = ["/health"]);
-            builder.Services.AddSingleton<ITelemetryService>(sp => new TelemetryService(sp.GetService<TelemetryClient>()));
-            builder.Services.AddSingleton<ITelemetryInitializer, SquidlrHeadersTelemetryInitializer>();
+            if (addTelemetry)
+            {
+                builder.Services.AddTelemetry(o => o.IgnoreAbsolutePaths = ["/health"]);
+                builder.Services.AddSingleton<ITelemetryService>(sp => new TelemetryService(sp.GetService<TelemetryClient>()));
+                builder.Services.AddSingleton<ITelemetryInitializer, SquidlrHeadersTelemetryInitializer>();
+            }
+            else
+            {
+                builder.Services.AddSingleton<ITelemetryService, TelemetryService>();
+            }
 
             builder.Host.UseSquidlr();
+            builder.Services.AddSingleton<HttpFileStreamService>();
 
             builder.Services.AddProblemDetails();
             builder.Services.AddHttpContextAccessor();
@@ -87,7 +103,8 @@ public partial class Program
             var app = builder.Build();
             app.UseSerilogRequestLogging(options =>
             {
-                options.GetLevel = (HttpContext ctx, double _, Exception? ex) => {
+                options.GetLevel = (HttpContext ctx, double _, Exception? ex) =>
+                {
                     var defaultLevel = ex != null
                                             ? LogEventLevel.Error
                                             : ctx.Response.StatusCode > 499
@@ -112,8 +129,8 @@ public partial class Program
             app.UseAuthorization();
 
             app.MapHealthChecks("/health").RequireHost("*:5001").AllowAnonymous();
-            app.MapContentRoutes(app.Environment);
-            app.MapVideoRoutes();
+            app.MapContentEndpoints(app.Environment);
+            app.MapVideoEndpoints();
 
             app.Run();
             return 0;

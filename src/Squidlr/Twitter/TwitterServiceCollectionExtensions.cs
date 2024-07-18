@@ -9,7 +9,7 @@ using Squidlr.Twitter.Services;
 
 namespace Squidlr.Twitter;
 
-internal static class TwitterServiceCollectionExtensions
+public static class TwitterServiceCollectionExtensions
 {
     public static IServiceCollection AddTwitter(this IServiceCollection services)
     {
@@ -42,12 +42,12 @@ internal static class TwitterServiceCollectionExtensions
                 };
             })
             .AddPolicyHandler((services, request) => HttpPolicyExtensions.HandleTransientHttpError()
-                .WaitAndRetryAsync(new[]
-                {
+                .WaitAndRetryAsync(
+                [
                     TimeSpan.FromMilliseconds(100),
                     TimeSpan.FromMilliseconds(200),
                     TimeSpan.FromMilliseconds(300)
-                },
+                ],
                 onRetry: (outcome, timespan, retryAttempt, context) =>
                 {
                     services.GetService<ILogger<TwitterWebClient>>()?
@@ -57,7 +57,6 @@ internal static class TwitterServiceCollectionExtensions
 
         services.AddSingleton<TwitterWebClient>();
         services.AddSingleton<TweetContentParserFactory>();
-        services.AddSingleton<TweetMediaService>();
         services.AddSingleton<IUrlResolver, TwitterUrlResolver>();
         services.AddSingleton<IContentProvider, TwitterContentProvider>();
 

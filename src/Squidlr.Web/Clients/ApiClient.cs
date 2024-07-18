@@ -85,6 +85,10 @@ public sealed class ApiClient
             _logger.LogWarning("Failed to get content. StatusCode: '{ResponseStatusCode}'", response.StatusCode);
             throw new ApiClientException(response.StatusCode);
         }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
         catch (Exception e) when (e is not ApiClientException)
         {
             _logger.LogWarning(e, "Failed to get content due to exception.");

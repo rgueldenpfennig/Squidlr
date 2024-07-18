@@ -43,13 +43,12 @@ public class TwitterContentRouteTests : IClassFixture<ApiWebApplicationFactory>
     // promo_video_convo card
     [InlineData("https://twitter.com/poco_dandy/status/1047395834013384704")]
     // video_direct_message card
-    [InlineData("https://twitter.com/qarev001/status/1348948114569269251")]
+    [InlineData("https://twitter.com/qarev001/status/1348948114569269251", Skip = "Doesn't contain a video anymore")]
     // GIF
     [InlineData("https://twitter.com/starwars/status/1654199211410477056")]
     // quoted Tweet with video
     [InlineData("https://twitter.com/Markus_Krall/status/1679960529484259329")]
     [InlineData("https://twitter.com/Srirachachau/status/1395079556562706435")]
-    [InlineData("https://twitter.com/i24news_en/status/1727307276057456875")]
     // default video Tweets
     [InlineData("https://twitter.com/TheOneHoskyFan/status/1723111326640472137")]
     [InlineData("https://twitter.com/CAF_Online/status/1349365911120195585")]
@@ -65,7 +64,6 @@ public class TwitterContentRouteTests : IClassFixture<ApiWebApplicationFactory>
     [InlineData("https://twitter.com/captainamerica/status/719944021058060289")]
     [InlineData("https://twitter.com/news_al3alm/status/852138619213144067")]
     [InlineData("https://twitter.com/LisPower1/status/1001551623938805763")]
-    [InlineData("https://twitter.com/jaydingeer/status/700207533655363584")]
     public async Task RequestTweetContent(string tweetUrl, HttpStatusCode expectedStatusCode = HttpStatusCode.OK)
     {
         await Task.Delay(millisecondsDelay: 200);

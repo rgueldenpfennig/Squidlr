@@ -9,9 +9,9 @@ public static class HttpContextExtensions
     public static string? GetClientIpAddress(this HttpContext context)
     {
         var headers = context.Request.Headers;
-        if (headers.ContainsKey(_clientIpHeader))
+        if (headers.TryGetValue(_clientIpHeader, out var value))
         {
-            return headers[_clientIpHeader];
+            return value;
         }
 
         return context.Connection.RemoteIpAddress?.ToString();

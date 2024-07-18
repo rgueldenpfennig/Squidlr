@@ -126,10 +126,10 @@ public sealed partial class InstagramContentProvider : IContentProvider
         return content;
     }
 
-    private async ValueTask<InstagramVideo> ExtractVideoFromNode(JsonElement videoNode, CancellationToken cancellationToken)
+    private async ValueTask<Video> ExtractVideoFromNode(JsonElement videoNode, CancellationToken cancellationToken)
     {
         var videoUrl = videoNode.GetProperty("video_url").GetString()!;
-        var video = new InstagramVideo()
+        var video = new Video()
         {
             DisplayUrl = new Uri(videoNode.GetProperty("display_url").GetString()!, UriKind.Absolute),
             Duration = videoNode.TryGetProperty("video_duration", out var videoDuration) ? TimeSpan.FromSeconds(videoDuration.GetDouble()) : null,

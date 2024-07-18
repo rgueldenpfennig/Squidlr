@@ -1,4 +1,5 @@
 ﻿User-agent: *
 Allow: /
+Disallow: /download
 Sitemap: https://www.squidlr.com/sitemap.xml
 Host: https://www.squidlr.com
