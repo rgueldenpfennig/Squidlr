@@ -82,7 +82,7 @@ public sealed partial class TiktokContentProvider : IContentProvider
         content.PlayCount = stats.GetProperty("playCount").GetInt32();
         content.CollectCount = Convert.ToInt32(stats.GetProperty("collectCount").GetString());
 
-        var video = new TiktokVideo();
+        var video = new Video();
         var videoElement = itemStruct.GetProperty("video");
         video.Duration = TimeSpan.FromSeconds(videoElement.GetProperty("duration").GetInt32());
 
@@ -104,6 +104,13 @@ public sealed partial class TiktokContentProvider : IContentProvider
         }
 
         content.Videos.Add(video);
+
+        // provide TikTok cookies
+        foreach (var cookie in response.Headers.GetValues("Set-Cookie"))
+        {
+            content.AdditionalProperties.Add(cookie.Substring(0, cookie.IndexOf('=')), cookie);
+        }
+
         return content;
     }
 }

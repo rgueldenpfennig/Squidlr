@@ -1,6 +1,4 @@
-﻿using System.Collections.ObjectModel;
-
-namespace Squidlr.Tiktok;
+﻿namespace Squidlr.Tiktok;
 
 public sealed class TiktokContent : Content
 {
@@ -14,25 +12,23 @@ public sealed class TiktokContent : Content
 
     public int? ShareCount { get; set; }
 
-    public TiktokVideoCollection Videos { get; set; } = new();
-
     public override string ToString()
     {
         return SourceUrl;
     }
 }
 
-public sealed class TiktokVideo
-{
-    public TimeSpan? Duration { get; set; }
+//public sealed class TiktokVideo
+//{
+//    public TimeSpan? Duration { get; set; }
 
-    public VideoSourceCollection VideoSources { get; set; } = new();
+//    public VideoSourceCollection VideoSources { get; set; } = new();
 
-    public TiktokVideo()
-    {
-    }
-}
+//    public TiktokVideo()
+//    {
+//    }
+//}
 
-public sealed class TiktokVideoCollection : Collection<TiktokVideo>
-{
-}
+//public sealed class TiktokVideoCollection : Collection<TiktokVideo>
+//{
+//}

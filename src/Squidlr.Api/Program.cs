@@ -8,6 +8,7 @@ using Serilog.Sinks.ApplicationInsights.TelemetryConverters;
 using Squidlr.Api.Authentication;
 using Squidlr.Api.Endpoints;
 using Squidlr.Api.Telemetry;
+using Squidlr.Hosting;
 using Squidlr.Hosting.Telemetry;
 using Squidlr.Telemetry;
 

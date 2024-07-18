@@ -1,66 +1,75 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Serilog.Context;
-using Squidlr.Twitter;
-using Squidlr.Twitter.Utilities;
+using Microsoft.Net.Http.Headers;
+using Squidlr.Hosting;
+using Squidlr.Tiktok;
 
 namespace Squidlr.Api.Endpoints;
 
 internal static class VideoEndpoints
 {
+    private static readonly ProblemDetails _badRequestDetails = new()
+    {
+        Status = StatusCodes.Status400BadRequest
+    };
+
     public static RouteHandlerBuilder MapVideoEndpoints(this IEndpointRouteBuilder builder)
     {
-        return builder.AddGetVideo();
+        return builder.AddStreamVideo();
     }
 
-    private static RouteHandlerBuilder AddGetVideo(this IEndpointRouteBuilder builder)
+    private static RouteHandlerBuilder AddStreamVideo(this IEndpointRouteBuilder builder)
     {
-        return builder.MapGet("/video", GetVideoAsync)
-            .WithName("GetVideo")
-            .WithOpenApi(operation =>
-            {
-                var parameter = operation.Parameters[0];
-                parameter.Description = "The related Tweet ID for the video file.";
-
-                parameter = operation.Parameters[1];
-                parameter.Description = "The Twitter URL to a video file.";
-
-                operation.Summary = "Provides the video file stream of the requested Twitter video URL.";
-
-                return operation;
-            })
-            .ProducesValidationProblem()
+        return builder.MapGet("/video", StreamVideoAsync)
+            .WithName("StreamVideo")
             .Produces<FileContentResult>(StatusCodes.Status200OK, contentType: "video/mp4")
-            .RequireRateLimiting("Video")
-            .RequireAuthorization();
+            .Produces<ProblemDetails>(StatusCodes.Status400BadRequest, contentType: "application/json")
+            .AllowAnonymous();
     }
 
-    private static async ValueTask<IResult> GetVideoAsync(
-        string tweetId,
-        string url,
+    private static async ValueTask<IResult> StreamVideoAsync(
+        string contentUrl,
+        [FromServices] ContentProvider contentProvider,
+        [FromServices] UrlResolver urlResolver,
+        [FromServices] IHttpClientFactory httpClientFactory,
         [FromServices] HttpFileStreamService service,
         HttpContext context,
         CancellationToken cancellationToken)
     {
-        if (string.IsNullOrEmpty(tweetId))
-            return Results.Problem(new()
-            {
-                Detail = "TweetId must be set.",
-                Status = StatusCodes.Status400BadRequest
-            });
-
-        if (!UrlUtilities.IsValidTwitterVideoUrl(url))
+        if (string.IsNullOrEmpty(contentUrl))
         {
-            return Results.Problem(new()
-            {
-                Detail = "The given URL seems not be a valid Twitter video URL.",
-                Status = StatusCodes.Status400BadRequest
-            });
+            return Results.Problem(_badRequestDetails);
         }
 
-        using (LogContext.PushProperty("TweetId", tweetId))
+        // TODO: ensure that the video URL is valid in conjunction with the content platform
+
+        var contentIdentifier = urlResolver.ResolveUrl(contentUrl);
+        var httpClientName = contentIdentifier.Platform switch
         {
-            await service.CopyFileStreamAsync(context, TwitterWebClient.HttpClientName, tweetId, new Uri(url, UriKind.Absolute), cancellationToken);
-            return Results.Empty;
+            SocialMediaPlatform.Tiktok => TiktokWebClient.HttpClientName,
+            _ => null
+        };
+
+        if (httpClientName is null)
+        {
+            return Results.Problem(_badRequestDetails);
         }
+
+        var content = await contentProvider.GetContentAsync(contentIdentifier, cancellationToken);
+        var cookie = content.Value.AdditionalProperties["tt_chain_token"];
+
+        // TODO: provide parameter to look for desired video quality
+
+        var videoUri = content.Value.Videos.First().VideoSources.First().Url;
+        var request = new HttpRequestMessage(HttpMethod.Get, videoUri);
+        request.Headers.Host = videoUri.Host;
+        request.Headers.Add(HeaderNames.Cookie, cookie);
+
+        // sets the file name for the file download
+        context.Response.Headers.ContentDisposition = $"attachment; fileName={contentIdentifier.Platform}-Squidlr-{contentIdentifier.Id}.mp4";
+
+        var httpClient = httpClientFactory.CreateClient(httpClientName);
+        await service.CopyFileStreamAsync(context, httpClient, request, cancellationToken);
+
+        return Results.Empty;
     }
 }

@@ -21,6 +21,9 @@ public abstract class Content
 
     public VideoCollection Videos { get; set; } = [];
 
+    [JsonIgnore]
+    public Dictionary<string, string> AdditionalProperties { get; set; } = new();
+
     protected Content(string sourceUrl, SocialMediaPlatform platform)
     {
         ArgumentException.ThrowIfNullOrEmpty(sourceUrl);
