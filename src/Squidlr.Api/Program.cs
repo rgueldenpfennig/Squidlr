@@ -131,7 +131,7 @@ public partial class Program
 
             app.MapHealthChecks("/health").RequireHost("*:5001").AllowAnonymous();
             app.MapContentEndpoints(app.Environment);
-            app.MapVideoEndpoints();
+            app.MapVideoEndpoints(app.Environment);
 
             app.Run();
             return 0;

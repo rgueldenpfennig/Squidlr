@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Squidlr.Instagram;
 using Squidlr.Shared;
+using Squidlr.Tiktok;
 using Squidlr.Twitter;
 using Squidlr.Web.States;
 
@@ -64,6 +65,7 @@ public sealed class ApiClient
                 return platform switch
                 {
                     SocialMediaPlatform.Instagram => (await response.Content.ReadFromJsonAsync<InstagramContent>(cancellationToken: cancellationToken))!,
+                    SocialMediaPlatform.Tiktok => (await response.Content.ReadFromJsonAsync<TiktokContent>(cancellationToken: cancellationToken))!,
                     SocialMediaPlatform.Twitter => (await response.Content.ReadFromJsonAsync<TwitterContent>(cancellationToken: cancellationToken))!,
                     _ => throw new ArgumentException("Unsupported platform: " + platform)
                 };

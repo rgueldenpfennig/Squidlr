@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Globalization;
+using System.Net;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using DotNext;
@@ -72,7 +73,7 @@ public sealed partial class TiktokContentProvider : IContentProvider
         }
 
         var content = new TiktokContent(identifier.Url);
-        content.CreatedAtUtc = DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(itemStruct.GetProperty("createTime").GetString()));
+        content.CreatedAtUtc = DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(itemStruct.GetProperty("createTime").GetString(), CultureInfo.InvariantCulture));
         content.FullText = itemStruct.GetProperty("desc").GetString();
         content.UserName = itemStruct.GetProperty("author").GetProperty("uniqueId").GetString();
 
@@ -80,10 +81,12 @@ public sealed partial class TiktokContentProvider : IContentProvider
         content.FavoriteCount = stats.GetProperty("diggCount").GetInt32();
         content.ReplyCount = stats.GetProperty("commentCount").GetInt32();
         content.PlayCount = stats.GetProperty("playCount").GetInt32();
+        content.ShareCount = stats.GetProperty("shareCount").GetInt32();
         content.CollectCount = Convert.ToInt32(stats.GetProperty("collectCount").GetString());
 
         var video = new Video();
         var videoElement = itemStruct.GetProperty("video");
+        video.DisplayUrl = new(videoElement.GetProperty("cover").GetString()!, UriKind.Absolute);
         video.Duration = TimeSpan.FromSeconds(videoElement.GetProperty("duration").GetInt32());
 
         var height = videoElement.GetProperty("height").GetInt32();
@@ -97,7 +100,7 @@ public sealed partial class TiktokContentProvider : IContentProvider
                 Size = new VideoSize(height, width),
                 ContentType = "video/mp4",
                 Url = new Uri(bitrateInfo.GetProperty("PlayAddr").GetProperty("UrlList").EnumerateArray().Last().GetString()!, UriKind.Absolute),
-                ContentLength = Convert.ToInt32(bitrateInfo.GetProperty("PlayAddr").GetProperty("DataSize").GetString())
+                ContentLength = Convert.ToInt32(bitrateInfo.GetProperty("PlayAddr").GetProperty("DataSize").GetString(), CultureInfo.InvariantCulture)
             };
 
             video.VideoSources.Add(videoSource);
@@ -108,7 +111,7 @@ public sealed partial class TiktokContentProvider : IContentProvider
         // provide TikTok cookies
         foreach (var cookie in response.Headers.GetValues("Set-Cookie"))
         {
-            content.AdditionalProperties.Add(cookie.Substring(0, cookie.IndexOf('=')), cookie);
+            content.AdditionalProperties.Add(cookie[..cookie.IndexOf('=')], cookie);
         }
 
         return content;

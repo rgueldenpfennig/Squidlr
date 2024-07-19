@@ -6,12 +6,14 @@
 @using System.Net;
 @using Serilog.Context;
 @using Squidlr.Instagram;
+@using Squidlr.Tiktok
 @using Squidlr.Twitter;
 @using Squidlr.Twitter.Utilities;
 @using Squidlr.Web.Clients;
 @using Squidlr.Web.States;
 @using Squidlr.Web.Telemetry;
 @using Squidlr;
+@using System.Diagnostics
 
 @inject NavigationManager NavigationManager
 @inject RequestVideoState RequestVideoState
@@ -28,14 +30,32 @@
 <PageTitle>@(SeoProperties.CreatePageTitle("Download"))</PageTitle>
 
 <div class="d-flex flex-column align-items-center justify-content-center">
+
+    @{
+        Debug.Print(content?.GetType().Name);
+        RenderFragment renderContent = content switch
+        {
+            InstagramContent instagramContent => @<InstagramContentView Content="@instagramContent" />,
+            TiktokContent tiktokContent => @<TiktokContentView Content="@tiktokContent" />,
+            TwitterContent twitterContent => @<TwitterContentView Content="@twitterContent" />,
+            _ => @<p>Not supported</p>
+        };
+    }
+
+    @renderContent
+@* 
     @if (content is InstagramContent instagramContent)
     {
         <InstagramContentView Content="@instagramContent" />
     }
+    @if (content is TiktokContent tiktokContent)
+    {
+        <TiktokContentView Content="@tiktokContent" />
+    }
     @if (content is TwitterContent twitterContent)
     {
         <TwitterContentView Content="@twitterContent" ShowProblemText=false />
-    }
+    } *@
 
     @if (errorMessage is not null)
     {
