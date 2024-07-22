@@ -64,6 +64,17 @@ public sealed partial class TiktokContentProvider : IContentProvider
             return new(RequestContentResult.Error);
         }
 
+        var statusCode = videoDetail.Value.GetPropertyOrNull("statusCode")?.GetInt32();
+        if (statusCode > 0)
+        {
+            return statusCode switch
+            {
+                10204 => new(RequestContentResult.NotFound),
+                10216 => new(RequestContentResult.Protected),
+                _ => new(RequestContentResult.GatewayError)
+            };
+        }
+
         var itemStruct = videoDetail.Value.GetProperty("itemInfo").GetProperty("itemStruct");
         var id = itemStruct.GetProperty("id").GetString();
         if (id == null || !id.Equals(identifier.Id, StringComparison.OrdinalIgnoreCase))
