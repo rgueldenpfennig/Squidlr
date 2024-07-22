@@ -5,6 +5,7 @@ using Polly.Extensions.Http;
 using Squidlr;
 using Squidlr.Abstractions;
 using Squidlr.Instagram;
+using Squidlr.Tiktok;
 using Squidlr.Twitter;
 using Squidlr.Web;
 using Squidlr.Web.Clients;
@@ -25,6 +26,8 @@ public static class SquidlrWebServiceCollectionExtensions
             .ValidateDataAnnotations()
             .ValidateOnStart();
 
+        services.AddSingleton<ClientDiscoveryService>();
+
         services.AddScoped<ApiClient>();
         services.AddHttpClient(ApiClient.HttpClientName, (sp, client) =>
         {
@@ -36,12 +39,12 @@ public static class SquidlrWebServiceCollectionExtensions
             client.DefaultRequestHeaders.Add("X-API-KEY", options.ApiKey);
         })
         .AddPolicyHandler((services, request) => HttpPolicyExtensions.HandleTransientHttpError()
-            .WaitAndRetryAsync(new[]
-            {
+            .WaitAndRetryAsync(
+            [
                     TimeSpan.FromMilliseconds(100),
                     TimeSpan.FromMilliseconds(200),
                     TimeSpan.FromMilliseconds(300)
-            },
+            ],
             onRetry: (outcome, timespan, retryAttempt, context) =>
             {
                 services.GetService<ILogger<ApiClient>>()?
@@ -56,6 +59,7 @@ public static class SquidlrWebServiceCollectionExtensions
             sp.GetServices<IUrlResolver>().ToList().AsReadOnly()));
 
         services.AddSingleton<IUrlResolver, InstagramUrlResolver>();
+        services.AddSingleton<IUrlResolver, TiktokUrlResolver>();
         services.AddSingleton<IUrlResolver, TwitterUrlResolver>();
 
         return services;

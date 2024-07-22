@@ -1,59 +1,56 @@
 ﻿using System.Buffers;
 using System.Net;
 using System.Net.Http.Headers;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
-namespace Squidlr.Api;
+namespace Squidlr.Hosting;
 
 public sealed class HttpFileStreamService
 {
     private const int _defaultBufferSize = 65_536;
 
-    private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<HttpFileStreamService> _logger;
 
-    public HttpFileStreamService(
-        IHttpClientFactory httpClientFactory,
-        ILogger<HttpFileStreamService> logger)
+    public HttpFileStreamService(ILogger<HttpFileStreamService> logger)
     {
-        _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async ValueTask CopyFileStreamAsync(HttpContext httpContext, string httpClientName, string fileName, Uri fileUri, CancellationToken cancellationToken)
+    public async ValueTask CopyFileStreamAsync(HttpContext httpContext, HttpClient httpClient, HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(httpContext);
-        ArgumentException.ThrowIfNullOrWhiteSpace(httpClientName);
-        ArgumentException.ThrowIfNullOrWhiteSpace(fileName);
+        ArgumentNullException.ThrowIfNull(httpClient);
 
-        _logger.LogInformation("Downloading file from: {FileUri}", fileUri);
-
-        var httpClient = _httpClientFactory.CreateClient(httpClientName);
-        httpContext.Response.Headers.ContentDisposition = $"attachment; fileName=Squidlr-{fileName}.mp4";
+        var fileUri = httpRequestMessage.RequestUri;
+        _logger.LogInformation("Streaming file from: {VideoStreamFileUri}", fileUri);
 
         try
         {
-            await CopyFileStreamAsync(fileUri, httpContext, httpClient, cancellationToken);
+            await CopyFileStreamInternalAsync(httpContext, httpClient, httpRequestMessage, cancellationToken);
         }
         catch (Exception ex)
         {
             if (ex is TaskCanceledException)
+            {
+                httpContext.Response.StatusCode = 499;
                 return;
+            }
 
-            _logger.LogWarning(ex, "An exception occurred while downloading file: {FileUri}", fileUri);
+            _logger.LogWarning(ex, "An exception occurred while streaming file: {VideoStreamFileUri}", fileUri);
             httpContext.Response.StatusCode = (int)HttpStatusCode.BadGateway;
         }
     }
 
-    private static async ValueTask CopyFileStreamAsync(Uri fileUri, HttpContext httpContext, HttpClient httpClient, CancellationToken cancellationToken)
+    private static async ValueTask CopyFileStreamInternalAsync(
+        HttpContext httpContext, HttpClient httpClient, HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken)
     {
-        var request = new HttpRequestMessage(HttpMethod.Get, fileUri);
-
         if (httpContext.Request.Headers.TryGetValue("Range", out var rangeHeader))
         {
-            request.Headers.Range = RangeHeaderValue.Parse(rangeHeader!);
+            httpRequestMessage.Headers.Range = RangeHeaderValue.Parse(rangeHeader!);
         }
 
-        using var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+        using var response = await httpClient.SendAsync(httpRequestMessage, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
         httpContext.Response.StatusCode = (int)response.StatusCode;
 
         if (response.IsSuccessStatusCode && response.Content.Headers.ContentLength is not null)
@@ -80,8 +77,6 @@ public sealed class HttpFileStreamService
         {
             while (true)
             {
-                read = 0;
-
                 // Issue a zero-byte read to the input stream to defer buffer allocation until data is available.
                 // Note that if the underlying stream does not supporting blocking on zero byte reads, then this will
                 // complete immediately and won't save any memory, but will still function correctly.
@@ -95,7 +90,6 @@ public sealed class HttpFileStreamService
                 {
                     // Take care not to return the same buffer to the pool twice in case zeroByteReadTask throws
                     var bufferToReturn = buffer;
-                    buffer = null;
                     ArrayPool<byte>.Shared.Return(bufferToReturn);
 
                     await zeroByteReadTask;

@@ -1,12 +1,14 @@
 ﻿@using System.Globalization;
 @using Squidlr.Shared;
-@using Squidlr.Twitter;
+@using Squidlr.Tiktok
+@using Squidlr.Web.Clients
 
 @inject NavigationManager NavigationManager
+@inject ClientDiscoveryService ClientDiscoveryService
 
 @if (Content is not null)
 {
-    var title = SeoProperties.CreatePageTitle($"{Content.UserName} on X: " + FormatHelper.FormatContentTitle(Content.FullText));
+    var title = SeoProperties.CreatePageTitle($"{Content.UserName} on TikTok: " + FormatHelper.FormatContentTitle(Content.FullText));
     string? videoMediaUrl = null;
 
     <PageTitle>@title</PageTitle>
@@ -26,7 +28,7 @@
     </HeadContent>
 
     <div class="px-4 my-4 text-center">
-        <h1 class="display-6 fw-bold text-body-emphasis">X / Twitter video download</h1>
+        <h1 class="display-6 fw-bold text-body-emphasis">TikTok video download</h1>
     </div>
 
     <div class="card mb-4">
@@ -39,25 +41,27 @@
                         <footer class="blockquote-footer">@string.Format("@{0}", Content.UserName)</footer>
                     </blockquote>
                 }
-                <a href="@Content.TweetIdentifier.Url">
+                <a href="@Content.SourceUrl">
                     <time datetime="@Content.CreatedAtUtc.ToString("O", CultureInfo.InvariantCulture)">
                         @Content.CreatedAtUtc.ToString("f", CultureInfo.InvariantCulture)
                     </time>
                 </a>
-                @if (Content.Views is not null)
+                @if (Content.PlayCount is not null)
                 {
-                    <span> - <strong>@FormatHelper.FormatNumber(Content.Views.Value)</strong> <small>Views</small></span>
-                }
-                @if (!string.IsNullOrEmpty(Content.Source))
-                {
-                    <span> - @((MarkupString)Content.Source)</span>
+                    <span> - <strong>@FormatHelper.FormatNumber(Content.PlayCount.Value)</strong> <small>Views</small></span>
                 }
 
                 <ul class="list-inline mt-1">
-                    <li class="list-inline-item"><strong>@FormatHelper.FormatNumber(Content.RetweetCount)</strong> <small>Retweets</small></li>
-                    <li class="list-inline-item"><strong>@FormatHelper.FormatNumber(Content.QuoteCount)</strong> <small>Quotes</small></li>
                     <li class="list-inline-item"><strong>@FormatHelper.FormatNumber(Content.FavoriteCount)</strong> <small>Likes</small></li>
-                    <li class="list-inline-item"><strong>@FormatHelper.FormatNumber(Content.BookmarkCount)</strong> <small>Bookmarks</small></li>
+                    <li class="list-inline-item"><strong>@FormatHelper.FormatNumber(Content.ReplyCount)</strong> <small>Comments</small></li>
+                    @if (Content.CollectCount is not null)
+                    {
+                        <li class="list-inline-item"><strong>@FormatHelper.FormatNumber(Content.CollectCount.Value)</strong> <small>Bookmarks</small></li>
+                    }
+                    @if (Content.ShareCount is not null)
+                    {
+                        <li class="list-inline-item"><strong>@FormatHelper.FormatNumber(Content.ShareCount.Value)</strong> <small>Shares</small></li>
+                    }
                 </ul>
             </p>
 
@@ -90,10 +94,6 @@
                                             <li class="list-inline-item"><strong>@FormatHelper.FormatNumber(@video.Views.Value)</strong> <small>Views</small></li>
                                         }
                                     </ul>
-                                    <div class="alert alert-primary d-flex align-items-center" role="alert">
-                                        <span class="oi oi-info me-2" data-glyph="info" title="Information" aria-hidden="true"></span>
-                                        <span class="fw-medium">Right click your selection and choose "Save as..." to save the video on your device.</span>
-                                    </div>
                                 </div>
                                 <div class="list-group">
                                     @{
@@ -102,7 +102,7 @@
                                     }
                                     @foreach (var source in videoSources)
                                     {
-                                        <a class="btn btn-primary list-group-item list-group-item-action mb-1" role="button" href="@source.Url.ToString()" target="_blank">
+                                        <a class="btn btn-primary list-group-item list-group-item-action mb-1" role="button" href="@GetVideoStreamUrl(source)" target="_blank">
                                             <div class="d-flex w-100 justify-content-between">
                                                 <h5 class="mb-1">@FormatHelper.CreateVideoResolutionText(videoSources, videoSourceIndex)</h5>
                                                 <span class="oi oi-cloud-download" data-glyph="cloud-download" title="Download" aria-hidden="true"></span>
@@ -133,17 +133,6 @@
                     </div>
                 </div>
             }
-
-            @if (ShowProblemText)
-            {
-                <div class="alert alert-warning" role="alert">
-                    <span class="oi oi-eye me-2" data-glyph="info" title="Information" aria-hidden="true"></span>
-                    <span class="fw-bold">Issue with some videos</span>
-                    <p>It seems that various videos are currently affected by a problem on the side of X.com<br>After downloading, the video seems to contain no audio. Opening the video file directly in the browser plays audio, though.</p>
-                    <p>In most cases new videos are affected by this issue.</p>
-                    <p>I am currently investigating and try to find a solution. As far as I know other video download services are also affected by this issue.</p>
-                </div>
-            }
         </div>
     </div>
 }
@@ -154,8 +143,13 @@ else
 
 @code {
     [Parameter]
-    public TwitterContent? Content { get; set; }
+    public TiktokContent? Content { get; set; }
 
-    [Parameter]
-    public bool ShowProblemText { get; set; }
+    private Uri GetVideoStreamUrl(VideoSource source)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+
+        var selector =  source.Url.AbsolutePath.Substring(0, source.Url.AbsolutePath.LastIndexOf('/'));
+        return ClientDiscoveryService.GetVideoStreamUrl(Content!.SourceUrl, selector);
+    }
 }

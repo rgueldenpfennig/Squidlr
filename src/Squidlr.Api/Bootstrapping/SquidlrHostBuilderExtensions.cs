@@ -3,6 +3,7 @@ using Squidlr;
 using Squidlr.Abstractions;
 using Squidlr.Instagram;
 using Squidlr.Telemetry;
+using Squidlr.Tiktok;
 using Squidlr.Twitter;
 
 namespace Microsoft.AspNetCore.Builder;
@@ -44,6 +45,7 @@ public static class SquidlrHostBuilderExtensions
             // add supported social media platforms
             services.AddTwitter();
             services.AddInstagram();
+            services.AddTiktok();
         });
 
         return builder;

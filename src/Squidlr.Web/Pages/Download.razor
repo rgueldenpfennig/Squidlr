@@ -6,6 +6,7 @@
 @using System.Net;
 @using Serilog.Context;
 @using Squidlr.Instagram;
+@using Squidlr.Tiktok
 @using Squidlr.Twitter;
 @using Squidlr.Twitter.Utilities;
 @using Squidlr.Web.Clients;
@@ -28,13 +29,20 @@
 <PageTitle>@(SeoProperties.CreatePageTitle("Download"))</PageTitle>
 
 <div class="d-flex flex-column align-items-center justify-content-center">
-    @if (content is InstagramContent instagramContent)
-    {
-        <InstagramContentView Content="@instagramContent" />
+
+    @{
+        RenderFragment? renderContent = content switch
+        {
+            InstagramContent instagramContent => @<InstagramContentView Content="@instagramContent" />,
+            TiktokContent tiktokContent => @<TiktokContentView Content="@tiktokContent" />,
+            TwitterContent twitterContent => @<TwitterContentView Content="@twitterContent" />,
+            _ => null
+        };
     }
-    @if (content is TwitterContent twitterContent)
+
+    @if (renderContent != null)
     {
-        <TwitterContentView Content="@twitterContent" ShowProblemText=false />
+        @renderContent
     }
 
     @if (errorMessage is not null)

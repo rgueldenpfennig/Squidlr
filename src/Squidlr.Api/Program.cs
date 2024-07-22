@@ -8,6 +8,7 @@ using Serilog.Sinks.ApplicationInsights.TelemetryConverters;
 using Squidlr.Api.Authentication;
 using Squidlr.Api.Endpoints;
 using Squidlr.Api.Telemetry;
+using Squidlr.Hosting;
 using Squidlr.Hosting.Telemetry;
 using Squidlr.Telemetry;
 
@@ -130,7 +131,7 @@ public partial class Program
 
             app.MapHealthChecks("/health").RequireHost("*:5001").AllowAnonymous();
             app.MapContentEndpoints(app.Environment);
-            app.MapVideoEndpoints();
+            app.MapVideoEndpoints(app.Environment);
 
             app.Run();
             return 0;
@@ -154,6 +155,7 @@ public partial class Program
            .AddJsonFile("appsettings.json", false)
            .AddJsonFile($"appsettings.{environmentName}.json", true)
            .AddCommandLine(args)
+           .AddUserSecrets<Program>()
            .AddEnvironmentVariables();
 
         return configBuilder.Build();

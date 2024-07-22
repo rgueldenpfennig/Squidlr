@@ -8,6 +8,9 @@ public sealed class SquidlrOptions : IOptions<SquidlrOptions>, IValidatableObjec
     [Required]
     public Uri? InstagramHostUri { get; set; }
 
+    [Required]
+    public Uri? TiktokHostUri { get; set; }
+
     [Required(AllowEmptyStrings = false)]
     public string? TwitterAuthorizationBearerToken { get; set; }
 

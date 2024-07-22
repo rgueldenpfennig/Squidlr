@@ -168,6 +168,7 @@ public partial class Program
                              builder.AddFormAction().Self();
                              builder.AddFrameAncestors().None();
                              builder.AddImgSrc().Self().From("https://pbs.twimg.com");
+                             builder.AddImgSrc().Self().From("https://*.tiktokcdn.com");
                              builder.AddObjectSrc().None();
                              builder.AddScriptSrc().Self();
                              builder.AddStyleSrc().Self();
