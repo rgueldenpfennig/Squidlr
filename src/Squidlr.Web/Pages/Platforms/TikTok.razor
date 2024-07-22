@@ -1,6 +1,6 @@
 ﻿@page "/tiktok"
 
-<PageTitle>@(SeoProperties.CreatePageTitle("TikTok"))</PageTitle>
+<PageTitle>@(SeoProperties.PlatformPageTitleFor("TikTok"))</PageTitle>
 
 <HeadContent>
     <PlatformMeta PlatformName="TikTok" />
@@ -10,7 +10,7 @@
     <h1 class="display-6 fw-bold text-body-emphasis">Download videos from TikTok</h1>
     <div class="mx-auto text-center">
         <p class="lead fs-5 mb-4">
-            By using Squidlr you can download any video from TikTok.<br />
+            By using Squidlr you can download any video from TikTok without the watermark.<br />
             Just choose your preferred resolution and save it locally on your device as a MP4 video file.
         </p>
         <VideoSearchQuery FocusInput=@false />
