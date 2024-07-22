@@ -1,8 +1,10 @@
 ﻿@using System.Globalization;
 @using Squidlr.Shared;
 @using Squidlr.Tiktok
+@using Squidlr.Web.Clients
 
 @inject NavigationManager NavigationManager
+@inject ClientDiscoveryService ClientDiscoveryService
 
 @if (Content is not null)
 {
@@ -92,10 +94,6 @@
                                             <li class="list-inline-item"><strong>@FormatHelper.FormatNumber(@video.Views.Value)</strong> <small>Views</small></li>
                                         }
                                     </ul>
-                                    <div class="alert alert-primary d-flex align-items-center" role="alert">
-                                        <span class="oi oi-info me-2" data-glyph="info" title="Information" aria-hidden="true"></span>
-                                        <span class="fw-medium">Right click your selection and choose "Save as..." to save the video on your device.</span>
-                                    </div>
                                 </div>
                                 <div class="list-group">
                                     @{
@@ -104,9 +102,9 @@
                                     }
                                     @foreach (var source in videoSources)
                                     {
-                                        <a class="btn btn-primary list-group-item list-group-item-action mb-1" role="button" href="@source.Url.ToString()" target="_blank">
+                                        <a class="btn btn-primary list-group-item list-group-item-action mb-1" role="button" href="@GetVideoStreamUrl(source)" target="_blank">
                                             <div class="d-flex w-100 justify-content-between">
-                                                <h5 class="mb-1">@CreateVideoResolutionText(videoSources, videoSourceIndex)</h5>
+                                                <h5 class="mb-1">@FormatHelper.CreateVideoResolutionText(videoSources, videoSourceIndex)</h5>
                                                 <span class="oi oi-cloud-download" data-glyph="cloud-download" title="Download" aria-hidden="true"></span>
                                             </div>
                                             <p class="mb-1">
@@ -147,18 +145,11 @@ else
     [Parameter]
     public TiktokContent? Content { get; set; }
 
-    private static string CreateVideoResolutionText(VideoSource[] videos, int videoSourceIndex)
+    private Uri GetVideoStreamUrl(VideoSource source)
     {
-        return videoSourceIndex switch
-        {
-            0 => "Best resolution",
-            1 when videos.Length == 5 => "High resolution",
-            2 when videos.Length == 5 => "Medium resolution",
-            3 when videos.Length == 5 => "Low resolution",
-            1 when videos.Length == 4 => "High resolution",
-            2 when videos.Length == 4 => "Medium resolution",
-            1 when videos.Length == 3 => "Medium resolution",
-            _ => "Lowest resolution"
-        };
+        ArgumentNullException.ThrowIfNull(source);
+
+        var selector =  source.Url.AbsolutePath.Substring(0, source.Url.AbsolutePath.LastIndexOf('/'));
+        return ClientDiscoveryService.GetVideoStreamUrl(Content!.SourceUrl, selector);
     }
 }

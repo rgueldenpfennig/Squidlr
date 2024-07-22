@@ -17,18 +17,3 @@ public sealed class TiktokContent : Content
         return SourceUrl;
     }
 }
-
-//public sealed class TiktokVideo
-//{
-//    public TimeSpan? Duration { get; set; }
-
-//    public VideoSourceCollection VideoSources { get; set; } = new();
-
-//    public TiktokVideo()
-//    {
-//    }
-//}
-
-//public sealed class TiktokVideoCollection : Collection<TiktokVideo>
-//{
-//}

@@ -32,30 +32,19 @@
 <div class="d-flex flex-column align-items-center justify-content-center">
 
     @{
-        Debug.Print(content?.GetType().Name);
-        RenderFragment renderContent = content switch
+        RenderFragment? renderContent = content switch
         {
             InstagramContent instagramContent => @<InstagramContentView Content="@instagramContent" />,
             TiktokContent tiktokContent => @<TiktokContentView Content="@tiktokContent" />,
             TwitterContent twitterContent => @<TwitterContentView Content="@twitterContent" />,
-            _ => @<p>Not supported</p>
+            _ => null
         };
     }
 
-    @renderContent
-@* 
-    @if (content is InstagramContent instagramContent)
+    @if (renderContent != null)
     {
-        <InstagramContentView Content="@instagramContent" />
+        @renderContent
     }
-    @if (content is TiktokContent tiktokContent)
-    {
-        <TiktokContentView Content="@tiktokContent" />
-    }
-    @if (content is TwitterContent twitterContent)
-    {
-        <TwitterContentView Content="@twitterContent" ShowProblemText=false />
-    } *@
 
     @if (errorMessage is not null)
     {

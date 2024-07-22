@@ -26,6 +26,8 @@ public static class SquidlrWebServiceCollectionExtensions
             .ValidateDataAnnotations()
             .ValidateOnStart();
 
+        services.AddSingleton<ClientDiscoveryService>();
+
         services.AddScoped<ApiClient>();
         services.AddHttpClient(ApiClient.HttpClientName, (sp, client) =>
         {
