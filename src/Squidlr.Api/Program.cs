@@ -155,6 +155,7 @@ public partial class Program
            .AddJsonFile("appsettings.json", false)
            .AddJsonFile($"appsettings.{environmentName}.json", true)
            .AddCommandLine(args)
+           .AddUserSecrets<Program>()
            .AddEnvironmentVariables();
 
         return configBuilder.Build();

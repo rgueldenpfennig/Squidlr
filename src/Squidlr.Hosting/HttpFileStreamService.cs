@@ -22,7 +22,8 @@ public sealed class HttpFileStreamService
         ArgumentNullException.ThrowIfNull(httpContext);
         ArgumentNullException.ThrowIfNull(httpClient);
 
-        //_logger.LogInformation("Streaming file from: {FileUri}", fileUri);
+        var fileUri = httpRequestMessage.RequestUri;
+        _logger.LogInformation("Streaming file from: {VideoStreamFileUri}", fileUri);
 
         try
         {
@@ -31,9 +32,12 @@ public sealed class HttpFileStreamService
         catch (Exception ex)
         {
             if (ex is TaskCanceledException)
+            {
+                httpContext.Response.StatusCode = 499;
                 return;
+            }
 
-            //_logger.LogWarning(ex, "An exception occurred while streaming file: {FileUri}", fileUri);
+            _logger.LogWarning(ex, "An exception occurred while streaming file: {VideoStreamFileUri}", fileUri);
             httpContext.Response.StatusCode = (int)HttpStatusCode.BadGateway;
         }
     }
@@ -73,8 +77,6 @@ public sealed class HttpFileStreamService
         {
             while (true)
             {
-                read = 0;
-
                 // Issue a zero-byte read to the input stream to defer buffer allocation until data is available.
                 // Note that if the underlying stream does not supporting blocking on zero byte reads, then this will
                 // complete immediately and won't save any memory, but will still function correctly.
@@ -88,7 +90,6 @@ public sealed class HttpFileStreamService
                 {
                     // Take care not to return the same buffer to the pool twice in case zeroByteReadTask throws
                     var bufferToReturn = buffer;
-                    buffer = null;
                     ArrayPool<byte>.Shared.Return(bufferToReturn);
 
                     await zeroByteReadTask;
