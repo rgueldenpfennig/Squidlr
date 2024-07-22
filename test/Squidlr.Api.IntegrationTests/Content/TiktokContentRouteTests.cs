@@ -47,10 +47,7 @@ public class TiktokContentRouteTests : IClassFixture<ApiWebApplicationFactory>
                 var expectedVideo = expectedContent.Videos[i];
                 var video = content.Videos[i];
 
-                //Assert.Equal(video.DisplayUrl.AbsolutePath, expectedVideo.DisplayUrl.OriginalString);
                 Assert.Equal(video.Duration, expectedVideo.Duration);
-                //if (video.Views.HasValue)
-                //    Assert.InRange(video.Views.Value, expectedVideo.Views!.Value - 100, expectedVideo.Views!.Value + 100);
 
                 for (var j = 0; j < expectedVideo.VideoSources.Count; j++)
                 {
@@ -74,28 +71,29 @@ public class TiktokContentRouteTests : IClassFixture<ApiWebApplicationFactory>
         // default post with a single video
         yield return new object[]
         {
-            new TiktokContent("https://www.tiktok.com/@itsmekikooooo/video/7318008965873339681")
+            new TiktokContent("https://www.tiktok.com/@euro2024/video/7391624670811933984")
             {
-                CreatedAtUtc = DateTimeOffset.Parse("2013-06-20T17:15:45+00:00", CultureInfo.InvariantCulture),
-                FavoriteCount = 12076,
-                FullText = "If Abel was a booger, Luke would definitely pick him. See it in action by playing this video. Yes! That's right, folks. This is a video and Tiktok made that possible! Read about this new capability and check out the promo video (with our cameo appearance) by clicking on the link in my profile. Also, be sure to download the latest version of Tiktok and start sharing your videos!",
-                ReplyCount = 665,
-                UserName = "naomipq",
-                Videos = new TiktokVideoCollection
+                CreatedAtUtc = DateTimeOffset.Parse("2024-07-14T22:39:01+00:00", CultureInfo.InvariantCulture),
+                FullText = "Yamal 🤩💫 #EURO2024 #SpainvsEngland #Spain ",
+                FavoriteCount = 1_400_000,
+                PlayCount = 10_100_000,
+                CollectCount = 87_718,
+                ReplyCount = 6_853,
+                UserName = "euro2024",
+                Videos = new VideoCollection
                 {
-                    new TiktokVideo
+                    new Video
                     {
-                        Duration = TimeSpan.Parse("00:00:08.7420000", CultureInfo.InvariantCulture),
-                        //DisplayUrl = new Uri("/v/t51.2885-15/11379094_104911659849817_249670488_n.jpg", UriKind.Relative),
+                        Duration = TimeSpan.Parse("00:00:09", CultureInfo.InvariantCulture),
                         VideoSources = new VideoSourceCollection
                         {
                             new VideoSource
                             {
-                                Bitrate = 0,
-                                ContentLength = 1017460,
+                                Bitrate = 2303571,
+                                ContentLength = 2601308,
                                 ContentType = "video/mp4",
-                                Size = new(612, 612),
-                                Url = new Uri("/o1/v/t16/f1/m84/684E26483F3B131A73D2F28B764A74AF_video_dashinit.mp4", UriKind.Relative)
+                                Size = new(1024, 576),
+                                Url = new Uri("/video/tos/useast2a/tos-useast2a-ve-0068-euttp/ocONrgPDmBU4quFFEEeF4AQiEDYUflrQpRI4y7/", UriKind.Relative)
                             }
                         }
                     }
