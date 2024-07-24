@@ -170,8 +170,8 @@ public partial class Program
                              builder.AddFontSrc().Self();
                              builder.AddFormAction().Self();
                              builder.AddFrameAncestors().None();
-                             builder.AddImgSrc().Self().From("https://pbs.twimg.com");
-                             builder.AddImgSrc().Self().From("https://*.tiktokcdn.com");
+                             builder.AddImgSrc().Self().From("https://*.tiktokcdn.com")
+                                                       .From("https://pbs.twimg.com");
                              builder.AddObjectSrc().None();
                              builder.AddScriptSrc().Self();
                              builder.AddStyleSrc().Self();
