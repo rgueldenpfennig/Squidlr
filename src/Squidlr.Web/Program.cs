@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.IO.Compression;
 using System.Net;
 using Microsoft.ApplicationInsights.Extensibility;
@@ -9,7 +10,6 @@ using Microsoft.Extensions.Primitives;
 using Microsoft.Net.Http.Headers;
 using Serilog;
 using Serilog.Events;
-using Serilog.Sinks.ApplicationInsights.TelemetryConverters;
 using Squidlr.Hosting.Compression;
 using Squidlr.Hosting.Telemetry;
 using Squidlr.Web.Bootstrapping;
@@ -24,7 +24,7 @@ public partial class Program
                 .Enrich.FromLogContext()
                 .Enrich.WithMachineName()
                 .Enrich.WithThreadId()
-                .WriteTo.Console()
+                .WriteTo.Console(formatProvider: CultureInfo.InvariantCulture)
                 .CreateLogger()
                 .ForContext<Program>();
 
@@ -45,27 +45,30 @@ public partial class Program
             var config = GetConfiguration(args);
             var loggerConfig = new LoggerConfiguration().ReadFrom.Configuration(config);
 
-            var addTelemetry = false;
-            if (config["APPLICATIONINSIGHTS_CONNECTION_STRING"] is not null)
-            {
-                addTelemetry = true;
-                loggerConfig.WriteTo.ApplicationInsights(new TraceTelemetryConverter());
-            }
-
             _logger = loggerConfig.CreateBootstrapLogger().ForContext<Program>();
 
             var builder = WebApplication.CreateBuilder(args);
             builder.WebHost.ConfigureKestrel(options => options.AddServerHeader = false);
 
-            builder.Host.UseSerilog((context, serviceProvider, configuration) => configuration
-                    .ReadFrom.Configuration(context.Configuration)
-                    .ReadFrom.Services(serviceProvider));
-
+            var addTelemetry = config["APPLICATIONINSIGHTS_CONNECTION_STRING"] is not null;
             if (addTelemetry)
             {
                 builder.Services.AddTelemetry(o => o.IgnoreAbsolutePaths = ["/health"]);
                 builder.Services.AddSingleton<ITelemetryInitializer, AppStateTelemetryInitializer>();
             }
+
+            builder.Host.UseSerilog((context, serviceProvider, configuration) =>
+            {
+                configuration.ReadFrom.Configuration(context.Configuration)
+                             .ReadFrom.Services(serviceProvider);
+
+                if (addTelemetry)
+                {
+                    configuration.WriteTo.ApplicationInsights(
+                        serviceProvider.GetRequiredService<TelemetryConfiguration>(),
+                        TelemetryConverter.Traces);
+                }
+            });
 
             // Add services to the container.
             builder.Services.AddHttpContextAccessor();
