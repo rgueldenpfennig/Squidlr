@@ -1,6 +1,3 @@
-# Squidlr
-The modern way to download social media videos
-
 ![Squidlr landing page](/docs/img/2024-06-30-squidlr-screenshot-landing.png)
 
 <details>
@@ -11,14 +8,15 @@ The modern way to download social media videos
 </details>
 
 ## What is Squidlr?
-Squidlr is a platform to easily download videos and GIFs from X (formerly known as Twitter) and Instagram posts.
+Squidlr is a platform to easily download videos and GIFs from various social media and video platforms.
 
 It's composed of a SPA (single page application) website and an API server and is open source software.
 
 ## Features
 - Download videos from:
-  - X (formerly Twitter)
+  - X (f.k.a Twitter)
   - Instagram
+  - TikTok
 - choose between available video file resolutions
 - support of multiple videos found in a single post
 - display of common meta data attached to the post (likes, shares, author, etc.)
@@ -61,19 +59,5 @@ All the relevant steps are executed by using GitHub actions.
 
 Additionally each environment has a Application Insights instance to collect basic (anonymous) meta data.
 
-## Open issues
-Overall the Squidlr services are very stable and everything works as expected.
-
-But still there are some issues that I want to tackle in the future:
-### Caching
-Currently the cache of already requested posts is being held in memory. I want to make use of a distributed cache here (e.g. Valkey or similar).
-
-### Video download experience
-Squidlr is not acting as a direct proxy to enable the download of the requested video(s). In fact Squidlr only collects all the meta data of the post and provides the direct download links of the video files from the platform CDNs. This means that the user has to execute a direct download of that link (e.g. right click and save as). This decision was taken due to legal reasons. I don't want to store any videos on my servers.
-
-This may be quite safe from legal perspective but is a "broken" user experience. Other download sites are routing the download of the video files through their respective server and offer a direct download to the user.
-
-For that reason it's also not possible to download videos from TikTok as the TikTok CDN only allows the download from their hosts.
-
-### Mobile App
-I also started to develop a mobile app version of Squidlr based on .NET MAUI. Depending on my free resources I would love to explore that endeavour and publish Squidlr as an app on Android and iOS devices. As the whole logic would be hosted by the client device there won't be any need to communicate with a server but the targeted social media platforms. This means the HTTP request pipeline will be under total control outside of the restriction of modern web browsers. So it would be possible to download TikTok videos for example. Additionally it won't be necessary to use a HTTP proxy, which is currently in use for crawling Instagram from the backend APIs.
+## Mobile App
+I also started to develop a mobile app version of Squidlr based on .NET MAUI. Depending on my free resources I would love to explore that endeavour and publish Squidlr as an app on Android and iOS devices. As the whole logic would be hosted by the client device there won't be any need to communicate with a server but the targeted social media platforms. This means the HTTP request pipeline will be under total control outside of the restriction of modern web browsers. So, it would be possible to directly download TikTok videos for example, instead of using a proxy video streaming server. Additionally it won't be necessary to use a HTTP proxy, which is currently required to crawl Instagram from the backend APIs.
