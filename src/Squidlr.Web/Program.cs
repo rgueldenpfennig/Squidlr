@@ -89,6 +89,7 @@ public partial class Program
                 options.Providers.Add<ZstdCompressionProvider>();
                 options.Providers.Add<BrotliCompressionProvider>();
                 options.Providers.Add<GzipCompressionProvider>();
+                options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(["image/svg+xml"]);
             });
 
             builder.Services.Configure<ZstdCompressionProviderOptions>(options =>
@@ -142,6 +143,7 @@ public partial class Program
             }
             else
             {
+                app.UseResponseCompression();
                 app.UseDeveloperExceptionPage();
             }
 
