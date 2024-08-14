@@ -1,7 +1,7 @@
 # Squidlr
 The modern way to download social media videos
 
-![Squidlr landing page](/docs/img/2024-06-30-squidlr-screenshot-landing.png)
+![Squidlr landing page](/docs/img/2024-08-14-squidlr-screenshot-landing.png)
 
 <details>
 <summary><strong>additional screenshots</strong></summary>
@@ -19,6 +19,7 @@ It's composed of a SPA (single page application) website and an API server and i
 - Download videos from:
   - X (formerly Twitter)
   - Instagram
+  - TikTok
 - choose between available video file resolutions
 - support of multiple videos found in a single post
 - display of common meta data attached to the post (likes, shares, author, etc.)
@@ -73,7 +74,6 @@ Squidlr is not acting as a direct proxy to enable the download of the requested 
 
 This may be quite safe from legal perspective but is a "broken" user experience. Other download sites are routing the download of the video files through their respective server and offer a direct download to the user.
 
-For that reason it's also not possible to download videos from TikTok as the TikTok CDN only allows the download from their hosts.
 
 ### Mobile App
-I also started to develop a mobile app version of Squidlr based on .NET MAUI. Depending on my free resources I would love to explore that endeavour and publish Squidlr as an app on Android and iOS devices. As the whole logic would be hosted by the client device there won't be any need to communicate with a server but the targeted social media platforms. This means the HTTP request pipeline will be under total control outside of the restriction of modern web browsers. So it would be possible to download TikTok videos for example. Additionally it won't be necessary to use a HTTP proxy, which is currently in use for crawling Instagram from the backend APIs.
+I also started to develop a mobile app version of Squidlr based on .NET MAUI. Depending on my free resources I would love to explore that endeavour and publish Squidlr as an app on Android and iOS devices. As the whole logic would be hosted by the client device there won't be any need to communicate with a server but the targeted social media platforms. This means the HTTP request pipeline will be under total control outside of the restriction of modern web browsers. Additionally it won't be necessary to use a HTTP proxy, which is currently in use for crawling Instagram from the backend APIs.
