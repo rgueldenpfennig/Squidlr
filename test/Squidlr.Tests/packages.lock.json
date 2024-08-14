@@ -408,13 +408,13 @@
       "squidlr": {
         "type": "Project",
         "dependencies": {
-          "DotNext": "[5.7.0, )",
+          "DotNext": "[5.12.0, )",
           "Humanizer.Core": "[2.14.1, )",
           "Microsoft.Extensions.Caching.Memory": "[8.0.0, )",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[8.0.1, )",
           "Microsoft.Extensions.Hosting": "[8.0.0, )",
           "Microsoft.Extensions.Http": "[8.0.0, )",
-          "Microsoft.Extensions.Http.Polly": "[8.0.7, )",
+          "Microsoft.Extensions.Http.Polly": "[8.0.8, )",
           "Microsoft.Extensions.Logging.Abstractions": "[8.0.1, )",
           "Microsoft.Extensions.Options.DataAnnotations": "[8.0.0, )",
           "System.Text.Json": "[8.0.4, )"
@@ -422,9 +422,9 @@
       },
       "DotNext": {
         "type": "CentralTransitive",
-        "requested": "[5.7.0, )",
-        "resolved": "5.7.0",
-        "contentHash": "GvJ/eXmd52JxNBm4KCHZTJdAjoHClojksaU5ypr3gS48wMPHXnf70bmrU/BDy4VKmmm9wzT8V0CwPPhue5oFBA==",
+        "requested": "[5.12.0, )",
+        "resolved": "5.12.0",
+        "contentHash": "iccHW0iqdpU6s35baU3ShiAyshNELTSHphCyV+3RJC6rWPnIAKL4jVvsDJa/C9obl31f2Pb5SmM094vMptE/cg==",
         "dependencies": {
           "System.IO.Hashing": "8.0.0"
         }
@@ -500,9 +500,9 @@
       },
       "Microsoft.Extensions.Http.Polly": {
         "type": "CentralTransitive",
-        "requested": "[8.0.7, )",
-        "resolved": "8.0.7",
-        "contentHash": "Sdsed6CqGrHNbjRAu3ECppuzLaleudsyJsJuo8HB3CTUvaPw32aS/YyqgKOfUccY5uVfoICnYaC7vhzVvOQR3w==",
+        "requested": "[8.0.8, )",
+        "resolved": "8.0.8",
+        "contentHash": "pGdr4TNLLHLRT5PVZaNdcgBIKN1lQQAFcbnNV7P7qcS6WazGXT2ijMsuhUcNtm2ZxEVB7pZDRDJKR6J9m2bVaA==",
         "dependencies": {
           "Microsoft.Extensions.Http": "8.0.0",
           "Polly": "7.2.4",
