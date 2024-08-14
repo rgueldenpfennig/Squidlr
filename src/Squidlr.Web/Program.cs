@@ -143,7 +143,6 @@ public partial class Program
             }
             else
             {
-                app.UseResponseCompression();
                 app.UseDeveloperExceptionPage();
             }
 
