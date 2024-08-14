@@ -1,4 +1,4 @@
-![Squidlr landing page](/docs/img/2024-06-30-squidlr-screenshot-landing.png)
+![Squidlr landing page](/docs/img/2024-08-14-squidlr-screenshot-landing.png)
 
 <details>
 <summary><strong>additional screenshots</strong></summary>
