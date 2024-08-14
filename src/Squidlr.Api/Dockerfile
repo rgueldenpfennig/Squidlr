@@ -8,6 +8,7 @@ EXPOSE 5001
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
+COPY Directory.Build.props /
 # copy Directory.Packages.props file for Central Package Management
 COPY Directory.Packages.props /
 
