@@ -11,7 +11,7 @@ public abstract class Content
 
     public DateTimeOffset CreatedAtUtc { get; set; }
 
-    public string? UserName { get; set; }
+    public string? Username { get; set; }
 
     public string? FullText { get; set; }
 
@@ -39,9 +39,9 @@ public abstract class Content
 
     public virtual string GetSafeVideoFileName(VideoSource video)
     {
-        if (!string.IsNullOrEmpty(UserName))
+        if (!string.IsNullOrEmpty(Username))
         {
-            return $"{Platform.GetPlatformName()}-{UserName}-{Path.GetFileName(video.Url.AbsolutePath)}";
+            return $"{Platform.GetPlatformName()}-{Username}-{Path.GetFileName(video.Url.AbsolutePath)}";
         }
 
         return $"{Platform.GetPlatformName()}-{Path.GetFileName(video.Url.AbsolutePath)}";

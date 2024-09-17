@@ -96,7 +96,7 @@ public sealed partial class InstagramContentProvider : IContentProvider
         }
 
         var owner = shortcodeMedia.Value.GetProperty("owner");
-        content.UserName = owner.GetProperty("username").GetString();
+        content.Username = owner.GetProperty("username").GetString();
         content.FullName = owner.GetProperty("full_name").GetString();
         if (owner.TryGetProperty("profile_pic_url", out var profilePic))
         {
@@ -137,7 +137,7 @@ public sealed partial class InstagramContentProvider : IContentProvider
         };
 
         var videoUri = new Uri(videoUrl, UriKind.Absolute);
-        var (contentLength, contentType) = await _client.GetVideoContentLengthAndTypeAsync(videoUri, cancellationToken);
+        var (contentLength, contentType) = await _client.GetVideoContentLengthAndMediaTypeAsync(videoUri, cancellationToken);
         var dimensions = videoNode.GetProperty("dimensions");
         var videoSize = new VideoSize(
             dimensions.GetProperty("height").GetInt32(),

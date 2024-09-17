@@ -37,9 +37,9 @@
                 {
                     <blockquote class="blockquote">
                         <p class="content-text">@((MarkupString)Content.FullText)</p>
-                        <a href="@string.Format("https://www.instagram.com/{0}", Content.UserName)" style="text-decoration: none">
+                        <a href="@string.Format("https://www.instagram.com/{0}", Content.Username)" style="text-decoration: none">
                             <footer class="blockquote-footer fw-bold">
-                                @string.Format("@{0}", Content.UserName)
+                                @string.Format("@{0}", Content.Username)
                                 <p>@Content.FullName</p>
                             </footer>
                         </a>
@@ -66,7 +66,7 @@
             @foreach (var video in Content.Videos)
             {
                 videoNumber++;
-                <div class="card border-0 mb-3">
+                <div class="card mb-3 border-0">
                     <div class="row">
                         <div class="col">
                             <div class="card-body pt-0">

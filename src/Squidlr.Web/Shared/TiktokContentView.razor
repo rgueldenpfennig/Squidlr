@@ -8,7 +8,7 @@
 
 @if (Content is not null)
 {
-    var title = SeoProperties.CreatePageTitle($"{Content.UserName} on TikTok: " + FormatHelper.FormatContentTitle(Content.FullText));
+    var title = SeoProperties.CreatePageTitle($"{Content.Username} on TikTok: " + FormatHelper.FormatContentTitle(Content.FullText));
     string? videoMediaUrl = null;
 
     <PageTitle>@title</PageTitle>
@@ -22,7 +22,7 @@
         {
             <meta name="og:image" content="@videoMediaUrl" />
         }
-        <meta name="twitter:creator" content="@@@Content.UserName" />
+        <meta name="twitter:creator" content="@@@Content.Username" />
         <meta name="twitter:site" content="@@SquidlrBot" />
         <meta name="twitter:domain" content="squidlr.com">
     </HeadContent>
@@ -38,7 +38,7 @@
                 {
                     <blockquote class="blockquote">
                         <p class="content-text">@((MarkupString)Content.FullText)</p>
-                        <footer class="blockquote-footer">@string.Format("@{0}", Content.UserName)</footer>
+                        <footer class="blockquote-footer">@string.Format("@{0}", Content.Username)</footer>
                     </blockquote>
                 }
                 <a href="@Content.SourceUrl">

@@ -2,7 +2,9 @@
 
 public sealed class LinkedInContent : Content
 {
-    public LinkedInContent(string sourceUrl) : base(sourceUrl, SocialMediaPlatform.LinkedId)
+    public string? UserUrl { get; set; }
+
+    public LinkedInContent(string sourceUrl) : base(sourceUrl, SocialMediaPlatform.LinkedIn)
     {
     }
 

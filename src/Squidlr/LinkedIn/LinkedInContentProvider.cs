@@ -1,7 +1,5 @@
-﻿using System.Globalization;
-using System.Net;
+﻿using System.Net;
 using System.Text.Json;
-using System.Xml.Linq;
 using DotNext;
 using HtmlAgilityPack;
 using Microsoft.Extensions.Logging;
@@ -16,7 +14,7 @@ public sealed partial class LinkedInContentProvider : IContentProvider
     private readonly LinkedInWebClient _client;
     private readonly ILogger<LinkedInContentProvider> _logger;
 
-    public SocialMediaPlatform Platform { get; } = SocialMediaPlatform.LinkedId;
+    public SocialMediaPlatform Platform { get; } = SocialMediaPlatform.LinkedIn;
 
     public LinkedInContentProvider(LinkedInWebClient client, ILogger<LinkedInContentProvider> logger)
     {
@@ -70,18 +68,27 @@ public sealed partial class LinkedInContentProvider : IContentProvider
         }
 
         var content = new LinkedInContent(identifier.Url);
-        var video = new Video();
+        var videoFileUrl = new Uri(contentUrl.Value.GetString()!, UriKind.Absolute);
+        var video = new Video
+        {
+            DisplayUrl = new Uri(root.GetProperty("thumbnailUrl").GetString()!, UriKind.Absolute)
+        };
+
+        var (contentLength, mediaType) = await _client.GetVideoContentLengthAndMediaTypeAsync(videoFileUrl, cancellationToken);
+
         video.VideoSources.Add(new()
         {
             Bitrate = 0,
-            ContentType = "video/mp4",
+            ContentLength = contentLength,
+            ContentType = mediaType ?? "video/mp4",
             Size = VideoSize.Empty,
-            Url = new Uri(contentUrl.Value.GetString()!, UriKind.Absolute)
+            Url = videoFileUrl
         });
         content.AddVideo(video);
 
         var author = root.GetProperty("author");
-        content.UserName = author.GetProperty("name").GetString();
+        content.Username = author.GetProperty("name").GetString();
+        content.UserUrl = author.GetProperty("url").GetString();
         content.FullText = root.GetProperty("description").GetString();
 
         var reactionsNode = htmlDoc.DocumentNode.Descendants("a")
