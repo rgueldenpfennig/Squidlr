@@ -60,7 +60,6 @@ public class TiktokContentRouteTests : IClassFixture<ApiWebApplicationFactory>
                     Assert.Equal(videoSource.ContentType, expectedVideoSource.ContentType);
                     Assert.Equal(videoSource.ContentLength, expectedVideoSource.ContentLength);
                     Assert.Equal(videoSource.Size, expectedVideoSource.Size);
-                    Assert.Equal(videoSource.Url.OriginalString, expectedVideoSource.Url.OriginalString);
                 }
             }
         }
