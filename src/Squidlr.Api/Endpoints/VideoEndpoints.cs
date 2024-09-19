@@ -49,6 +49,11 @@ internal static class VideoEndpoints
             return Results.Problem(_badRequestDetails);
         }
 
+        if (!int.TryParse(videoSelector, out var bitrate))
+        {
+            return Results.BadRequest();
+        }
+
         var contentIdentifier = urlResolver.ResolveUrl(contentUrl);
         var httpClientName = contentIdentifier.Platform switch
         {
@@ -74,8 +79,7 @@ internal static class VideoEndpoints
         }
 
         var videoUri = content.Value.Videos.SelectMany(v => v.VideoSources)
-                                           .FirstOrDefault(vs => vs.Url.PathAndQuery
-                                           .Contains(videoSelector, StringComparison.OrdinalIgnoreCase))?.Url;
+                                           .FirstOrDefault(vs => vs.Bitrate == bitrate)?.Url;
 
         if (videoUri == null)
         {

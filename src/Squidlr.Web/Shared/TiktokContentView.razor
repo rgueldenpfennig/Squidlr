@@ -149,8 +149,6 @@ else
     private Uri GetVideoStreamUrl(VideoSource source)
     {
         ArgumentNullException.ThrowIfNull(source);
-
-        var videoSelector = HttpUtility.ParseQueryString(source.Url.Query).Get("file_id");
-        return ClientDiscoveryService.GetVideoStreamUrl(Content!.SourceUrl, videoSelector!);
+        return ClientDiscoveryService.GetVideoStreamUrl(Content!.SourceUrl, source.Bitrate.ToString());
     }
 }
