@@ -65,6 +65,10 @@ public sealed class HttpFileStreamService
             using var input = await response.Content.ReadAsStreamAsync(cancellationToken);
             await CopyStream(httpContext.Response.Body, input, cancellationToken);
         }
+        else
+        {
+            httpContext.Response.StatusCode = (int)HttpStatusCode.NotFound;
+        }
     }
 
     private static async ValueTask CopyStream(Stream output, Stream input, CancellationToken cancellationToken)
