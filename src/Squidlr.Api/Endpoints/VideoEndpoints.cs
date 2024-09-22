@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Net;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using Squidlr.Hosting;
 using Squidlr.Tiktok;
@@ -48,6 +49,11 @@ internal static class VideoEndpoints
             return Results.Problem(_badRequestDetails);
         }
 
+        if (!int.TryParse(videoSelector, out var bitrate))
+        {
+            return Results.BadRequest();
+        }
+
         var contentIdentifier = urlResolver.ResolveUrl(contentUrl);
         var httpClientName = contentIdentifier.Platform switch
         {
@@ -73,24 +79,51 @@ internal static class VideoEndpoints
         }
 
         var videoUri = content.Value.Videos.SelectMany(v => v.VideoSources)
-                                           .FirstOrDefault(vs => vs.Url.PathAndQuery
-                                           .Contains(videoSelector, StringComparison.OrdinalIgnoreCase))?.Url;
+                                           .FirstOrDefault(vs => vs.Bitrate == bitrate)?.Url;
 
         if (videoUri == null)
         {
             return Results.NotFound();
         }
 
-        var videoRequest = new HttpRequestMessage(HttpMethod.Get, videoUri);
-        videoRequest.Headers.Host = videoUri.Host;
-        videoRequest.Headers.Add(HeaderNames.Cookie, ttChainTokenCookie);
+        var videoRequest = CreateVideoFileRequest(ttChainTokenCookie, videoUri);
+        var httpClient = httpClientFactory.CreateClient(httpClientName);
+
+        // resolve HTTP request redirection (302 Found) manually)
+        var response = await httpClient.SendAsync(videoRequest, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+        if (!response.IsSuccessStatusCode && response.StatusCode != HttpStatusCode.Found)
+        {
+            return Results.StatusCode(StatusCodes.Status502BadGateway);
+        }
+
+        if (response.StatusCode == HttpStatusCode.Found)
+        {
+            var location = response.Headers.Location;
+            if (location != null)
+            {
+                videoRequest = CreateVideoFileRequest(ttChainTokenCookie, location);
+            }
+            else
+            {
+                return Results.StatusCode(StatusCodes.Status502BadGateway);
+            }
+        }
+        else
+        {
+            videoRequest = CreateVideoFileRequest(ttChainTokenCookie, videoUri);
+        }
 
         // sets the file name for the file download
         context.Response.Headers.ContentDisposition = $"attachment; fileName={contentIdentifier.Platform}-Squidlr-{contentIdentifier.Id}.mp4";
-
-        var httpClient = httpClientFactory.CreateClient(httpClientName);
         await service.CopyFileStreamAsync(context, httpClient, videoRequest, cancellationToken);
 
         return Results.Empty;
+    }
+
+    private static HttpRequestMessage CreateVideoFileRequest(string ttChainTokenCookie, Uri videoUri)
+    {
+        var videoRequest = new HttpRequestMessage(HttpMethod.Get, videoUri);
+        videoRequest.Headers.Add(HeaderNames.Cookie, ttChainTokenCookie);
+        return videoRequest;
     }
 }

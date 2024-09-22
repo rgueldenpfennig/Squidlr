@@ -60,7 +60,6 @@ public class TiktokContentRouteTests : IClassFixture<ApiWebApplicationFactory>
                     Assert.Equal(videoSource.ContentType, expectedVideoSource.ContentType);
                     Assert.Equal(videoSource.ContentLength, expectedVideoSource.ContentLength);
                     Assert.Equal(videoSource.Size, expectedVideoSource.Size);
-                    Assert.Equal(videoSource.Url.AbsolutePath, expectedVideoSource.Url.OriginalString);
                 }
             }
         }
@@ -93,7 +92,7 @@ public class TiktokContentRouteTests : IClassFixture<ApiWebApplicationFactory>
                                 ContentLength = 2601308,
                                 ContentType = "video/mp4",
                                 Size = new(1024, 576),
-                                Url = new Uri("/video/tos/useast2a/tos-useast2a-ve-0068-euttp/ocONrgPDmBU4quFFEEeF4AQiEDYUflrQpRI4y7/", UriKind.Relative)
+                                Url = new Uri("https://www.tiktok.com/aweme/v1/play/?faid=1988&file_id=9c57184dca0546fe9f2530c841e32282&is_play_url=1&item_id=7391624670811933984&line=0&ply_type=2&signaturev3=dmlkZW9faWQ7ZmlsZV9pZDtpdGVtX2lkLjE3OWE5Y2Q5OWExMTIwNzFmYzc0ZDU2OTY5ZTU2ZjNm&tk=tt_chain_token&video_id=v0f044gc0000cqa56uvog65s8l5g5l3g", UriKind.Absolute)
                             }
                         }
                     }

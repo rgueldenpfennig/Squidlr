@@ -24,6 +24,15 @@ public static class TiktokServiceCollectionExtensions
             client.BaseAddress = options.TiktokHostUri;
             client.DefaultVersionPolicy = HttpVersionPolicy.RequestVersionOrLower;
             client.DefaultRequestVersion = HttpVersion.Version20;
+        }).ConfigurePrimaryHttpMessageHandler((sp) =>
+        {
+            var handler = new SocketsHttpHandler
+            {
+                AllowAutoRedirect = false,
+                UseCookies = true
+            };
+
+            return handler;
         });
 
         services.AddSingleton<TiktokWebClient>();

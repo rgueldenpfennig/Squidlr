@@ -2,6 +2,7 @@
 @using Squidlr.Shared;
 @using Squidlr.Tiktok
 @using Squidlr.Web.Clients
+@using System.Web
 
 @inject NavigationManager NavigationManager
 @inject ClientDiscoveryService ClientDiscoveryService
@@ -148,8 +149,6 @@ else
     private Uri GetVideoStreamUrl(VideoSource source)
     {
         ArgumentNullException.ThrowIfNull(source);
-
-        var selector =  source.Url.AbsolutePath.Substring(0, source.Url.AbsolutePath.LastIndexOf('/'));
-        return ClientDiscoveryService.GetVideoStreamUrl(Content!.SourceUrl, selector);
+        return ClientDiscoveryService.GetVideoStreamUrl(Content!.SourceUrl, source.Bitrate.ToString());
     }
 }
