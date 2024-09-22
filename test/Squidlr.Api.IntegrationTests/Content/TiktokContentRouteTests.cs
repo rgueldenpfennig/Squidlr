@@ -37,7 +37,7 @@ public class TiktokContentRouteTests : IClassFixture<ApiWebApplicationFactory>
             Assert.InRange(content.FavoriteCount, expectedContent.FavoriteCount - 100, expectedContent.FavoriteCount + 100);
             Assert.InRange(content.ReplyCount, expectedContent.ReplyCount - 100, expectedContent.ReplyCount + 100);
             Assert.Equal(content.FullText, expectedContent.FullText);
-            Assert.Equal(content.UserName, expectedContent.UserName);
+            Assert.Equal(content.Username, expectedContent.Username);
 
             for (var i = 0; i < expectedContent.Videos.Count; i++)
             {
@@ -78,7 +78,7 @@ public class TiktokContentRouteTests : IClassFixture<ApiWebApplicationFactory>
                 PlayCount = 10_100_000,
                 CollectCount = 87_718,
                 ReplyCount = 6_853,
-                UserName = "euro2024",
+                Username = "euro2024",
                 Videos = new VideoCollection
                 {
                     new Video

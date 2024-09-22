@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="DotNext" />
+    <PackageReference Include="HtmlAgilityPack" />
     <PackageReference Include="Humanizer.Core" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />

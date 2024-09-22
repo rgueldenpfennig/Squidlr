@@ -409,6 +409,7 @@
         "type": "Project",
         "dependencies": {
           "DotNext": "[5.12.0, )",
+          "HtmlAgilityPack": "[1.11.65, )",
           "Humanizer.Core": "[2.14.1, )",
           "Microsoft.Extensions.Caching.Memory": "[8.0.0, )",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[8.0.1, )",
@@ -428,6 +429,12 @@
         "dependencies": {
           "System.IO.Hashing": "8.0.0"
         }
+      },
+      "HtmlAgilityPack": {
+        "type": "CentralTransitive",
+        "requested": "[1.11.65, )",
+        "resolved": "1.11.65",
+        "contentHash": "Skse4MVlRcHHyP88x+v/uQrMxTPaBIwQodiQ/y59jxs8vHlqTR5M3jt5Wk+csYFnR4rX6I4ndqDji2M8p9kAzw=="
       },
       "Humanizer.Core": {
         "type": "CentralTransitive",

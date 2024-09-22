@@ -86,7 +86,7 @@ public sealed partial class TiktokContentProvider : IContentProvider
         var content = new TiktokContent(identifier.Url);
         content.CreatedAtUtc = DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(itemStruct.GetProperty("createTime").GetString(), CultureInfo.InvariantCulture));
         content.FullText = itemStruct.GetProperty("desc").GetString();
-        content.UserName = itemStruct.GetProperty("author").GetProperty("uniqueId").GetString();
+        content.Username = itemStruct.GetProperty("author").GetProperty("uniqueId").GetString();
 
         var stats = itemStruct.GetProperty("stats");
         content.FavoriteCount = stats.GetProperty("diggCount").GetInt32();

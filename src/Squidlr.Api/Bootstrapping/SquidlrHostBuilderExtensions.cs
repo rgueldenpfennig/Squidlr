@@ -2,6 +2,7 @@
 using Squidlr;
 using Squidlr.Abstractions;
 using Squidlr.Instagram;
+using Squidlr.LinkedIn;
 using Squidlr.Telemetry;
 using Squidlr.Tiktok;
 using Squidlr.Twitter;
@@ -46,6 +47,7 @@ public static class SquidlrHostBuilderExtensions
             services.AddTwitter();
             services.AddInstagram();
             services.AddTiktok();
+            services.AddLinkedIn();
         });
 
         return builder;

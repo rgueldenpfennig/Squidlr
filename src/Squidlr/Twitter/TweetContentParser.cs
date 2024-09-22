@@ -370,7 +370,7 @@ public sealed class TweetContentParser
         if (legacyUserResult != null)
         {
             _tweetContent.DisplayName = legacyUserResult.Value.GetPropertyOrNull("name")?.GetString();
-            _tweetContent.UserName = legacyUserResult.Value.GetPropertyOrNull("screen_name")?.GetString();
+            _tweetContent.Username = legacyUserResult.Value.GetPropertyOrNull("screen_name")?.GetString();
             if (legacyUserResult.Value.TryGetProperty("profile_image_url_https", out var profileImageUrl) && profileImageUrl.GetString() != null)
             {
                 _tweetContent.ProfileImageUri = new Uri(profileImageUrl.GetString()!, UriKind.Absolute);

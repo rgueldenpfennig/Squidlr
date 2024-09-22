@@ -11,5 +11,7 @@ public enum SocialMediaPlatform
 
     Instagram,
 
-    Tiktok
+    Tiktok,
+
+    LinkedIn
 }

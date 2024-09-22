@@ -1,0 +1,116 @@
+﻿@using System.Globalization;
+@using Squidlr.LinkedIn
+@using Squidlr.Shared;
+@using Squidlr.Web.Clients
+
+@inject NavigationManager NavigationManager
+@inject ClientDiscoveryService ClientDiscoveryService
+
+@if (Content is not null)
+{
+    var title = SeoProperties.CreatePageTitle($"{Content.Username} on LinkedIn: " + FormatHelper.FormatContentTitle(Content.FullText));
+    string? videoMediaUrl = null;
+
+    <PageTitle>@title</PageTitle>
+    <HeadContent>
+        <meta name="og:title" content="@title" />
+        <meta name="og:description" content="@SeoProperties.Description" />
+        <meta name="og:type" content="video.other" />
+        <meta name="og:site_name" content="squidlr.com" />
+        <meta name="og:url" content="@(NavigationManager.Uri)" />
+        @if (videoMediaUrl != null)
+        {
+            <meta name="og:image" content="@videoMediaUrl" />
+        }
+        <meta name="twitter:creator" content="@@@Content.Username" />
+        <meta name="twitter:site" content="@@SquidlrBot" />
+        <meta name="twitter:domain" content="squidlr.com">
+    </HeadContent>
+
+    <div class="px-4 my-4 text-center">
+        <h1 class="display-6 fw-bold text-body-emphasis">LinkedIn video download</h1>
+    </div>
+
+    <p class="lead fs-5 mb-4">The support for the download of LinkedIn videos was first introduced at Gregor Biswangers <a href="https://www.meetup.com/my-coding-zone/" target="_blank">"My Coding Zone"</a> live on <a href="https://twitch.tv/GregorBiswanger" target="_blank">Twitch</a>.</p>
+
+    <div class="card mb-4">
+        <div class="card-body pb-0">
+            <p class="card-text">
+                @if (Content.FullText != null)
+                {
+                    <blockquote class="blockquote">
+                        <p class="content-text">@((MarkupString)Content.FullText)</p>
+                        <footer class="blockquote-footer">@string.Format("@{0}", Content.Username)</footer>
+                    </blockquote>
+                }
+                <a href="@Content.SourceUrl">
+                    <time datetime="@Content.CreatedAtUtc.ToString("O", CultureInfo.InvariantCulture)">
+                        @Content.CreatedAtUtc.ToString("f", CultureInfo.InvariantCulture)
+                    </time>
+                </a>
+
+                <ul class="list-inline mt-1">
+                    <li class="list-inline-item"><strong>@FormatHelper.FormatNumber(Content.FavoriteCount)</strong> <small>Likes</small></li>
+                    <li class="list-inline-item"><strong>@FormatHelper.FormatNumber(Content.ReplyCount)</strong> <small>Comments</small></li>
+                </ul>
+            </p>
+
+            @{
+                var video = Content.Videos.First();
+            }
+
+            <div class="card mb-3 border-0">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        @if (video.DisplayUrl != null)
+                        {
+                            videoMediaUrl ??= video.DisplayUrl.ToString();
+                            <img src="@video.DisplayUrl" class="img-fluid mb-2 rounded" alt="Video thumbnail" />
+                        }
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body pt-0">
+                            <div class="card-text">
+                                <div class="alert alert-primary d-flex align-items-center" role="alert">
+                                    <span class="oi oi-info me-2" data-glyph="info" title="Information" aria-hidden="true"></span>
+                                    <span class="fw-medium">Right click your selection and choose "Save as..." to save the video on your device.</span>
+                                </div>
+                            </div>
+                            <div class="list-group">
+                                @{
+                                    var videoSources = video.VideoSources.OrderByDescending(vs => vs.Bitrate).ToArray();
+                                    int videoSourceIndex = 0;
+                                }
+                                @foreach (var source in videoSources)
+                                {
+                                    <a class="btn btn-primary list-group-item list-group-item-action mb-1" role="button" href="@source.Url" target="_blank">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h5 class="mb-1">@FormatHelper.CreateVideoResolutionText(videoSources, videoSourceIndex)</h5>
+                                            <span class="oi oi-cloud-download" data-glyph="cloud-download" title="Download" aria-hidden="true"></span>
+                                        </div>
+                                        <ul class="list-unstyled mb-0">
+                                            @if (source.ContentLength != null)
+                                            {
+                                                <li class="list-item"><small>Size: @source.ContentLength.Value.Bytes().Humanize("#.#")</small></li>
+                                            }
+                                        </ul>
+                                    </a>
+                                    videoSourceIndex++;
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-warning" role="alert">No content has been provided.</div>
+}
+
+@code {
+    [Parameter]
+    public LinkedInContent? Content { get; set; }
+}

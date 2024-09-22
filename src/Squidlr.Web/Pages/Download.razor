@@ -6,6 +6,7 @@
 @using System.Net;
 @using Serilog.Context;
 @using Squidlr.Instagram;
+@using Squidlr.LinkedIn
 @using Squidlr.Tiktok
 @using Squidlr.Twitter;
 @using Squidlr.Twitter.Utilities;
@@ -34,6 +35,7 @@
         RenderFragment? renderContent = content switch
         {
             InstagramContent instagramContent => @<InstagramContentView Content="@instagramContent" />,
+            LinkedInContent linkedInContent => @<LinkedInContentView Content="@linkedInContent" />,
             TiktokContent tiktokContent => @<TiktokContentView Content="@tiktokContent" />,
             TwitterContent twitterContent => @<TwitterContentView Content="@twitterContent" />,
             _ => null

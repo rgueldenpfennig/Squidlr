@@ -63,7 +63,7 @@
                         </Border>
                         <VerticalStackLayout VerticalOptions="Center">
                             <Label Text="{Binding DisplayName, Mode=OneTime}" FontSize="Medium" FontAttributes="Bold" />
-                            <Label Text="{Binding UserName, Mode=OneTime, StringFormat='@{0}'}" Style="{StaticResource CaptionStyle}" />
+                            <Label Text="{Binding Username, Mode=OneTime, StringFormat='@{0}'}" Style="{StaticResource CaptionStyle}" />
                         </VerticalStackLayout>
                     </HorizontalStackLayout>
                     <Label Grid.Row="1" Margin="0,8,0,8" Text="{Binding FullText, Mode=OneTime}" />
