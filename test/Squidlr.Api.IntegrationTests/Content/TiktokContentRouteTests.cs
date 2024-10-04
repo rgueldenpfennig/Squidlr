@@ -77,7 +77,7 @@ public class TiktokContentRouteTests : IClassFixture<ApiWebApplicationFactory>
                 FavoriteCount = 1_400_000,
                 PlayCount = 10_100_000,
                 CollectCount = 87_718,
-                ReplyCount = 6_853,
+                ReplyCount = 6_752,
                 Username = "euro2024",
                 Videos = new VideoCollection
                 {

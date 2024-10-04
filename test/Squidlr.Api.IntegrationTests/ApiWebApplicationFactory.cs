@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.AspNetCore.TestHost;
+﻿using System.Globalization;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Serilog;
 using Serilog.Events;
-using Squidlr.Api.Authentication;
 using Xunit.Abstractions;
 
 namespace Squidlr.Api.IntegrationTests;
@@ -21,7 +20,7 @@ public class ApiWebApplicationFactory : WebApplicationFactory<Program>
     {
         var output = new LoggerConfiguration()
             .MinimumLevel.Verbose()
-            .WriteTo.TestOutput(TestOutputHelper, LogEventLevel.Information)
+            .WriteTo.TestOutput(TestOutputHelper, LogEventLevel.Information, formatProvider: CultureInfo.InvariantCulture)
             .CreateLogger();
 
         builder.UseSerilog(output);

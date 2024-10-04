@@ -16,8 +16,8 @@ public class InstagramContentRouteTests : IClassFixture<ApiWebApplicationFactory
         _client.DefaultRequestHeaders.Add("X-API-KEY", "foobar");
     }
 
-    [Theory(Skip = "Skip for now to test Instagram access from Azure cloud")]
     // Post with adult content
+    [SkipGitHubActionTheory]
     [InlineData("https://www.instagram.com/reel/C1RyP_mtjee", HttpStatusCode.UnavailableForLegalReasons)]
     public async Task RequestRestrictedInstagramContent(string postUrl, HttpStatusCode expectedStatusCode = HttpStatusCode.OK)
     {
@@ -31,7 +31,7 @@ public class InstagramContentRouteTests : IClassFixture<ApiWebApplicationFactory
     public static IEnumerable<object[]> TestData
             => CreateTestData();
 
-    [Theory(Skip = "Skip for now to test Instagram access from Azure cloud")]
+    [SkipGitHubActionTheory]
     [MemberData(nameof(TestData))]
     public async Task RequestInstagramContent(InstagramContent expectedContent)
     {
@@ -45,12 +45,13 @@ public class InstagramContentRouteTests : IClassFixture<ApiWebApplicationFactory
         {
             var content = await response.Content.ReadFromJsonAsync<InstagramContent>();
             Assert.NotNull(content);
-            Assert.Equal(expectedContent.CreatedAtUtc, content.CreatedAtUtc);
-            Assert.InRange(content.FavoriteCount, expectedContent.FavoriteCount - 100, expectedContent.FavoriteCount + 100);
-            Assert.InRange(content.ReplyCount, expectedContent.ReplyCount - 100, expectedContent.ReplyCount + 100);
-            Assert.Equal(expectedContent.FullText, content.FullText);
-            Assert.Equal(expectedContent.Username, content.Username);
-            Assert.Equal(expectedContent.FullName, content.FullName);
+            Assert.Multiple(
+                () => Assert.Equal(expectedContent.CreatedAtUtc, content.CreatedAtUtc),
+                () => Assert.InRange(content.FavoriteCount, expectedContent.FavoriteCount - 100, expectedContent.FavoriteCount + 100),
+                () => Assert.InRange(content.ReplyCount, expectedContent.ReplyCount - 100, expectedContent.ReplyCount + 100),
+                () => Assert.Equal(expectedContent.FullText, content.FullText),
+                () => Assert.Equal(expectedContent.Username, content.Username),
+                () => Assert.Equal(expectedContent.FullName, content.FullName));
 
             if (expectedContent.ProfilePictureUrl is not null)
             {
