@@ -50,7 +50,7 @@ public sealed partial class InstagramContentProvider : IContentProvider
         var root = document.RootElement;
 
         var shortcodeMedia = root.GetPropertyOrNull("data")?
-                                 .GetPropertyOrNull("shortcode_media");
+                                 .GetPropertyOrNull("xdt_shortcode_media");
 
         var shortcode = shortcodeMedia?.GetPropertyOrNull("shortcode")?.GetString();
         if (shortcode == null || !shortcode.Equals(identifier.Id, StringComparison.OrdinalIgnoreCase))
@@ -120,7 +120,7 @@ public sealed partial class InstagramContentProvider : IContentProvider
             }
         }
 
-        var edgeMediaToComment = shortcodeMedia.Value.GetProperty("edge_media_to_comment");
+        var edgeMediaToComment = shortcodeMedia.Value.GetProperty("edge_media_to_parent_comment");
         content.ReplyCount = edgeMediaToComment.GetProperty("count").GetInt32();
 
         return content;
