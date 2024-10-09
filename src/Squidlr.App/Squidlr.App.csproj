@@ -60,7 +60,7 @@
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" IsImplicitlyDefined="true" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" IsImplicitlyDefined="true" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" IsImplicitlyDefined="true" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" IsImplicitlyDefined="true" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1" IsImplicitlyDefined="true" />
 	</ItemGroup>
 
 	<ItemGroup>
