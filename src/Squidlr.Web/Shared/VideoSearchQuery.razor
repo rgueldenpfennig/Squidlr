@@ -10,7 +10,7 @@
 
 @if (ShowPlatformTabs)
 {
-    <ul class="nav nav-tabs border-0 fw-bold text-body-emphasis user-select-none">
+    <ul class="nav nav-tabs fw-bold text-body-emphasis user-select-none border-0">
         <li class="nav-item">
             <span class="@((IsActive(SocialMediaPlatform.Twitter) ? "nav-link active" : "nav-link"))">X / Twitter</span>
         </li>
@@ -20,20 +20,20 @@
     </ul>
 }
 
-<div class="d-flex flex-column align-items-center py-4">
+<div class="d-flex flex-column align-items-center">
     <div class="input-group input-group-lg mb-3">
         <button class="btn btn-primary" type="button" title="Paste from clipboard" @onclick="PasteClipboard">
             <span class="oi oi-clipboard" data-glyph="clipboard" aria-hidden="true"></span>
         </button>
         <input @ref=_inputReference type="text" autocomplete="on" name="url" id="url" class="form-control shadow-none" placeholder="Paste your link here" inputmode="url" aria-label="Download URL" aria-describedby="download-button" @bind:event="oninput" @bind:get="State.Url" @bind:set="HandleInput" @onkeypress="OnKeyPress" />
     </div>
-    <div class="mb-4">
+    <div>
         <button class="btn btn-primary btn-lg" type="button" id="download-button" disabled="@(!_downloadEnabled)" @onclick="DownloadVideo">Download</button>
     </div>
 
     @if (!string.IsNullOrEmpty(_errorMessage))
     {
-        <div class="alert alert-info text-center" role="alert">@((MarkupString)_errorMessage)</div>
+        <div class="alert alert-info mt-3 text-center" role="alert">@((MarkupString)_errorMessage)</div>
     }
 
     @if (ShowSample)
