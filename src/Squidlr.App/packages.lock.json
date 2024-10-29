@@ -1264,8 +1264,8 @@
       "squidlr": {
         "type": "Project",
         "dependencies": {
-          "DotNext": "[5.13.0, )",
-          "HtmlAgilityPack": "[1.11.67, )",
+          "DotNext": "[5.14.0, )",
+          "HtmlAgilityPack": "[1.11.70, )",
           "Humanizer.Core": "[2.14.1, )",
           "Microsoft.Extensions.Caching.Memory": "[8.0.1, )",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[8.0.2, )",
@@ -1279,18 +1279,18 @@
       },
       "DotNext": {
         "type": "CentralTransitive",
-        "requested": "[5.13.0, )",
-        "resolved": "5.13.0",
-        "contentHash": "RzRmWFlc/Lw7NKD2yIzAzDGPGy76+4Nc/4eymR2N0hfXoPHhBywCGj9CJil2cSr7KblZqBHS1Gzeu4oanzMerQ==",
+        "requested": "[5.14.0, )",
+        "resolved": "5.14.0",
+        "contentHash": "wyRjcjQISQJpLtKTKacLKUGP80AT28WVRHq0etmFJywdeHrUfjyLgrfnSA5sk1ZcdL/55jRalRfm6MyhXOImMw==",
         "dependencies": {
           "System.IO.Hashing": "8.0.0"
         }
       },
       "HtmlAgilityPack": {
         "type": "CentralTransitive",
-        "requested": "[1.11.67, )",
-        "resolved": "1.11.67",
-        "contentHash": "xnt6f8E56oK9nLqgkF42bsVSAkUuIuJnSfvzimK7GwvbhdXWRmGsx4A8AKmLOlCUq1rVSUADKalxnSMizHt4Mg=="
+        "requested": "[1.11.70, )",
+        "resolved": "1.11.70",
+        "contentHash": "lwCgdq4H+WXH+lkM7TvJhyEs5uNGzoTud1VmXz2jr30/yOTRtG/oMCour5JMTN0t0fU4uFwFYIrDd98FH2RKsQ=="
       },
       "Humanizer.Core": {
         "type": "CentralTransitive",
@@ -1836,8 +1836,8 @@
       "squidlr": {
         "type": "Project",
         "dependencies": {
-          "DotNext": "[5.13.0, )",
-          "HtmlAgilityPack": "[1.11.67, )",
+          "DotNext": "[5.14.0, )",
+          "HtmlAgilityPack": "[1.11.70, )",
           "Humanizer.Core": "[2.14.1, )",
           "Microsoft.Extensions.Caching.Memory": "[8.0.1, )",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[8.0.2, )",
@@ -1851,18 +1851,18 @@
       },
       "DotNext": {
         "type": "CentralTransitive",
-        "requested": "[5.13.0, )",
-        "resolved": "5.13.0",
-        "contentHash": "RzRmWFlc/Lw7NKD2yIzAzDGPGy76+4Nc/4eymR2N0hfXoPHhBywCGj9CJil2cSr7KblZqBHS1Gzeu4oanzMerQ==",
+        "requested": "[5.14.0, )",
+        "resolved": "5.14.0",
+        "contentHash": "wyRjcjQISQJpLtKTKacLKUGP80AT28WVRHq0etmFJywdeHrUfjyLgrfnSA5sk1ZcdL/55jRalRfm6MyhXOImMw==",
         "dependencies": {
           "System.IO.Hashing": "8.0.0"
         }
       },
       "HtmlAgilityPack": {
         "type": "CentralTransitive",
-        "requested": "[1.11.67, )",
-        "resolved": "1.11.67",
-        "contentHash": "xnt6f8E56oK9nLqgkF42bsVSAkUuIuJnSfvzimK7GwvbhdXWRmGsx4A8AKmLOlCUq1rVSUADKalxnSMizHt4Mg=="
+        "requested": "[1.11.70, )",
+        "resolved": "1.11.70",
+        "contentHash": "lwCgdq4H+WXH+lkM7TvJhyEs5uNGzoTud1VmXz2jr30/yOTRtG/oMCour5JMTN0t0fU4uFwFYIrDd98FH2RKsQ=="
       },
       "Humanizer.Core": {
         "type": "CentralTransitive",
@@ -2408,8 +2408,8 @@
       "squidlr": {
         "type": "Project",
         "dependencies": {
-          "DotNext": "[5.13.0, )",
-          "HtmlAgilityPack": "[1.11.67, )",
+          "DotNext": "[5.14.0, )",
+          "HtmlAgilityPack": "[1.11.70, )",
           "Humanizer.Core": "[2.14.1, )",
           "Microsoft.Extensions.Caching.Memory": "[8.0.1, )",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[8.0.2, )",
@@ -2423,18 +2423,18 @@
       },
       "DotNext": {
         "type": "CentralTransitive",
-        "requested": "[5.13.0, )",
-        "resolved": "5.13.0",
-        "contentHash": "RzRmWFlc/Lw7NKD2yIzAzDGPGy76+4Nc/4eymR2N0hfXoPHhBywCGj9CJil2cSr7KblZqBHS1Gzeu4oanzMerQ==",
+        "requested": "[5.14.0, )",
+        "resolved": "5.14.0",
+        "contentHash": "wyRjcjQISQJpLtKTKacLKUGP80AT28WVRHq0etmFJywdeHrUfjyLgrfnSA5sk1ZcdL/55jRalRfm6MyhXOImMw==",
         "dependencies": {
           "System.IO.Hashing": "8.0.0"
         }
       },
       "HtmlAgilityPack": {
         "type": "CentralTransitive",
-        "requested": "[1.11.67, )",
-        "resolved": "1.11.67",
-        "contentHash": "xnt6f8E56oK9nLqgkF42bsVSAkUuIuJnSfvzimK7GwvbhdXWRmGsx4A8AKmLOlCUq1rVSUADKalxnSMizHt4Mg=="
+        "requested": "[1.11.70, )",
+        "resolved": "1.11.70",
+        "contentHash": "lwCgdq4H+WXH+lkM7TvJhyEs5uNGzoTud1VmXz2jr30/yOTRtG/oMCour5JMTN0t0fU4uFwFYIrDd98FH2RKsQ=="
       },
       "Humanizer.Core": {
         "type": "CentralTransitive",
@@ -3026,8 +3026,8 @@
       "squidlr": {
         "type": "Project",
         "dependencies": {
-          "DotNext": "[5.13.0, )",
-          "HtmlAgilityPack": "[1.11.67, )",
+          "DotNext": "[5.14.0, )",
+          "HtmlAgilityPack": "[1.11.70, )",
           "Humanizer.Core": "[2.14.1, )",
           "Microsoft.Extensions.Caching.Memory": "[8.0.1, )",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[8.0.2, )",
@@ -3041,18 +3041,18 @@
       },
       "DotNext": {
         "type": "CentralTransitive",
-        "requested": "[5.13.0, )",
-        "resolved": "5.13.0",
-        "contentHash": "RzRmWFlc/Lw7NKD2yIzAzDGPGy76+4Nc/4eymR2N0hfXoPHhBywCGj9CJil2cSr7KblZqBHS1Gzeu4oanzMerQ==",
+        "requested": "[5.14.0, )",
+        "resolved": "5.14.0",
+        "contentHash": "wyRjcjQISQJpLtKTKacLKUGP80AT28WVRHq0etmFJywdeHrUfjyLgrfnSA5sk1ZcdL/55jRalRfm6MyhXOImMw==",
         "dependencies": {
           "System.IO.Hashing": "8.0.0"
         }
       },
       "HtmlAgilityPack": {
         "type": "CentralTransitive",
-        "requested": "[1.11.67, )",
-        "resolved": "1.11.67",
-        "contentHash": "xnt6f8E56oK9nLqgkF42bsVSAkUuIuJnSfvzimK7GwvbhdXWRmGsx4A8AKmLOlCUq1rVSUADKalxnSMizHt4Mg=="
+        "requested": "[1.11.70, )",
+        "resolved": "1.11.70",
+        "contentHash": "lwCgdq4H+WXH+lkM7TvJhyEs5uNGzoTud1VmXz2jr30/yOTRtG/oMCour5JMTN0t0fU4uFwFYIrDd98FH2RKsQ=="
       },
       "Humanizer.Core": {
         "type": "CentralTransitive",

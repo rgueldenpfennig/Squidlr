@@ -107,17 +107,17 @@ public class InstagramContentRouteTests : IClassFixture<ApiWebApplicationFactory
                     new Video
                     {
                         DisplayUrl = new Uri("/v/t51.2885-15/11379094_104911659849817_249670488_n.jpg", UriKind.Relative),
-                        Duration = default(TimeSpan),
+                        Duration = TimeSpan.Parse("00:00:08.7420000", CultureInfo.InvariantCulture),
                         Views = 0,
                         VideoSources = new VideoSourceCollection
                         {
                             new VideoSource
                             {
                                 Bitrate = 0,
-                                ContentLength = 1215377,
+                                ContentLength = 1017460,
                                 ContentType = "video/mp4",
                                 Size = new(612, 612),
-                                Url = new Uri("/v/t50.2886-16/11539930_919766514753417_231041833_n.mp4", UriKind.Relative)
+                                Url = new Uri("/o1/v/t16/f1/m84/684E26483F3B131A73D2F28B764A74AF_video_dashinit.mp4", UriKind.Relative)
                             }
                         }
                     }
@@ -131,7 +131,7 @@ public class InstagramContentRouteTests : IClassFixture<ApiWebApplicationFactory
             new InstagramContent("https://www.instagram.com/marvelskies.fc/reel/CWqAgUZgCku/")
             {
                 CreatedAtUtc = DateTimeOffset.Parse("2021-11-24T11:09:53+00:00", CultureInfo.InvariantCulture),
-                FavoriteCount = 1001863,
+                FavoriteCount = 990700,
                 FullText = "Have no home 😂\n\n. Follow @marvelskies.fc \n\n.Tags 🏷️\n#spiderman #spidermannowayhome #tomholland #loveyou3000 #robertdowneyjr #andrewgarfield\n#tobeymaguire #ironman #marvel\n\n. Credits to the Respective Owners",
                 ReplyCount = 1757,
                 Username = "marvelskies.fc",
@@ -141,9 +141,9 @@ public class InstagramContentRouteTests : IClassFixture<ApiWebApplicationFactory
                 {
                     new Video
                     {
-                        DisplayUrl = new Uri("/v/t51.2885-15/260249305_1070857066995434_1652989255370474274_n.jpg", UriKind.Relative),
+                        DisplayUrl = new Uri("/v/t51.29350-15/260249305_1070857066995434_1652989255370474274_n.jpg", UriKind.Relative),
                         Duration = TimeSpan.Parse("00:00:08.7660000", CultureInfo.InvariantCulture),
-                        Views = 9596788,
+                        Views = 9598306,
                         VideoSources = new VideoSourceCollection
                         {
                             new VideoSource
@@ -152,7 +152,7 @@ public class InstagramContentRouteTests : IClassFixture<ApiWebApplicationFactory
                                 ContentLength = 1029283,
                                 ContentType = "video/mp4",
                                 Size = new(854, 480),
-                                Url = new Uri("/o1/v/t16/f1/m69/GHJFfQ8ooBVnAQAEAPfT3aRAbAMfbq_EAAAF.mp4", UriKind.Relative)
+                                Url = new Uri("/o1/v/t16/f2/m69/AQNi-XazEatFXnZNKWopCk_YLUQjOMxVe0__rOfvtRrWbcYSoHk7bCxw3bpQm8LQDZmcCdGnXEwt2D1DeMbM0coo.mp4", UriKind.Relative)
                             }
                         }
                     }
@@ -166,9 +166,9 @@ public class InstagramContentRouteTests : IClassFixture<ApiWebApplicationFactory
             new InstagramContent("https://www.instagram.com/p/BQ0eAlwhDrw/")
             {
                 CreatedAtUtc = DateTimeOffset.Parse("2017-02-22T16:01:17+00:00", CultureInfo.InvariantCulture),
-                FavoriteCount = 396030,
+                FavoriteCount = 392977,
                 FullText = "Surprise! 🎉 Swipe left on the post above to see more.\nStarting today, you can share up to 10 photos and videos in one post on Instagram. With this update, you no longer have to choose the single best photo or video from an experience you want to remember.\nWhen uploading to your feed, you’ll see a new icon to select multiple photos and videos. It’s easy to control exactly how your post will look. You can tap and hold to change the order, apply a filter to everything at once or edit one by one. These posts have a single caption and are square-only for now.\nOn a profile grid, you’ll notice the first photo or video of a post has a little icon, which means there’s more to see. And in feed, you’ll see blue dots at the bottom of these posts to let you know you can swipe to see more. You can like and comment on them just like a regular post.\nThis update is available as part of Instagram version 10.9 for iOS in the Apple App Store and for Android on Google Play. To learn more, check out help.instagram.com.",
-                ReplyCount = 11620,
+                ReplyCount = 11515,
                 Username = "instagram",
                 FullName = "Instagram",
                 ProfilePictureUrl = new Uri("/v/t51.2885-19/281440578_1088265838702675_6233856337905829714_n.jpg", UriKind.Relative),
@@ -178,7 +178,7 @@ public class InstagramContentRouteTests : IClassFixture<ApiWebApplicationFactory
                     {
                         DisplayUrl = new Uri("/v/t51.2885-15/16906872_216119275459833_3186754343655178240_n.jpg", UriKind.Relative),
                         Duration = null,
-                        Views = 47553,
+                        Views = 49251,
                         VideoSources = new VideoSourceCollection
                         {
                             new VideoSource
