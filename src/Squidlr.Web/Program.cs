@@ -107,7 +107,7 @@ public partial class Program
                 options.KnownProxies.Clear();
             });
 
-            builder.Services.AddRateLimiter();
+            builder.Services.AddRateLimiterInternal();
             builder.Services.AddHealthChecks();
 
             var app = builder.Build();

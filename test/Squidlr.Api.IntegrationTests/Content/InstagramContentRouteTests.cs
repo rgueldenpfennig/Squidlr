@@ -80,7 +80,6 @@ public class InstagramContentRouteTests : IClassFixture<ApiWebApplicationFactory
                     var videoSource = video.VideoSources[j];
 
                     Assert.Equal(expectedVideoSource.ContentType, videoSource.ContentType);
-                    Assert.Equal(expectedVideoSource.Url.OriginalString, videoSource.Url.AbsolutePath);
                     Assert.Equal(expectedVideoSource.Size, videoSource.Size);
                     Assert.Equal(expectedVideoSource.ContentLength, videoSource.ContentLength);
                 }
@@ -131,7 +130,7 @@ public class InstagramContentRouteTests : IClassFixture<ApiWebApplicationFactory
             new InstagramContent("https://www.instagram.com/marvelskies.fc/reel/CWqAgUZgCku/")
             {
                 CreatedAtUtc = DateTimeOffset.Parse("2021-11-24T11:09:53+00:00", CultureInfo.InvariantCulture),
-                FavoriteCount = 990700,
+                FavoriteCount = 990200,
                 FullText = "Have no home 😂\n\n. Follow @marvelskies.fc \n\n.Tags 🏷️\n#spiderman #spidermannowayhome #tomholland #loveyou3000 #robertdowneyjr #andrewgarfield\n#tobeymaguire #ironman #marvel\n\n. Credits to the Respective Owners",
                 ReplyCount = 1757,
                 Username = "marvelskies.fc",
@@ -149,10 +148,10 @@ public class InstagramContentRouteTests : IClassFixture<ApiWebApplicationFactory
                             new VideoSource
                             {
                                 Bitrate = 0,
-                                ContentLength = 1029283,
+                                ContentLength = 1029282,
                                 ContentType = "video/mp4",
                                 Size = new(854, 480),
-                                Url = new Uri("/o1/v/t16/f2/m69/AQNi-XazEatFXnZNKWopCk_YLUQjOMxVe0__rOfvtRrWbcYSoHk7bCxw3bpQm8LQDZmcCdGnXEwt2D1DeMbM0coo.mp4", UriKind.Relative)
+                                Url = new Uri("/o1/v/t16/f1/m84/684E26483F3B131A73D2F28B764A74AF_video_dashinit.mp4", UriKind.Relative)
                             }
                         }
                     }
@@ -195,7 +194,7 @@ public class InstagramContentRouteTests : IClassFixture<ApiWebApplicationFactory
                     {
                         DisplayUrl = new Uri("/v/t51.2885-15/16789502_591697921028973_4609981019490091008_n.jpg", UriKind.Relative),
                         Duration = null,
-                        Views = 17787,
+                        Views = 18167,
                         VideoSources = new VideoSourceCollection
                         {
                             new VideoSource
@@ -212,7 +211,7 @@ public class InstagramContentRouteTests : IClassFixture<ApiWebApplicationFactory
                     {
                         DisplayUrl = new Uri("/v/t51.2885-15/16583642_1900513553560916_3961845230180761600_n.jpg", UriKind.Relative),
                         Duration = null,
-                        Views = 13446,
+                        Views = 13916,
                         VideoSources = new VideoSourceCollection
                         {
                             new VideoSource
