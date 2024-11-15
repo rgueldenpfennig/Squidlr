@@ -1,0 +1,28 @@
+[
+  {
+    "Name": "Default",
+    "Projects": [
+      {
+        "Path": "src\\Squidlr.Api\\Squidlr.Api.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "src\\Squidlr.Web\\Squidlr.Web.csproj",
+        "Action": "Start"
+      }
+    ]
+  },
+  {
+    "Name": "Web",
+    "Projects": [
+      {
+        "Path": "src\\Squidlr.Api\\Squidlr.Api.csproj",
+        "Action": "StartWithoutDebugging"
+      },
+      {
+        "Path": "src\\Squidlr.Web\\Squidlr.Web.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]
