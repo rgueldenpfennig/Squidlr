@@ -33,10 +33,7 @@ public sealed partial class LinkedInContentProvider : IContentProvider
                 "Received {LinkedInHttpStatusCode} HTTP status code when trying to request LinkedIn post.",
                 response.StatusCode);
 
-            if (response.StatusCode == HttpStatusCode.NotFound)
-                return new(RequestContentResult.NotFound);
-
-            return new(RequestContentResult.GatewayError);
+            return response.StatusCode == HttpStatusCode.NotFound ? new(RequestContentResult.NotFound) : new(RequestContentResult.GatewayError);
         }
 
         var streamCopy = new MemoryStream(
@@ -85,11 +82,18 @@ public sealed partial class LinkedInContentProvider : IContentProvider
             Url = videoFileUrl
         });
         content.AddVideo(video);
+        content.FullText = root.GetPropertyOrNull("description")?.GetString();
 
-        var author = root.GetProperty("author");
-        content.Username = author.GetProperty("name").GetString();
-        content.UserUrl = author.GetProperty("url").GetString();
-        content.FullText = root.GetProperty("description").GetString();
+        var creator = root.GetPropertyOrNull("creator");
+        if (creator != null)
+        {
+            content.Username = creator.Value.GetPropertyOrNull("name")?.GetString();
+            content.UserUrl = creator.Value.GetPropertyOrNull("url")?.GetString();
+        }
+        else
+        {
+            _logger.LogWarning("Could not obtain the LinkedIn creator property.");
+        }
 
         var reactionsNode = htmlDoc.DocumentNode.Descendants("a")
                                                 .FirstOrDefault(n => n.HasAttributes && n.Attributes.Any(a => a.Name == "data-num-reactions"));
