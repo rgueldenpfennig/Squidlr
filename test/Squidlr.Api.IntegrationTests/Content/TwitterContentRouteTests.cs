@@ -15,7 +15,7 @@ public class TwitterContentRouteTests : IClassFixture<ApiWebApplicationFactory>
         _client.DefaultRequestHeaders.Add("X-API-KEY", "foobar");
     }
 
-    [Theory]
+    [SkipGitHubActionTheory]
     // Amplify video card
     [InlineData("https://twitter.com/starwars/status/665052190608723968")]
     // embedded video from other source than Twitter
