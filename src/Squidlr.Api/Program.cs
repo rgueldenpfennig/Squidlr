@@ -101,7 +101,7 @@ public partial class Program
                     "ApiKey",
                     opts => opts.ApiKey = builder.Configuration.GetValue<string>("Application:ApiKey"));
             builder.Services.AddAuthorization();
-            builder.Services.AddRateLimiter();
+            builder.Services.AddRateLimiterInternal();
             builder.Services.AddHealthChecks();
 
             var app = builder.Build();

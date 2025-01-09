@@ -107,7 +107,7 @@ public partial class Program
                 options.KnownProxies.Clear();
             });
 
-            builder.Services.AddRateLimiter();
+            builder.Services.AddRateLimiterInternal();
             builder.Services.AddHealthChecks();
 
             var app = builder.Build();
@@ -172,6 +172,7 @@ public partial class Program
                              builder.AddFormAction().Self();
                              builder.AddFrameAncestors().None();
                              builder.AddImgSrc().Self().From("https://*.tiktokcdn.com")
+                                                       .From("https://*.tiktokcdn-us.com")
                                                        .From("https://media.licdn.com")
                                                        .From("https://pbs.twimg.com");
                              builder.AddObjectSrc().None();

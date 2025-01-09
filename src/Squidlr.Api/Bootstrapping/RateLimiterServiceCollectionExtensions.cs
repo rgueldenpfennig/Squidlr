@@ -8,7 +8,7 @@ namespace Microsoft.AspNetCore.Builder;
 
 public static class RateLimiterServiceCollectionExtensions
 {
-    public static IServiceCollection AddRateLimiter(this IServiceCollection services)
+    public static IServiceCollection AddRateLimiterInternal(this IServiceCollection services)
     {
         services.AddRateLimiter(options =>
         {

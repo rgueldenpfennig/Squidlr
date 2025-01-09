@@ -83,6 +83,11 @@ public sealed partial class TiktokContentProvider : IContentProvider
             return new(RequestContentResult.NotFound);
         }
 
+        if (itemStruct.GetPropertyOrNull("isContentClassified")?.GetBoolean() == true)
+        {
+            return new(RequestContentResult.AdultContent);
+        }
+
         var content = new TiktokContent(identifier.Url);
         content.CreatedAtUtc = DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(itemStruct.GetProperty("createTime").GetString(), CultureInfo.InvariantCulture));
         content.FullText = itemStruct.GetProperty("desc").GetString();

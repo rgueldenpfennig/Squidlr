@@ -19,7 +19,7 @@ public class TiktokContentRouteTests : IClassFixture<ApiWebApplicationFactory>
     public static IEnumerable<object[]> TestData
             => CreateTestData();
 
-    [Theory]
+    [SkipGitHubActionTheory]
     [MemberData(nameof(TestData))]
     public async Task RequestTiktokContent(TiktokContent expectedContent)
     {
