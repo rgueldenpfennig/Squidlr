@@ -20,6 +20,9 @@ public sealed class SquidlrOptions : IOptions<SquidlrOptions>, IValidatableObjec
     [Required]
     public Uri? LinkedInHostUri { get; set; }
 
+    [Required]
+    public Uri? FacebookHostUri { get; set; }
+
     public ProxyOptions? ProxyOptions { get; set; }
 
     public SquidlrOptions Value => this;

@@ -13,5 +13,7 @@ public enum SocialMediaPlatform
 
     Tiktok,
 
-    LinkedIn
+    LinkedIn,
+
+    Facebook
 }

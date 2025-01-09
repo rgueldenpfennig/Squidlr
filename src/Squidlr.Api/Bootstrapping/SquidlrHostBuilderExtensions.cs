@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Squidlr;
 using Squidlr.Abstractions;
+using Squidlr.Facebook;
 using Squidlr.Instagram;
 using Squidlr.LinkedIn;
 using Squidlr.Telemetry;
@@ -44,10 +45,11 @@ public static class SquidlrHostBuilderExtensions
                 sp.GetRequiredService<ILogger<ContentProvider>>()));
 
             // add supported social media platforms
-            services.AddTwitter();
+            services.AddFacebook();
             services.AddInstagram();
-            services.AddTiktok();
             services.AddLinkedIn();
+            services.AddTiktok();
+            services.AddTwitter();
         });
 
         return builder;
