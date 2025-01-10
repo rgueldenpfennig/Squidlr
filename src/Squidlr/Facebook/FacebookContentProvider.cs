@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Globalization;
+using System.Net;
 using System.Text.RegularExpressions;
 using DotNext;
 using HtmlAgilityPack;
@@ -21,6 +22,9 @@ public sealed partial class FacebookContentProvider : IContentProvider
 
     [GeneratedRegex(@"""share_count_reduced"":""(?<count>\d+)", RegexOptions.IgnoreCase)]
     private static partial Regex ShareCountRegex();
+
+    [GeneratedRegex(@"""__isActor"":""User"",""name"":""(?<name>.*?)""", RegexOptions.IgnoreCase)]
+    private static partial Regex NameRegex();
 
     [GeneratedRegex(@"""browser_native_hd_url"":""(?<url>[^""]*)""", RegexOptions.IgnoreCase)]
     private static partial Regex NativeHdUrlRegex();
@@ -58,19 +62,53 @@ public sealed partial class FacebookContentProvider : IContentProvider
             return new(RequestContentResult.NoVideo);
         }
 
+        var videoUrl = videoUrlMatch.Groups["url"].Value.Replace("\\", string.Empty);
+
         var htmlDoc = new HtmlDocument();
         htmlDoc.LoadHtml(htmlContent);
 
-        var ogImage = htmlDoc.DocumentNode.SelectSingleNode("//meta[@property='og:image']");
-        var videoDisplayUrl = ogImage?.GetAttributeValue("content", null);
+        var ogDescription = htmlDoc.DocumentNode.SelectSingleNode("//meta[@property='og:description']")?.GetAttributeValue("content", null);
+        var ogImage = htmlDoc.DocumentNode.SelectSingleNode("//meta[@property='og:image']")?.GetAttributeValue("content", null);
 
-        var videoUrl = videoUrlMatch.Groups["url"].Value.Replace("\\", string.Empty);
+        var playbackVideoMatch = PlaybackVideoRegex().Match(htmlContent);
+        var duration = playbackVideoMatch.Success ? TimeSpan.FromSeconds(int.Parse(playbackVideoMatch.Groups["seconds"].Value, CultureInfo.InvariantCulture)) : (TimeSpan?)null;
+        var height = playbackVideoMatch.Success ? int.Parse(playbackVideoMatch.Groups["height"].Value, CultureInfo.InvariantCulture) : 0;
+        var width = playbackVideoMatch.Success ? int.Parse(playbackVideoMatch.Groups["width"].Value, CultureInfo.InvariantCulture) : 0;
 
-        var content = new FacebookContent(identifier.Url);
+        var unifiedReactorsMatch = UnifiedReactorsCountRegex().Match(htmlContent);
+        var favoriteCount = unifiedReactorsMatch.Success ? int.Parse(unifiedReactorsMatch.Groups["count"].Value, CultureInfo.InvariantCulture) : 0;
+
+        var totalCommentCountMatch = TotalCommentCountRegex().Match(htmlContent);
+        var replyCount = totalCommentCountMatch.Success ? int.Parse(totalCommentCountMatch.Groups["count"].Value, CultureInfo.InvariantCulture) : 0;
+
+        var shareCountMatch = ShareCountRegex().Match(htmlContent);
+        var shareCount = shareCountMatch.Success ? int.Parse(shareCountMatch.Groups["count"].Value, CultureInfo.InvariantCulture) : 0;
+
+        var usernameMatch = NameRegex().Match(htmlContent);
+        var username = usernameMatch.Success ? usernameMatch.Groups["name"].Value : null;
+
+        var videoSize = VideoSize.Empty;
+        if (height > 0 && width > 0)
+        {
+            videoSize = new VideoSize(height, width);
+        }
+
+        var content = new FacebookContent(identifier.Url)
+        {
+            CreatedAtUtc = DateTimeOffset.UtcNow,
+            FullText = ogDescription,
+            FavoriteCount = favoriteCount,
+            ReplyCount = replyCount,
+            ShareCount = shareCount,
+            Username = username
+        };
+
         var videoFileUrl = new Uri(videoUrl, UriKind.Absolute);
         var video = new Video
         {
-            DisplayUrl = videoDisplayUrl != null ? new Uri(videoDisplayUrl, UriKind.Absolute) : null
+            DisplayUrl = ogImage != null ? new Uri(ogImage, UriKind.Absolute) : null,
+            Duration = duration,
+            Views = 0
         };
 
         var (contentLength, mediaType) = await _client.GetVideoContentLengthAndMediaTypeAsync(videoFileUrl, cancellationToken);
@@ -80,7 +118,7 @@ public sealed partial class FacebookContentProvider : IContentProvider
             Bitrate = 0,
             ContentLength = contentLength,
             ContentType = mediaType ?? "video/mp4",
-            Size = VideoSize.Empty,
+            Size = videoSize,
             Url = videoFileUrl
         });
         content.AddVideo(video);

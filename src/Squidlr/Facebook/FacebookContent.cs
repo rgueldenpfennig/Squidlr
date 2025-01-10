@@ -2,6 +2,8 @@
 
 public sealed class FacebookContent : Content
 {
+    public int ShareCount { get; set; }
+
     public FacebookContent(string sourceUrl) : base(sourceUrl, SocialMediaPlatform.Facebook)
     {
     }
