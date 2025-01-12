@@ -14,9 +14,11 @@ It's composed of a SPA (single page application) website and an API server and i
 
 ## Features
 - Download videos from:
-  - X (f.k.a Twitter)
+  - Facebook
   - Instagram
+  - LinkedIn
   - TikTok
+  - X (f.k.a Twitter)
 - choose between available video file resolutions
 - support of multiple videos found in a single post
 - display of common meta data attached to the post (likes, shares, author, etc.)

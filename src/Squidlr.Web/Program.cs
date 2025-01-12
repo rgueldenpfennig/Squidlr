@@ -174,6 +174,7 @@ public partial class Program
                              builder.AddImgSrc().Self().From("https://*.tiktokcdn.com")
                                                        .From("https://*.tiktokcdn-us.com")
                                                        .From("https://media.licdn.com")
+                                                       .From("https://*.fbcdn.net")
                                                        .From("https://pbs.twimg.com");
                              builder.AddObjectSrc().None();
                              builder.AddScriptSrc().Self();

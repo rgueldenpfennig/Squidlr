@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.Net;
 using System.Text.RegularExpressions;
 using DotNext;
@@ -129,37 +130,36 @@ public sealed partial class FacebookContentProvider : IContentProvider
             DisplayUrl = displayUrl
         };
 
-        var uris = new List<Uri>();
-        if (hdMatch.Success)
-        {
-            uris.Add(new Uri(hdMatch.Groups["url"].Value.Replace("\\", string.Empty), UriKind.Absolute));
-        }
-
-        if (sdMatch.Success)
-        {
-            uris.Add(new Uri(sdMatch.Groups["url"].Value.Replace("\\", string.Empty), UriKind.Absolute));
-        }
-
         var videoSize = VideoSize.Empty;
         if (height > 0 && width > 0)
         {
             videoSize = new VideoSize(height, width);
         }
 
-        foreach (var uri in uris)
+        if (hdMatch.Success)
         {
-            var (contentLength, mediaType) = await _client.GetVideoContentLengthAndMediaTypeAsync(uri, cancellationToken);
+            await AddVideoSourceAsync(video, videoSize, new Uri(hdMatch.Groups["url"].Value.Replace("\\", string.Empty), UriKind.Absolute), isSd: false, cancellationToken);
+        }
 
-            video.AddVideoSource(new()
-            {
-                Bitrate = 0,
-                ContentLength = contentLength,
-                ContentType = mediaType ?? "video/mp4",
-                Size = videoSize,
-                Url = uri
-            });
+        if (sdMatch.Success)
+        {
+            await AddVideoSourceAsync(video, videoSize, new Uri(sdMatch.Groups["url"].Value.Replace("\\", string.Empty), UriKind.Absolute), isSd: true, cancellationToken);
         }
 
         return video;
+    }
+
+    private async Task AddVideoSourceAsync(Video video, VideoSize videoSize, Uri uri, bool isSd, CancellationToken cancellationToken)
+    {
+        var (contentLength, mediaType) = await _client.GetVideoContentLengthAndMediaTypeAsync(uri, cancellationToken);
+
+        video.AddVideoSource(new()
+        {
+            Bitrate = 0,
+            ContentLength = contentLength,
+            ContentType = mediaType ?? "video/mp4",
+            Size = isSd ? new VideoSize(videoSize.Height / 2, videoSize.Width / 2) : videoSize,
+            Url = uri
+        });
     }
 }

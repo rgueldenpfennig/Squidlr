@@ -5,6 +5,7 @@
 @using Microsoft.Extensions.Options;
 @using System.Net;
 @using Serilog.Context;
+@using Squidlr.Facebook
 @using Squidlr.Instagram;
 @using Squidlr.LinkedIn
 @using Squidlr.Tiktok
@@ -34,6 +35,7 @@
     @{
         RenderFragment? renderContent = content switch
         {
+            FacebookContent facebookContent => @<FacebookContentView Content="@facebookContent" />,
             InstagramContent instagramContent => @<InstagramContentView Content="@instagramContent" />,
             LinkedInContent linkedInContent => @<LinkedInContentView Content="@linkedInContent" />,
             TiktokContent tiktokContent => @<TiktokContentView Content="@tiktokContent" />,

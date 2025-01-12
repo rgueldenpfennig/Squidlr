@@ -1,5 +1,6 @@
 ﻿using DotNext;
 using Microsoft.AspNetCore.Mvc;
+using Squidlr.Facebook;
 using Squidlr.Instagram;
 using Squidlr.LinkedIn;
 using Squidlr.Shared;
@@ -65,6 +66,7 @@ public sealed class ApiClient
 
                 return platform switch
                 {
+                    SocialMediaPlatform.Facebook => (await response.Content.ReadFromJsonAsync<FacebookContent>(cancellationToken: cancellationToken))!,
                     SocialMediaPlatform.Instagram => (await response.Content.ReadFromJsonAsync<InstagramContent>(cancellationToken: cancellationToken))!,
                     SocialMediaPlatform.LinkedIn => (await response.Content.ReadFromJsonAsync<LinkedInContent>(cancellationToken: cancellationToken))!,
                     SocialMediaPlatform.Tiktok => (await response.Content.ReadFromJsonAsync<TiktokContent>(cancellationToken: cancellationToken))!,
