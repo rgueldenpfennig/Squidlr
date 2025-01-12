@@ -4,6 +4,7 @@ using Polly;
 using Polly.Extensions.Http;
 using Squidlr;
 using Squidlr.Abstractions;
+using Squidlr.Facebook;
 using Squidlr.Instagram;
 using Squidlr.LinkedIn;
 using Squidlr.Tiktok;
@@ -59,6 +60,7 @@ public static class SquidlrWebServiceCollectionExtensions
         services.AddSingleton(sp => new UrlResolver(
             sp.GetServices<IUrlResolver>().ToList().AsReadOnly()));
 
+        services.AddSingleton<IUrlResolver, FacebookUrlResolver>();
         services.AddSingleton<IUrlResolver, InstagramUrlResolver>();
         services.AddSingleton<IUrlResolver, LinkedInUrlResolver>();
         services.AddSingleton<IUrlResolver, TiktokUrlResolver>();
