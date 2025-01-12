@@ -14,6 +14,9 @@ public sealed partial class FacebookContentProvider : IContentProvider
     private readonly FacebookWebClient _client;
     private readonly ILogger<FacebookContentProvider> _logger;
 
+    [GeneratedRegex(@"""publish_time\\"":(?<timeStamp>\d+)", RegexOptions.IgnoreCase)]
+    private static partial Regex PublishTimeRegex();
+
     [GeneratedRegex(@"""unified_reactors"":{""count"":(?<count>\d+)}", RegexOptions.IgnoreCase)]
     private static partial Regex UnifiedReactorsCountRegex();
 
@@ -28,6 +31,12 @@ public sealed partial class FacebookContentProvider : IContentProvider
 
     [GeneratedRegex(@"""browser_native_hd_url"":""(?<url>[^""]*)""", RegexOptions.IgnoreCase)]
     private static partial Regex NativeHdUrlRegex();
+
+    [GeneratedRegex(@"""browser_native_sd_url"":""(?<url>[^""]*)""", RegexOptions.IgnoreCase)]
+    private static partial Regex NativeSdUrlRegex();
+
+    [GeneratedRegex(@"""first_frame_thumbnail"":""(?<url>[^""]*)""", RegexOptions.IgnoreCase)]
+    private static partial Regex FirstFrameThumbnailRegex();
 
     [GeneratedRegex(@"""playback_video"":{""height"":(?<height>\d+),""width"":(?<width>\d+),""length_in_second"":(?<seconds>\d+)", RegexOptions.IgnoreCase)]
     private static partial Regex PlaybackVideoRegex();
@@ -55,25 +64,19 @@ public sealed partial class FacebookContentProvider : IContentProvider
         }
 
         var htmlContent = await response.Content.ReadAsStringAsync(cancellationToken);
-        var videoUrlMatch = NativeHdUrlRegex().Match(htmlContent);
-        if (!videoUrlMatch.Success)
+        var video = await FindVideoAsync(htmlContent, cancellationToken);
+        if (video == null)
         {
-            _logger.LogWarning("The expected video URL was not found.");
             return new(RequestContentResult.NoVideo);
         }
-
-        var videoUrl = videoUrlMatch.Groups["url"].Value.Replace("\\", string.Empty);
 
         var htmlDoc = new HtmlDocument();
         htmlDoc.LoadHtml(htmlContent);
 
         var ogDescription = htmlDoc.DocumentNode.SelectSingleNode("//meta[@property='og:description']")?.GetAttributeValue("content", null);
-        var ogImage = htmlDoc.DocumentNode.SelectSingleNode("//meta[@property='og:image']")?.GetAttributeValue("content", null);
 
-        var playbackVideoMatch = PlaybackVideoRegex().Match(htmlContent);
-        var duration = playbackVideoMatch.Success ? TimeSpan.FromSeconds(int.Parse(playbackVideoMatch.Groups["seconds"].Value, CultureInfo.InvariantCulture)) : (TimeSpan?)null;
-        var height = playbackVideoMatch.Success ? int.Parse(playbackVideoMatch.Groups["height"].Value, CultureInfo.InvariantCulture) : 0;
-        var width = playbackVideoMatch.Success ? int.Parse(playbackVideoMatch.Groups["width"].Value, CultureInfo.InvariantCulture) : 0;
+        var publishTimeMatch = PublishTimeRegex().Match(htmlContent);
+        var publishTime = publishTimeMatch.Success ? DateTimeOffset.FromUnixTimeSeconds(long.Parse(publishTimeMatch.Groups["timeStamp"].Value, CultureInfo.InvariantCulture)) : DateTimeOffset.UtcNow;
 
         var unifiedReactorsMatch = UnifiedReactorsCountRegex().Match(htmlContent);
         var favoriteCount = unifiedReactorsMatch.Success ? int.Parse(unifiedReactorsMatch.Groups["count"].Value, CultureInfo.InvariantCulture) : 0;
@@ -87,15 +90,9 @@ public sealed partial class FacebookContentProvider : IContentProvider
         var usernameMatch = NameRegex().Match(htmlContent);
         var username = usernameMatch.Success ? usernameMatch.Groups["name"].Value : null;
 
-        var videoSize = VideoSize.Empty;
-        if (height > 0 && width > 0)
-        {
-            videoSize = new VideoSize(height, width);
-        }
-
         var content = new FacebookContent(identifier.Url)
         {
-            CreatedAtUtc = DateTimeOffset.UtcNow,
+            CreatedAtUtc = publishTime,
             FullText = ogDescription,
             FavoriteCount = favoriteCount,
             ReplyCount = replyCount,
@@ -103,26 +100,66 @@ public sealed partial class FacebookContentProvider : IContentProvider
             Username = username
         };
 
-        var videoFileUrl = new Uri(videoUrl, UriKind.Absolute);
-        var video = new Video
-        {
-            DisplayUrl = ogImage != null ? new Uri(ogImage, UriKind.Absolute) : null,
-            Duration = duration,
-            Views = 0
-        };
-
-        var (contentLength, mediaType) = await _client.GetVideoContentLengthAndMediaTypeAsync(videoFileUrl, cancellationToken);
-
-        video.VideoSources.Add(new()
-        {
-            Bitrate = 0,
-            ContentLength = contentLength,
-            ContentType = mediaType ?? "video/mp4",
-            Size = videoSize,
-            Url = videoFileUrl
-        });
         content.AddVideo(video);
 
         return content;
+    }
+
+    private async ValueTask<Video?> FindVideoAsync(string htmlContent, CancellationToken cancellationToken)
+    {
+        var hdMatch = NativeHdUrlRegex().Match(htmlContent);
+        var sdMatch = NativeSdUrlRegex().Match(htmlContent);
+
+        if (!hdMatch.Success && !sdMatch.Success)
+        {
+            return null;
+        }
+
+        var playbackVideoMatch = PlaybackVideoRegex().Match(htmlContent);
+        var duration = playbackVideoMatch.Success ? TimeSpan.FromSeconds(int.Parse(playbackVideoMatch.Groups["seconds"].Value, CultureInfo.InvariantCulture)) : (TimeSpan?)null;
+        var height = playbackVideoMatch.Success ? int.Parse(playbackVideoMatch.Groups["height"].Value, CultureInfo.InvariantCulture) : 0;
+        var width = playbackVideoMatch.Success ? int.Parse(playbackVideoMatch.Groups["width"].Value, CultureInfo.InvariantCulture) : 0;
+
+        var firstFrameThumbnailMatch = FirstFrameThumbnailRegex().Match(htmlContent);
+        var displayUrl = firstFrameThumbnailMatch.Success ? new Uri(firstFrameThumbnailMatch.Groups["url"].Value.Replace("\\", string.Empty), UriKind.Absolute) : null;
+
+        var video = new Video
+        {
+            Duration = duration,
+            DisplayUrl = displayUrl
+        };
+
+        var uris = new List<Uri>();
+        if (hdMatch.Success)
+        {
+            uris.Add(new Uri(hdMatch.Groups["url"].Value.Replace("\\", string.Empty), UriKind.Absolute));
+        }
+
+        if (sdMatch.Success)
+        {
+            uris.Add(new Uri(sdMatch.Groups["url"].Value.Replace("\\", string.Empty), UriKind.Absolute));
+        }
+
+        var videoSize = VideoSize.Empty;
+        if (height > 0 && width > 0)
+        {
+            videoSize = new VideoSize(height, width);
+        }
+
+        foreach (var uri in uris)
+        {
+            var (contentLength, mediaType) = await _client.GetVideoContentLengthAndMediaTypeAsync(uri, cancellationToken);
+
+            video.AddVideoSource(new()
+            {
+                Bitrate = 0,
+                ContentLength = contentLength,
+                ContentType = mediaType ?? "video/mp4",
+                Size = videoSize,
+                Url = uri
+            });
+        }
+
+        return video;
     }
 }
