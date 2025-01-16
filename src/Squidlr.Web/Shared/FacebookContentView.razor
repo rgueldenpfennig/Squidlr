@@ -37,9 +37,12 @@
                 {
                     <blockquote class="blockquote">
                         <p class="content-text">@((MarkupString)Content.FullText)</p>
-                        <footer class="blockquote-footer fw-bold">
-                            @string.Format("@{0}", Content.Username)
-                        </footer>
+                        @if (Content.Username is not null)
+                        {
+                            <footer class="blockquote-footer fw-bold">
+                                @string.Format("@{0}", Content.Username)
+                            </footer>
+                        }
                     </blockquote>
                 }
                 <a href="@Content.SourceUrl">
@@ -47,12 +50,14 @@
                         @Content.CreatedAtUtc.ToString("f", CultureInfo.InvariantCulture)
                     </time>
                 </a>
-
-                <ul class="list-inline mt-1">
-                    <li class="list-inline-item"><strong>@FormatHelper.FormatNumber(Content.FavoriteCount)</strong> <small>@FormatHelper.ToQuantity(Content.ReplyCount, "Like")</small></li>
-                    <li class="list-inline-item"><strong>@FormatHelper.FormatNumber(Content.ReplyCount)</strong> <small>@FormatHelper.ToQuantity(Content.ReplyCount, "Reply")</small></li>
-                    <li class="list-inline-item"><strong>@FormatHelper.FormatNumber(Content.ShareCount)</strong> <small>@FormatHelper.ToQuantity(Content.ShareCount, "Share")</small></li>
-                </ul>
+                @if (Content.FavoriteCount > 0 && Content.ReplyCount > 0 && Content.ShareCount > 0)
+                {
+                    <ul class="list-inline mt-1">
+                        <li class="list-inline-item"><strong>@FormatHelper.FormatNumber(Content.FavoriteCount)</strong> <small>@FormatHelper.ToQuantity(Content.ReplyCount, "Like")</small></li>
+                        <li class="list-inline-item"><strong>@FormatHelper.FormatNumber(Content.ReplyCount)</strong> <small>@FormatHelper.ToQuantity(Content.ReplyCount, "Reply")</small></li>
+                        <li class="list-inline-item"><strong>@FormatHelper.FormatNumber(Content.ShareCount)</strong> <small>@FormatHelper.ToQuantity(Content.ShareCount, "Share")</small></li>
+                    </ul>
+                }
             </p>
 
             @{
