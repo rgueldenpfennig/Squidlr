@@ -115,7 +115,7 @@ public sealed partial class TiktokContentProvider : IContentProvider
                 Bitrate = bitrateInfo.GetProperty("Bitrate").GetInt32(),
                 Size = new VideoSize(height, width),
                 ContentType = "video/mp4",
-                Url = new Uri(bitrateInfo.GetProperty("PlayAddr").GetProperty("UrlList").EnumerateArray().Last().GetString()!, UriKind.Absolute),
+                Url = new Uri(bitrateInfo.GetProperty("PlayAddr").GetProperty("UrlList").EnumerateArray().First().GetString()!, UriKind.Absolute),
                 ContentLength = Convert.ToInt32(bitrateInfo.GetProperty("PlayAddr").GetProperty("DataSize").GetString(), CultureInfo.InvariantCulture)
             };
 
