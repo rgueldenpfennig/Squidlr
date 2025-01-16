@@ -6,9 +6,9 @@ public static class SeoProperties
 
     public const string Title = "Social Media Video Downloader | Squidlr";
 
-    public const string Keywords = "x twitter instagram tiktok video downloader";
+    public const string Keywords = "x twitter instagram facebook tiktok video downloader";
 
-    public const string Description = "Download any video from X, Twitter, Instagram and TikTok right now for free";
+    public const string Description = "Download any video from X, Twitter, Instagram, Facebook and TikTok right now for free";
 
     public const string Domain = "squidlr.com";
 
