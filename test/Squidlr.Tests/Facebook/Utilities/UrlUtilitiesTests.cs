@@ -12,6 +12,7 @@ public class UrlUtilitiesTests
     [InlineData("https://www.facebook.com/video.php?v=3676516585958356", true)]
     [InlineData("https://www.facebook.com/watch/?v=3676516585958356", true)]
     [InlineData("https://www.facebook.com/groups/1645456212344334/posts/3737828833107051", true)]
+    [InlineData("https://www.facebook.com/share/r/1Ei2xosnTb", true)]
     [InlineData("https://example.com/foo/1152128691131318273/", false)]
     [InlineData("https://google.com", false)]
     [InlineData("invalid-url", false)]
@@ -30,6 +31,7 @@ public class UrlUtilitiesTests
     [InlineData("https://www.facebook.com/video.php?v=3676516585958356", "3676516585958356", "https://www.facebook.com/video.php?v=3676516585958356")]
     [InlineData("https://www.facebook.com/watch/?v=3676516585958356", "3676516585958356", "https://www.facebook.com/watch/?v=3676516585958356")]
     [InlineData("https://www.facebook.com/groups/1645456212344334/posts/3737828833107051", "3737828833107051", "https://www.facebook.com/groups/1645456212344334/posts/3737828833107051")]
+    [InlineData("https://www.facebook.com/share/r/1Ei2xosnTb/", "1Ei2xosnTb", "https://www.facebook.com/share/r/1Ei2xosnTb")]
     public void GetFacebookIdentifier(string url, string expectedId, string expectedUrl)
     {
         // Act
