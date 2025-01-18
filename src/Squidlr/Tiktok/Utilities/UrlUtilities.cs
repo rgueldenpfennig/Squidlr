@@ -8,16 +8,25 @@ public static partial class UrlUtilities
     [GeneratedRegex(@"https?:\/\/(www\.)?tiktok\.com\/(\S+)\/video\/(?<id>\d+).*?", RegexOptions.IgnoreCase)]
     private static partial Regex TiktokUrlRegex();
 
+    [GeneratedRegex(@"https?:\/\/vm.tiktok\.com\/(?<id>[\s\S][^\/\?]+).*?", RegexOptions.IgnoreCase)]
+    private static partial Regex TiktokShareUrlRegex();
+
     public static bool TryGetTiktokIdentifier(string url, [NotNullWhen(true)] out TiktokIdentifier? identifier)
     {
         ArgumentException.ThrowIfNullOrEmpty(url);
         identifier = null;
 
+        var isShareUrl = false;
         var match = TiktokUrlRegex().Match(url);
         if (!match.Success)
-            return false;
+        {
+            match = TiktokShareUrlRegex().Match(url);
+            if (!match.Success)
+                return false;
+            isShareUrl = true;
+        }
 
-        identifier = new(match.Groups["id"].Value, match.Groups[0].Value);
+        identifier = new(match.Groups["id"].Value, match.Groups[0].Value, isShareUrl);
         return true;
     }
 

@@ -60,8 +60,8 @@ public sealed partial class TiktokContentProvider : IContentProvider
         var videoDetail = root.GetPropertyOrNull("__DEFAULT_SCOPE__")?.GetPropertyOrNull("webapp.video-detail");
         if (videoDetail == null)
         {
-            _logger.LogError("Could not find 'webapp.video-detail' in JSON payload.");
-            return new(RequestContentResult.Error);
+            _logger.LogWarning("Could not find 'webapp.video-detail' in JSON payload.");
+            return new(RequestContentResult.NoVideo);
         }
 
         var statusCode = videoDetail.Value.GetPropertyOrNull("statusCode")?.GetInt32();
@@ -80,7 +80,6 @@ public sealed partial class TiktokContentProvider : IContentProvider
         if (id == null || !id.Equals(identifier.Id, StringComparison.OrdinalIgnoreCase))
         {
             _logger.LogWarning("ID does not match requested Tiktok identifier.");
-            return new(RequestContentResult.NotFound);
         }
 
         if (itemStruct.GetPropertyOrNull("isContentClassified")?.GetBoolean() == true)

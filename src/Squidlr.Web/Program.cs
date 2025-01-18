@@ -173,6 +173,7 @@ public partial class Program
                              builder.AddFrameAncestors().None();
                              builder.AddImgSrc().Self().From("https://*.tiktokcdn.com")
                                                        .From("https://*.tiktokcdn-us.com")
+                                                       .From("https://*.tiktokcdn-eu.com")
                                                        .From("https://media.licdn.com")
                                                        .From("https://*.fbcdn.net")
                                                        .From("https://pbs.twimg.com");

@@ -28,7 +28,7 @@ public static class TiktokServiceCollectionExtensions
         {
             var handler = new SocketsHttpHandler
             {
-                AllowAutoRedirect = false,
+                AllowAutoRedirect = true,
                 UseCookies = true
             };
 

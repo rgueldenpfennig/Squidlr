@@ -13,6 +13,7 @@ public class UrlUtilitiesTests
     [InlineData("https://www.tiktok.com/@_le_cannibale_/video/7139980461132074283", true)]
     [InlineData("https://www.tiktok.com/@moxypatch/video/7206382937372134662", true)]
     [InlineData("http://tiktok.com/@moxypatch/video/7206382937372134662", true)]
+    [InlineData("https://vm.tiktok.com/ZNeKLnGKw", true)]
     [InlineData("https://www.tiktok.com/@moxypatch/image/7206382937372134662", false)]
     [InlineData("https://example.com/foo/1152128691131318273/", false)]
     [InlineData("https://google.com", false)]
@@ -30,13 +31,14 @@ public class UrlUtilitiesTests
     [InlineData("https://www.tiktok.com/@leenabhushan/video/6748451240264420610?foo=bar#abc", "6748451240264420610", "https://www.tiktok.com/@leenabhushan/video/6748451240264420610")]
     [InlineData("https://www.tiktok.com/@patroxofficial/video/6742501081818877190?langCountry=en", "6742501081818877190", "https://www.tiktok.com/@patroxofficial/video/6742501081818877190")]
     [InlineData("http://tiktok.com/@moxypatch/video/7206382937372134662", "7206382937372134662", "http://tiktok.com/@moxypatch/video/7206382937372134662")]
+    [InlineData("https://vm.tiktok.com/ZNeKLnGKw?foo=bar", "ZNeKLnGKw", "https://vm.tiktok.com/ZNeKLnGKw")]
     public void GetTiktokIdentifier(string url, string expectedId, string expectedUrl)
     {
         // Act
         Assert.True(UrlUtilities.TryGetTiktokIdentifier(url, out var identifier));
 
         // Assert
-        Assert.Equal(expectedId, identifier?.Id);
-        Assert.Equal(expectedUrl, identifier?.Url);
+        Assert.Equal(expectedId, identifier.Value.Id);
+        Assert.Equal(expectedUrl, identifier.Value.Url);
     }
 }
