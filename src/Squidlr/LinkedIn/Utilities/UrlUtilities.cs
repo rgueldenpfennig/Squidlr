@@ -5,7 +5,7 @@ namespace Squidlr.LinkedIn.Utilities;
 
 public static partial class UrlUtilities
 {
-    [GeneratedRegex(@"^https?:\/\/(www\.)?linkedin\.com\/posts\/.*-(?<id>[0-9]+)-\w*", RegexOptions.IgnoreCase)]
+    [GeneratedRegex(@"^https?:\/\/(www\.)?linkedin\.com\/posts\/.*-(?<id>[0-9]+)-[\S\s][^\/\?]*", RegexOptions.IgnoreCase)]
     private static partial Regex LinkedInUrlRegex();
 
     public static bool TryGetLinkedInIdentifier(string url, [NotNullWhen(true)] out LinkedInIdentifier? identifier)
