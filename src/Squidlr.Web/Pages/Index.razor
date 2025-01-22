@@ -19,7 +19,7 @@
     <h1 class="display-6 fw-bold text-body-emphasis">Social Media Video Downloader</h1>
 
     <div class="mt-4 mx-auto text-center">
-        <VideoSearchQuery ShowSample=@false ShowPlatformTabs=@false FocusInput=@false />
+        <VideoSearchQuery ShowPlatformTabs=@false FocusInput=@false />
 
         <div class="my-4">
             <h2 class="display-7 text-center">Supported social media platforms</h2>
@@ -100,11 +100,21 @@
         <p>Your support means a lot to me. Thank you!</p>
     </div>
 
-    <h3 class="text-body-emphasis mb-0">Does Squidlr support social media platforms other than X / Twitter?</h3>
+    <h3 id="supported-platforms" class="text-body-emphasis mb-0">Does Squidlr support social media platforms other than X / Twitter?</h3>
     <div class="text-break">
         <p>In addition to X, Squidlr currently supports Instagram, Facebook, TikTok and LinkedIn, allowing you to download videos from all of these platforms. Simply provide the URL of the video you wish to download, and Squidlr will do the rest.</p>
         <p>Squidlr aims to be your go-to solution for downloading videos from multiple social media platforms, making it a versatile tool for your video download needs.</p>
         <p>For the upcoming updates, it is planned to also support video downloads from additional platforms. So stay tuned and check regulary for upcoming additions.</p>
+    </div>
+
+    <h3 id="report-url" class="text-body-emphasis mb-0">What should I do if Squidlr doesn’t recognize the URL I provided?</h3>
+    <div class="text-break">
+        <p>If Squidlr doesn’t recognize your URL, it might be due to one of the following reasons:</p>
+        <ul class="list-group list-group-flush mx-3 mb-3">
+            <li class="list-group-item-light">The link is from an unsupported social media platform. Currently, Squidlr supports <a href="#supported-platforms">those platforms.</a></li>
+            <li class="list-group-item-light">The URL format is invalid or incomplete. Please make sure the link is copied correctly.</li>
+        </ul>
+        <p>If you believe the URL is valid and should be supported, we’d love to hear from you! You can <a href="https://github.com/rgueldenpfennig/Squidlr/issues">report the issue</a> or contact us directly via <a href="mailto:contact@squidlr.com">email</a>. Please include the URL you tried to use, and we’ll investigate it as soon as possible. Your feedback helps us improve Squidlr and expand its functionality.</p>
     </div>
 
     <h3 class="text-body-emphasis mb-0">Can I download private videos using Squidlr?</h3>

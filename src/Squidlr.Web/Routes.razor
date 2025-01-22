@@ -54,10 +54,13 @@
         AppState.Referer = httpContext.Request.Headers[HeaderNames.Referer].ToString() ?? "";
         AppState.UserAgent = httpContext.Request.Headers[HeaderNames.UserAgent].ToString() ?? "";
 
+        if (httpContext.Request.Headers["Sec-GPC"] == "1" || httpContext.Request.Headers["DNT"] == "1")
+        {
+            AppState.DoNotTrack = true;
+        }
+
         httpContext.Items[nameof(AppState)] = AppState;
     }
-
-
 
     private Task OnBeforeInternalNavigationAsync(LocationChangingContext context)
     {

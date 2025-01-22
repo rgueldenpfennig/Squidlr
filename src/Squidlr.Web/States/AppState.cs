@@ -9,4 +9,6 @@ public sealed class AppState
     public string? Referer { get; set; }
 
     public string? UserAgent { get; set; }
+
+    public bool DoNotTrack { get; set; }
 }
