@@ -5,7 +5,7 @@ namespace Squidlr.Instagram.Utilities;
 
 public static partial class UrlUtilities
 {
-    [GeneratedRegex(@"^https?:\/\/(www\.)?instagram\.com\/(\S+)?(p|tv|reel)\/(?<id>[a-zA-Z0-9_-]+).*?", RegexOptions.IgnoreCase)]
+    [GeneratedRegex(@"^https?:\/\/[www\.]*instagram\.com\/[\S]*[p|tv|reel|stories]{1}[\/\S]?\/(?<id>[a-zA-Z0-9_-]+).*?", RegexOptions.IgnoreCase)]
     private static partial Regex InstagramUrlRegex();
 
     public static bool TryGetInstagramIdentifier(string url, [NotNullWhen(true)] out InstagramIdentifier? identifier)
