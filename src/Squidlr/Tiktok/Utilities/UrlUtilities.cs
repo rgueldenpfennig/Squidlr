@@ -8,7 +8,7 @@ public static partial class UrlUtilities
     [GeneratedRegex(@"https?:\/\/(www\.)?tiktok\.com\/(\S+)\/video\/(?<id>\d+).*?", RegexOptions.IgnoreCase)]
     private static partial Regex TiktokUrlRegex();
 
-    [GeneratedRegex(@"https?:\/\/vm.tiktok\.com\/(?<id>[\s\S][^\/\?]+).*?", RegexOptions.IgnoreCase)]
+    [GeneratedRegex(@"https?:\/\/\w+.tiktok\.com\/(\w{1}\/)?(?<id>[^@][\S][^\/\?]+){1}.*?", RegexOptions.IgnoreCase)]
     private static partial Regex TiktokShareUrlRegex();
 
     public static bool TryGetTiktokIdentifier(string url, [NotNullWhen(true)] out TiktokIdentifier? identifier)
