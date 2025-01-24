@@ -13,6 +13,8 @@ public class UrlUtilitiesTests
     [InlineData("https://www.facebook.com/watch/?v=3676516585958356", true)]
     [InlineData("https://www.facebook.com/groups/1645456212344334/posts/3737828833107051", true)]
     [InlineData("https://www.facebook.com/share/r/1Ei2xosnTb", true)]
+    [InlineData("https://www.facebook.com/share/p/11anpjz5sp/?mibexaid=otDkn", true)]
+    [InlineData("https://fb.watch/xjpusZiuDA?sasas", true)]
     [InlineData("https://example.com/foo/1152128691131318273/", false)]
     [InlineData("https://google.com", false)]
     [InlineData("invalid-url", false)]
