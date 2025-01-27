@@ -117,7 +117,7 @@ public sealed class TweetContentParser
         // the requested Tweet contains a quoted Tweet
         if (_contentElement.Value.TryGetProperty("quoted_status_result", out var quotedResult))
         {
-            if (quotedResult.GetProperty("result").GetProperty("legacy").TryGetProperty("extended_entities", out _extendedEntitiesElement))
+            if (quotedResult.GetPropertyOrNull("result")?.GetPropertyOrNull("legacy")?.TryGetProperty("extended_entities", out _extendedEntitiesElement) ?? false)
             {
                 await CreateFromExtendedEntitiesAsync(cancellationToken);
                 return RequestContentResult.Success;
