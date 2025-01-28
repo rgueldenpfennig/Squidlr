@@ -150,7 +150,7 @@
     {
         errorMessage = exception.StatusCode switch
         {
-            HttpStatusCode.TooManyRequests => "You created too many requests. Please try again a bit later.",
+            HttpStatusCode.TooManyRequests => "You created too many requests. Please try again later.",
             _ => "There was an unexpected error. We will try to fix that as soon as possible!"
         };
     }

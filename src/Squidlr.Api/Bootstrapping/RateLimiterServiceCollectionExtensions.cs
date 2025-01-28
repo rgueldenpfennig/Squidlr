@@ -10,12 +10,12 @@ public static class RateLimiterServiceCollectionExtensions
 {
     public static IServiceCollection AddRateLimiterInternal(this IServiceCollection services)
     {
-        services.AddRateLimiter(options =>
+        services.AddRateLimiter(static options =>
         {
-            options.OnRejected = (ctx, ct) =>
+            options.OnRejected = static (ctx, ct) =>
             {
                 var logger = ctx.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
-                logger.LogWarning("Client '{RemoteIpAddress}' has reached the rate limit", ctx.HttpContext.GetClientIpAddress() ?? "unknown");
+                logger.LogWarning("Client '{RemoteIpAddress}' has reached the rate limit due to lease '{RateLimitLease}'", ctx.HttpContext.GetClientIpAddress() ?? "unknown", ctx.Lease);
 
                 var builder = new StringBuilder();
                 foreach (var header in ctx.HttpContext.Request.Headers)
@@ -29,26 +29,26 @@ public static class RateLimiterServiceCollectionExtensions
 
             options.RejectionStatusCode = (int)HttpStatusCode.TooManyRequests;
             options.GlobalLimiter = PartitionedRateLimiter.CreateChained(
-                PartitionedRateLimiter.Create<HttpContext, string>(ctx =>
-                    RateLimitPartition.GetFixedWindowLimiter(ctx.GetClientIpAddress() ?? "unknown", partition =>
+                PartitionedRateLimiter.Create<HttpContext, string>(static ctx =>
+                    RateLimitPartition.GetFixedWindowLimiter(ctx.GetClientIpAddress() ?? "unknown", static partition =>
                         new FixedWindowRateLimiterOptions
                         {
                             AutoReplenishment = true,
-                            PermitLimit = 60,
-                            Window = TimeSpan.FromSeconds(30)
-                        })),
-                PartitionedRateLimiter.Create<HttpContext, string>(ctx =>
-                    RateLimitPartition.GetFixedWindowLimiter(ctx.GetClientIpAddress() ?? "unknown", partition =>
-                        new FixedWindowRateLimiterOptions
-                        {
-                            AutoReplenishment = true,
-                            PermitLimit = 6000,
+                            PermitLimit = 100,
                             Window = TimeSpan.FromHours(1)
+                        })),
+                PartitionedRateLimiter.Create<HttpContext, string>(static ctx =>
+                    RateLimitPartition.GetFixedWindowLimiter(ctx.GetClientIpAddress() ?? "unknown", static partition =>
+                        new FixedWindowRateLimiterOptions
+                        {
+                            AutoReplenishment = true,
+                            PermitLimit = 200,
+                            Window = TimeSpan.FromHours(24)
                         })));
 
-            options.AddPolicy("Content", ctx =>
+            options.AddPolicy("Content", static ctx =>
             {
-                return RateLimitPartition.GetFixedWindowLimiter(ctx.GetClientIpAddress() ?? "unknown", partition =>
+                return RateLimitPartition.GetFixedWindowLimiter(ctx.GetClientIpAddress() ?? "unknown", static partition =>
                     new FixedWindowRateLimiterOptions
                     {
                         AutoReplenishment = true,
@@ -57,9 +57,9 @@ public static class RateLimiterServiceCollectionExtensions
                     });
             });
 
-            options.AddPolicy("Video", ctx =>
+            options.AddPolicy("Video", static ctx =>
             {
-                return RateLimitPartition.GetFixedWindowLimiter(ctx.GetClientIpAddress() ?? "unknown", partition =>
+                return RateLimitPartition.GetFixedWindowLimiter(ctx.GetClientIpAddress() ?? "unknown", static partition =>
                     new FixedWindowRateLimiterOptions
                     {
                         AutoReplenishment = true,
