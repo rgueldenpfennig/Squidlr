@@ -52,7 +52,7 @@ public static class FacebookServiceCollectionExtensions
                 PooledConnectionLifetime = TimeSpan.FromMinutes(10),
                 UseProxy = false,
                 UseCookies = true,
-                MaxAutomaticRedirections = 2
+                MaxAutomaticRedirections = 3
             };
 
             if (withProxy && options.ProxyOptions?.UseProxy == true)
