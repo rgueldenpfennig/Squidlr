@@ -57,7 +57,7 @@ public sealed partial class FacebookContentProvider : IContentProvider
     public async ValueTask<Result<Content, RequestContentResult>> GetContentAsync(string url, CancellationToken cancellationToken)
     {
         var identifier = UrlUtilities.GetFacebookIdentifier(url);
-        using var response = await _client.GetFacebookPostAsync(identifier, cancellationToken);
+        using var response = await GetHttpResponseAsync(identifier, cancellationToken);
 
         if (!response.IsSuccessStatusCode)
         {
@@ -140,6 +140,19 @@ public sealed partial class FacebookContentProvider : IContentProvider
         content.AddVideo(video);
 
         return content;
+    }
+
+    private async Task<HttpResponseMessage> GetHttpResponseAsync(FacebookIdentifier identifier, CancellationToken cancellationToken)
+    {
+        var response = await _client.GetFacebookPostAsync(identifier, cancellationToken);
+        if (response.StatusCode == HttpStatusCode.Found &&
+            response.Headers.Location?.AbsolutePath.StartsWith("/login", StringComparison.OrdinalIgnoreCase) == true)
+        {
+            _logger.LogWarning("Trying to request Facebook content again with active proxy.");
+            return await _client.GetFacebookPostAsync(identifier, useProxy: true, cancellationToken);
+        }
+
+        return response;
     }
 
     private async ValueTask<Video?> FindVideoAsync(string htmlContent, FacebookIdentifier identifier, CancellationToken cancellationToken)

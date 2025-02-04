@@ -9,7 +9,24 @@ public static class FacebookServiceCollectionExtensions
 {
     public static IServiceCollection AddFacebook(this IServiceCollection services)
     {
-        services.AddHttpClient(FacebookWebClient.HttpClientName, (sp, client) =>
+        AddHttpClients(services);
+
+        services.AddSingleton<FacebookWebClient>();
+        services.AddSingleton<IUrlResolver, FacebookUrlResolver>();
+        services.AddSingleton<IContentProvider, FacebookContentProvider>();
+
+        return services;
+    }
+
+    private static void AddHttpClients(IServiceCollection services)
+    {
+        AddHttpClient(services, FacebookWebClient.HttpClientName, withProxy: false);
+        AddHttpClient(services, FacebookWebClient.HttpClientWithProxyName, withProxy: true);
+    }
+
+    private static void AddHttpClient(IServiceCollection services, string httpClientName, bool withProxy)
+    {
+        services.AddHttpClient(httpClientName, (sp, client) =>
         {
             var options = sp.GetRequiredService<IOptions<SquidlrOptions>>().Value;
 
@@ -27,24 +44,25 @@ public static class FacebookServiceCollectionExtensions
             client.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:133.0) Gecko/20100101 Firefox/133.0");
 
             client.BaseAddress = options.FacebookHostUri;
-        })
-            .ConfigurePrimaryHttpMessageHandler((sp) =>
+        }).ConfigurePrimaryHttpMessageHandler((sp) =>
+        {
+            var options = sp.GetRequiredService<IOptions<SquidlrOptions>>().Value;
+            var handler = new SocketsHttpHandler
             {
-                var handler = new SocketsHttpHandler
-                {
-                    PooledConnectionLifetime = TimeSpan.FromMinutes(10),
-                    UseProxy = false,
-                    UseCookies = true,
-                    MaxAutomaticRedirections = 2
-                };
+                PooledConnectionLifetime = TimeSpan.FromMinutes(10),
+                UseProxy = false,
+                UseCookies = true,
+                MaxAutomaticRedirections = 2
+            };
 
-                return handler;
-            });
+            if (withProxy && options.ProxyOptions?.UseProxy == true)
+            {
+                handler.UseProxy = true;
+                handler.Proxy = new WebProxy(options.ProxyOptions.ProxyAddress);
+                handler.DefaultProxyCredentials = new NetworkCredential(options.ProxyOptions.UserName, options.ProxyOptions.Password);
+            }
 
-        services.AddSingleton<FacebookWebClient>();
-        services.AddSingleton<IUrlResolver, FacebookUrlResolver>();
-        services.AddSingleton<IContentProvider, FacebookContentProvider>();
-
-        return services;
+            return handler;
+        });
     }
 }

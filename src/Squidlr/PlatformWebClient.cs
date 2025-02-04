@@ -16,9 +16,16 @@ public abstract class PlatformWebClient
         _clientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
     }
 
-    protected HttpClient CreateClient()
+    protected HttpClient CreateClient() => CreateClient(_httpClientName);
+
+    protected HttpClient CreateClient(string httpClientName)
     {
-        return _clientFactory.CreateClient(_httpClientName);
+        if (string.IsNullOrEmpty(httpClientName))
+        {
+            throw new ArgumentException($"'{nameof(httpClientName)}' cannot be null or empty.", nameof(httpClientName));
+        }
+
+        return _clientFactory.CreateClient(httpClientName);
     }
 
     public async ValueTask<(long?, string?)> GetVideoContentLengthAndMediaTypeAsync(Uri videoFileUri, CancellationToken cancellationToken)
