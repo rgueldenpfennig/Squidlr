@@ -40,7 +40,7 @@
                         @if (Content.Username is not null)
                         {
                             <footer class="blockquote-footer fw-bold">
-                                @string.Format("@{0}", Content.Username)
+                                @((MarkupString)Content.Username)
                             </footer>
                         }
                     </blockquote>

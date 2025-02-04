@@ -13,10 +13,13 @@ public sealed class FacebookWebClient : PlatformWebClient
     public Task<HttpResponseMessage> GetFacebookPostAsync(FacebookIdentifier identifier, CancellationToken cancellationToken) =>
         GetFacebookPostAsync(identifier, false, cancellationToken);
 
-    public Task<HttpResponseMessage> GetFacebookPostAsync(FacebookIdentifier identifier, bool useProxy, CancellationToken cancellationToken)
+    public Task<HttpResponseMessage> GetFacebookPostAsync(FacebookIdentifier identifier, bool useProxy, CancellationToken cancellationToken) =>
+        GetFacebookPostAsync(new Uri(identifier.Url, UriKind.Absolute), useProxy, cancellationToken);
+
+    public Task<HttpResponseMessage> GetFacebookPostAsync(Uri uri, bool useProxy, CancellationToken cancellationToken)
     {
         var clientName = useProxy ? HttpClientWithProxyName : HttpClientName;
         var client = CreateClient(clientName);
-        return client.GetAsync(identifier.Url, cancellationToken);
+        return client.GetAsync(uri, cancellationToken);
     }
 }

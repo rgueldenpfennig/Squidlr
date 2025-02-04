@@ -145,11 +145,24 @@ public sealed partial class FacebookContentProvider : IContentProvider
     private async Task<HttpResponseMessage> GetHttpResponseAsync(FacebookIdentifier identifier, CancellationToken cancellationToken)
     {
         var response = await _client.GetFacebookPostAsync(identifier, cancellationToken);
-        if (response.StatusCode == HttpStatusCode.Found &&
-            response.Headers.Location?.AbsolutePath.StartsWith("/login", StringComparison.OrdinalIgnoreCase) == true)
+
+        var redirects = 0;
+        while ((response.StatusCode == HttpStatusCode.Found || response.StatusCode == HttpStatusCode.Moved || response.StatusCode == HttpStatusCode.MovedPermanently) &&
+               response.Headers.Location != null)
         {
-            _logger.LogWarning("Trying to request Facebook content again with active proxy.");
-            return await _client.GetFacebookPostAsync(identifier, useProxy: true, cancellationToken);
+            if (++redirects > 5)
+            {
+                _logger.LogWarning("Too many redirects when trying to request Facebook post.");
+                return response;
+            }
+
+            if (response.Headers.Location!.AbsolutePath.StartsWith("/login", StringComparison.OrdinalIgnoreCase))
+            {
+                _logger.LogWarning("Trying to request Facebook content again with active proxy.");
+                return await _client.GetFacebookPostAsync(response.RequestMessage!.RequestUri!, useProxy: true, cancellationToken);
+            }
+
+            response = await _client.GetFacebookPostAsync(response.Headers.Location!, useProxy: false, cancellationToken);
         }
 
         return response;
