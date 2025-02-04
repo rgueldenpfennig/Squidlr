@@ -43,9 +43,8 @@ public static class SquidlrWebServiceCollectionExtensions
         .AddPolicyHandler((services, request) => HttpPolicyExtensions.HandleTransientHttpError()
             .WaitAndRetryAsync(
             [
-                    TimeSpan.FromMilliseconds(100),
                     TimeSpan.FromMilliseconds(200),
-                    TimeSpan.FromMilliseconds(300)
+                    TimeSpan.FromMilliseconds(500)
             ],
             onRetry: (outcome, timespan, retryAttempt, context) =>
             {

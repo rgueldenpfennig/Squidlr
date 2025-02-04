@@ -52,8 +52,8 @@ public static class RateLimiterServiceCollectionExtensions
                     new FixedWindowRateLimiterOptions
                     {
                         AutoReplenishment = true,
-                        PermitLimit = 3,
-                        Window = TimeSpan.FromSeconds(60)
+                        PermitLimit = 6,
+                        Window = TimeSpan.FromSeconds(120)
                     });
             });
 
