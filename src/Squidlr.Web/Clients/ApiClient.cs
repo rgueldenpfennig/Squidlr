@@ -1,4 +1,5 @@
-﻿using DotNext;
+﻿using System.Web;
+using DotNext;
 using Microsoft.AspNetCore.Mvc;
 using Squidlr.Facebook;
 using Squidlr.Instagram;
@@ -40,7 +41,7 @@ public sealed class ApiClient
             var context = _httpContextAccessor.HttpContext;
             var ipAddress = context?.Connection.RemoteIpAddress?.ToString();
 
-            var request = new HttpRequestMessage(HttpMethod.Get, $"/content?url={url}");
+            var request = new HttpRequestMessage(HttpMethod.Get, $"/content?url={HttpUtility.UrlEncode(url)}");
             if (ipAddress != null)
             {
                 request.Headers.Add("X-Forwarded-For", ipAddress);
