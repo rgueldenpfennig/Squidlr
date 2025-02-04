@@ -132,7 +132,7 @@ public partial class Program
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.MapHealthChecks("/health").RequireHost("*:5001").AllowAnonymous();
+            app.MapHealthChecks("/health").RequireHost("*:5001").AllowAnonymous().DisableRateLimiting();
             app.MapContentEndpoints(app.Environment);
             app.MapVideoEndpoints(app.Environment);
 
