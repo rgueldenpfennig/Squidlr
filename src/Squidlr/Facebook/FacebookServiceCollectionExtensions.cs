@@ -34,7 +34,8 @@ public static class FacebookServiceCollectionExtensions
                 {
                     PooledConnectionLifetime = TimeSpan.FromMinutes(10),
                     UseProxy = false,
-                    UseCookies = true
+                    UseCookies = true,
+                    MaxAutomaticRedirections = 2
                 };
 
                 return handler;

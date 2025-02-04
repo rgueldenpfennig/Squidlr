@@ -65,6 +65,12 @@ public sealed partial class FacebookContentProvider : IContentProvider
                 "Received {FacebookHttpStatusCode} HTTP status code when trying to request Facebook post.",
                 response.StatusCode);
 
+            if (response.StatusCode == HttpStatusCode.Found &&
+                response.Headers.Location?.AbsolutePath.StartsWith("/login", StringComparison.OrdinalIgnoreCase) == true)
+            {
+                return new(RequestContentResult.LoginRequired);
+            }
+
             return response.StatusCode == HttpStatusCode.NotFound ? new(RequestContentResult.NotFound) : new(RequestContentResult.GatewayError);
         }
 
@@ -143,7 +149,7 @@ public sealed partial class FacebookContentProvider : IContentProvider
         {
             using var document = JsonDocument.Parse(jsonNodeMatch.Groups["node"].Value);
             var root = document.RootElement;
-            
+
             return await FindVideoAsync(root, cancellationToken);
         }
 

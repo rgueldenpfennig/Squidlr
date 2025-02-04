@@ -38,6 +38,11 @@ public enum RequestContentResult
     Protected,
 
     /// <summary>
+    /// The platform requires an login to access the content.
+    /// </summary>
+    LoginRequired,
+
+    /// <summary>
     /// Age-restricted adult content. This content might not be appropriate for people under 18 years old.
     /// </summary>
     AdultContent,
