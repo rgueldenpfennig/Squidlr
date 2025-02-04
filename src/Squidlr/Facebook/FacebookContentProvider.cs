@@ -59,17 +59,16 @@ public sealed partial class FacebookContentProvider : IContentProvider
         var identifier = UrlUtilities.GetFacebookIdentifier(url);
         using var response = await GetHttpResponseAsync(identifier, cancellationToken);
 
+        if (response.RequestMessage?.RequestUri?.AbsolutePath.StartsWith("/login", StringComparison.OrdinalIgnoreCase) == true)
+        {
+            return new(RequestContentResult.LoginRequired);
+        }
+
         if (!response.IsSuccessStatusCode)
         {
             _logger.LogWarning(
                 "Received {FacebookHttpStatusCode} HTTP status code when trying to request Facebook post.",
                 response.StatusCode);
-
-            if (response.StatusCode == HttpStatusCode.Found &&
-                response.Headers.Location?.AbsolutePath.StartsWith("/login", StringComparison.OrdinalIgnoreCase) == true)
-            {
-                return new(RequestContentResult.LoginRequired);
-            }
 
             return response.StatusCode == HttpStatusCode.NotFound ? new(RequestContentResult.NotFound) : new(RequestContentResult.GatewayError);
         }
