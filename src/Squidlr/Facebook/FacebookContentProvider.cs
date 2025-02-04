@@ -144,6 +144,7 @@ public sealed partial class FacebookContentProvider : IContentProvider
 
     private async Task<HttpResponseMessage> GetHttpResponseAsync(FacebookIdentifier identifier, CancellationToken cancellationToken)
     {
+        var useProxy = false;
         var response = await _client.GetFacebookPostAsync(identifier, cancellationToken);
 
         var redirects = 0;
@@ -158,11 +159,20 @@ public sealed partial class FacebookContentProvider : IContentProvider
 
             if (response.Headers.Location!.AbsolutePath.StartsWith("/login", StringComparison.OrdinalIgnoreCase))
             {
+                if (useProxy)
+                {
+                    // proxy can't bypass login
+                    return response;
+                }
+
                 _logger.LogWarning("Trying to request Facebook content again with active proxy.");
-                return await _client.GetFacebookPostAsync(response.RequestMessage!.RequestUri!, useProxy: true, cancellationToken);
+                useProxy = true;
+
+                response = await _client.GetFacebookPostAsync(response.RequestMessage!.RequestUri!, useProxy, cancellationToken);
+                continue;
             }
 
-            response = await _client.GetFacebookPostAsync(response.Headers.Location!, useProxy: false, cancellationToken);
+            response = await _client.GetFacebookPostAsync(response.Headers.Location!, useProxy, cancellationToken);
         }
 
         return response;
