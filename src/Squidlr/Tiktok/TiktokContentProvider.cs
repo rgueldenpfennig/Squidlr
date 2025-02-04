@@ -87,6 +87,12 @@ public sealed partial class TiktokContentProvider : IContentProvider
             return new(RequestContentResult.AdultContent);
         }
 
+        if (itemStruct.GetPropertyOrNull("imagePost") != null)
+        {
+            _logger.LogWarning("Tiktok image posts are not supported yet.");
+            return new(RequestContentResult.NoVideo);
+        }
+
         var content = new TiktokContent(identifier.Url);
         content.CreatedAtUtc = DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(itemStruct.GetProperty("createTime").GetString(), CultureInfo.InvariantCulture));
         content.FullText = itemStruct.GetProperty("desc").GetString();
@@ -97,7 +103,7 @@ public sealed partial class TiktokContentProvider : IContentProvider
         content.ReplyCount = stats.GetProperty("commentCount").GetInt32();
         content.PlayCount = stats.GetProperty("playCount").GetInt32();
         content.ShareCount = stats.GetProperty("shareCount").GetInt32();
-        content.CollectCount = Convert.ToInt32(stats.GetProperty("collectCount").GetString());
+        content.CollectCount = Convert.ToInt32(stats.GetProperty("collectCount").GetString(), CultureInfo.InvariantCulture);
 
         var video = new Video();
         var videoElement = itemStruct.GetProperty("video");
