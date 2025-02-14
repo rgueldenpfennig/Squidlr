@@ -21,7 +21,6 @@ public static class SquidlrWebServiceCollectionExtensions
     public static IServiceCollection AddSquidlrWeb(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<AppState>();
-        services.AddScoped<RequestVideoState>();
         services.AddScoped<VideoSearchQueryState>();
         services.AddOptions<ApplicationOptions>()
             .Bind(configuration.GetSection("Application"))

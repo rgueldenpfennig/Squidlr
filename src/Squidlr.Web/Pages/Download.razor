@@ -17,7 +17,6 @@
 @using Squidlr;
 
 @inject NavigationManager NavigationManager
-@inject RequestVideoState RequestVideoState
 @inject ApiClient ApiClient
 @inject UrlResolver UrlResolver
 
@@ -93,7 +92,6 @@
         isBusy = true;
         content = null;
         errorMessage = null;
-        RequestVideoState.Url = Url;
 
         var contentIdentifier = UrlResolver.ResolveUrl(Url);
         if (Url == null || contentIdentifier == ContentIdentifier.Unknown)

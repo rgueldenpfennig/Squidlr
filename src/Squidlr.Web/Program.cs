@@ -13,6 +13,7 @@ using Serilog.Events;
 using Squidlr.Hosting.Compression;
 using Squidlr.Hosting.Telemetry;
 using Squidlr.Web.Bootstrapping;
+using Squidlr.Web.Security;
 using Squidlr.Web.Telemetry;
 
 namespace Squidlr.Web;
@@ -186,6 +187,7 @@ public partial class Program
                         .AddCustomHeader("Strict-Transport-Security", $"max-age={TimeSpan.FromDays(2 * 365).TotalSeconds}; includeSubDomains; preload")
             );
 
+            app.UseDisallowedUserAgents(applicationOptions.DisallowedUserAgents);
             app.UseStaticFiles();
             app.UseRouting();
             app.UseStatusCodePagesWithRedirects("/404");

@@ -19,6 +19,8 @@ public sealed class ApplicationOptions : IOptions<ApplicationOptions>, IValidata
     [Required]
     public Uri? ApiHostUri { get; set; }
 
+    public string[] DisallowedUserAgents { get; set; } = [];
+
     private Uri? _apiHostUriHttps;
 
     public Uri? ApiHostUriHttps
