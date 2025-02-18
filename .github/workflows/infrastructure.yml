@@ -9,6 +9,9 @@ on:
       proxyAddress:
         required: false
         type: string
+      disallowedUserAgents:
+        required: false
+        type: string
       existing:
         required: true
         type: boolean
@@ -61,4 +64,4 @@ jobs:
           template: ${{ github.workspace }}/infrastructure/main.bicep
           failOnStdErr: false
           scope: resourcegroup
-          parameters: 'apiAppExists=${{ inputs.existing }} webAppExists=${{ inputs.existing }} environmentName=${{ inputs.environment }} apiKey=${{ secrets.apiKey }} proxyAddress=${{ inputs.proxyAddress }} proxyUserName=${{ secrets.proxyUserName }} proxyPassword=${{ secrets.proxyPassword }}'
+          parameters: 'apiAppExists=${{ inputs.existing }} webAppExists=${{ inputs.existing }} environmentName=${{ inputs.environment }} apiKey=${{ secrets.apiKey }} proxyAddress=${{ inputs.proxyAddress }} proxyUserName=${{ secrets.proxyUserName }} proxyPassword=${{ secrets.proxyPassword }} disallowedUserAgents=${{ inputs.disallowedUserAgents }}'

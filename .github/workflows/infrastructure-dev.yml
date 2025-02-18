@@ -16,6 +16,7 @@ jobs:
     with:
       environment: staging
       proxyAddress: ${{ vars.PROXY_ADDRESS }}
+      disallowedUserAgents: ${{ vars.DISALLOWED_USER_AGENTS }}
       existing: true
     secrets:
       azureCredentials: ${{ secrets.AZURE_CREDENTIALS }}

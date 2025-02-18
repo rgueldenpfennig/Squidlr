@@ -30,6 +30,9 @@ param proxyUserName string
 @secure()
 param proxyPassword string
 
+@description('A JSON array of disallowed user agents')
+param disallowedUserAgents string
+
 @description('Specifies if the API app exists')
 param apiAppExists bool = false
 
@@ -119,6 +122,14 @@ var web_app_config = [
   }
 ]
 
+// transform disallowed user agents to env variables
+var userAgents = json(disallowedUserAgents)
+var disallowedUserAgentsEnvs = [for i in range(0, length(userAgents)):{
+    name: 'APPLICATION__DISALLOWEDUSERAGENTS__${i}'
+    value: userAgents[i]
+  }
+]
+
 // create the backend API container app
 module api 'core/container-app-upsert.bicep' = {
   name: 'ca-${applicationName}-${environmentName}-api'
@@ -150,7 +161,7 @@ module web 'core/container-app-upsert.bicep' = {
     registryUsername: acr.listCredentials().username
     containerAppEnvironmentId: env.outputs.id
     registry: acr.properties.loginServer
-    envVars: union(shared_config, web_app_config)
+    envVars: union(shared_config, web_app_config, disallowedUserAgentsEnvs)
     externalIngress: true
     allowInsecure: false
     port: 80
