@@ -8,6 +8,7 @@ public class UrlUtilitiesTests
     [InlineData("https://www.facebook.com/reel/356450730121408/?foo=bar#abc", true)]
     [InlineData("https://www.facebook.com/reel/356450730121408", true)]
     [InlineData("https://m.facebook.com/reel/356450730121408", true)]
+    [InlineData("https://web.facebook.com/reel/356450730121408", true)]
     [InlineData("https://www.facebook.com/radiokicksfm/videos/3676516585958356/", true)]
     [InlineData("https://www.facebook.com/video.php?v=3676516585958356", true)]
     [InlineData("https://www.facebook.com/watch/?v=3676516585958356", true)]
