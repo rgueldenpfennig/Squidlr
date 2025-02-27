@@ -5,7 +5,7 @@ namespace Squidlr.Facebook.Utilities;
 
 public static partial class UrlUtilities
 {
-    [GeneratedRegex(@"^https?:\/\/[www\.|m\.|web\.]+facebook\.com\/((\S+\/videos|reel\/|groups\/\d+\/posts\/)|((video.php|watch\/?){1}\?v=)){1}(\S*\/)?(?<id>\d+).*?", RegexOptions.IgnoreCase)]
+    [GeneratedRegex(@"^https?:\/\/[www\.|m\.|web\.]+facebook\.com\/((\S+\/videos|reel\/|groups\/\d+\/(posts|permalink){1}\/)|((video.php|watch\/?){1}\?v=)){1}(\S*\/)?(?<id>\d+).*?", RegexOptions.IgnoreCase)]
     private static partial Regex FacebookUrlRegex();
 
     [GeneratedRegex(@"^https?:\/\/[www\.|m\.]+facebook\.com\/share\/\w{1}\/(?<id>[\s\S][^\?\/]+)", RegexOptions.IgnoreCase)]
