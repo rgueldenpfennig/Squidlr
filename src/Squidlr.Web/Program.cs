@@ -148,44 +148,7 @@ public partial class Program
             }
 
             app.UseForwardedHeaders();
-            app.UseSecurityHeaders(policies =>
-                policies.AddDefaultSecurityHeaders()
-                        .AddContentSecurityPolicy(builder =>
-                         {
-                             builder.AddDefaultSrc().None();
-
-                             if (app.Environment.IsDevelopment())
-                             {
-                                 builder.AddConnectSrc()
-                                        .Self()
-                                        .From("http://localhost:*")
-                                        .From("https://localhost:*")
-                                        .From("ws://localhost:*")
-                                        .From("wss://localhost:*");
-                             }
-                             else
-                             {
-                                 builder.AddConnectSrc().Self();
-                             }
-
-                             builder.AddBaseUri().Self();
-                             builder.AddFontSrc().Self();
-                             builder.AddFormAction().Self();
-                             builder.AddFrameAncestors().None();
-                             builder.AddImgSrc().Self().From("https://*.tiktokcdn.com")
-                                                       .From("https://*.tiktokcdn-us.com")
-                                                       .From("https://*.tiktokcdn-eu.com")
-                                                       .From("https://media.licdn.com")
-                                                       .From("https://*.fbcdn.net")
-                                                       .From("https://pbs.twimg.com");
-                             builder.AddObjectSrc().None();
-                             builder.AddScriptSrc().Self();
-                             builder.AddStyleSrc().Self();
-                             builder.AddStyleSrcAttr().Self().UnsafeInline();
-                             builder.AddStyleSrcElem().Self();
-                         })
-                        .AddCustomHeader("Strict-Transport-Security", $"max-age={TimeSpan.FromDays(2 * 365).TotalSeconds}; includeSubDomains; preload")
-            );
+            app.UseSecurityHeaders();
 
             app.UseDisallowedUserAgents(applicationOptions.DisallowedUserAgents);
             app.UseStaticFiles();

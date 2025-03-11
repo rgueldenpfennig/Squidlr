@@ -50,6 +50,15 @@
 
     <script src="_framework/blazor.server.js" autostart="false"></script>
     <script src=@WithFileVersion("boot.js")></script>
+    <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+    <script>
+        kofiWidgetOverlay.draw('robingueldenpfennig', {
+          'type': 'floating-chat',
+          'floating-chat.donateButton.text': 'Donate',
+          'floating-chat.donateButton.background-color': '#4C25D2',
+          'floating-chat.donateButton.text-color': '#fff'
+        });
+    </script>
 </body>
 
 </html>
