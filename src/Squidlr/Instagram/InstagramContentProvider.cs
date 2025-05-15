@@ -46,7 +46,7 @@ public sealed partial class InstagramContentProvider : IContentProvider
         await response.Content.CopyToAsync(streamCopy, cancellationToken);
         streamCopy.Position = 0;
 
-        using var document = JsonDocument.Parse(streamCopy);
+        using var document = await JsonDocument.ParseAsync(streamCopy, cancellationToken: cancellationToken);
         var root = document.RootElement;
 
         var shortcodeMedia = root.GetPropertyOrNull("data")?
