@@ -3,30 +3,33 @@
 <PageTitle>@(SeoProperties.CreatePageTitle())</PageTitle>
 
 <main>
-    <header class="py-2 border-bottom">
+    <header class="border-bottom py-2">
         <nav class="d-flex justify-content-center container flex-wrap">
             <a href="/" class="d-flex align-items-center mb-lg-0 me-lg-auto link-body-emphasis navbar-brand">
-                <img src="images/logos/squidlr.svg" class="me-3 img-fluid align-top" style="max-height: 52px" alt="Squidlr Logo">
+                <img src="images/logos/squidlr.svg" class="img-fluid me-3 align-top" style="max-height: 52px" alt="Squidlr Logo">
                 <span class="fs-1 fw-semibold">Squidlr</span>
             </a>
-            <ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0">
+            <ul class="nav col-12 col-lg-auto justify-content-center my-md-0 align-items-center my-2">
                 <li class="nav-item">
-                    <a href="#about" class="nav-link px-2 link-body-emphasis text-decoration-none fw-semibold text-center">
-                        <span class="oi oi-script d-block mb-1 fs-5 mx-auto" data-glyph="script" aria-hidden="true"></span>
+                    <a href="#about" class="nav-link link-body-emphasis text-decoration-none fw-semibold px-2 text-center">
+                        <span class="oi oi-script d-block fs-5 mx-auto mb-1" data-glyph="script" aria-hidden="true"></span>
                         About
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#faq" class="nav-link px-2 link-body-emphasis text-decoration-none fw-semibold text-center">
-                        <span class="oi oi-question-mark d-block mb-1 fs-5 mx-auto" data-glyph="question-mark" aria-hidden="true"></span>
+                    <a href="#faq" class="nav-link link-body-emphasis text-decoration-none fw-semibold px-2 text-center">
+                        <span class="oi oi-question-mark d-block fs-5 mx-auto mb-1" data-glyph="question-mark" aria-hidden="true"></span>
                         FAQ
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/updates" class="nav-link px-2 link-body-emphasis text-decoration-none fw-semibold text-center">
-                        <span class="oi oi-bullhorn d-block mb-1 fs-5 mx-auto" data-glyph="bullhorn" aria-hidden="true"></span>
+                    <a href="/updates" class="nav-link link-body-emphasis text-decoration-none fw-semibold px-2 text-center">
+                        <span class="oi oi-bullhorn d-block fs-5 mx-auto mb-1" data-glyph="bullhorn" aria-hidden="true"></span>
                         Updates
                     </a>
+                </li>
+                <li class="nav-item ms-auto">
+                    <ThemeToggle />
                 </li>
             </ul>
         </nav>
@@ -36,12 +39,12 @@
         @Body
     </div>
 
-    <footer class="py-2 bg-light mt-auto">
-        <ul class="nav justify-content-center pb-1 mb-2">
-            <li class="nav-item"><a href="/privacy-policy" class="nav-link px-2 text-muted">Privacy Policy</a></li>
-            <li class="nav-item"><a href="/terms-of-use" class="nav-link px-2 text-muted">Terms Of Use</a></li>
-            <li class="nav-item"><a href="/legal-notice" class="nav-link px-2 text-muted">Legal Notice</a></li>
-            <li class="nav-item"><a href="https://github.com/rgueldenpfennig/Squidlr" class="nav-link px-2 text-muted">Source Code</a></li>
+    <footer class="bg-light mt-auto py-2">
+        <ul class="nav justify-content-center mb-2 pb-1">
+            <li class="nav-item"><a href="/privacy-policy" class="nav-link text-muted px-2">Privacy Policy</a></li>
+            <li class="nav-item"><a href="/terms-of-use" class="nav-link text-muted px-2">Terms Of Use</a></li>
+            <li class="nav-item"><a href="/legal-notice" class="nav-link text-muted px-2">Legal Notice</a></li>
+            <li class="nav-item"><a href="https://github.com/rgueldenpfennig/Squidlr" class="nav-link text-muted px-2">Source Code</a></li>
         </ul>
         <p class="text-muted text-center">Copyright &copy; Squidlr @DateTime.UtcNow.Year. All rights reserved.</p>
     </footer>
