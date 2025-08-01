@@ -1,11 +1,8 @@
 ﻿@implements IAsyncDisposable
 
-<div class="theme-toggle">
-    <div class="form-check form-switch">
-        <input class="form-check-input" type="checkbox" role="switch" id="themeSwitch" checked="@_isDarkMode" @onchange="ToggleTheme">
-        <label class="form-check-label" for="themeSwitch">
-            <span class="d-none d-sm-inline">@(_isDarkMode ? "Dark" : "Light")</span>
-            <span class="oi @(_isDarkMode ? "oi-moon" : "oi-sun")" aria-hidden="true"></span>
-        </label>
-    </div>
+<div id="themeSwitch" class="d-block" @onclick="ToggleTheme">
+    <label role="button" for="themeSwitch">
+        <span class="oi @(_isDarkMode ? "oi-moon" : "oi-sun") mx-1" aria-hidden="true"></span>
+        <span class="d-none d-sm-inline">@(_isDarkMode ? "Dark" : "Light")</span>
+    </label>
 </div>
