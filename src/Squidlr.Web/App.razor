@@ -30,6 +30,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
     <link href=@WithFileVersion("css/custom-bootstrap.css") rel="stylesheet" />
     <link href=@WithFileVersion("css/site.css") rel="stylesheet" />
+    <link href=@WithFileVersion("css/theme.css") rel="stylesheet" />
     <link href=@WithFileVersion("Squidlr.Web.styles.css") rel="stylesheet" />
     <HeadOutlet @rendermode="InteractiveServer" />
 </head>
@@ -50,10 +51,10 @@
 
     <script src="_framework/blazor.server.js" autostart="false"></script>
     <script src=@WithFileVersion("boot.js")></script>
+    <script type="module" src=@WithFileVersion("js/theme.js")></script>
 </body>
 
 </html>
-
 @inject IFileVersionProvider _fileVersionProvider
 
 @code {

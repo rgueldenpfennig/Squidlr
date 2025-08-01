@@ -1,0 +1,18 @@
+﻿/* Dark theme overrides */
+[data-bs-theme=dark] .bg-light {
+    background-color: var(--bs-dark) !important;
+}
+
+[data-bs-theme=dark] .text-muted {
+    color: var(--bs-secondary-color) !important;
+}
+
+/* Fix footer background in dark mode */
+[data-bs-theme=dark] footer.bg-light {
+    background-color: var(--bs-tertiary-bg) !important;
+}
+
+/* Ensure links are properly themed */
+[data-bs-theme=dark] .link-body-emphasis {
+    color: var(--bs-emphasis-color) !important;
+}
