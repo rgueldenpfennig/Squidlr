@@ -18,9 +18,7 @@ public sealed class ProxyOptions : IValidatableObject
         {
             yield return new ValidationResult(
                 "Proxy usage is activated, so a proxy address must be provided.",
-                new string[] { nameof(ProxyAddress) });
+                [nameof(ProxyAddress)]);
         }
-
-        yield break;
     }
 }
