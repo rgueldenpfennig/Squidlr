@@ -77,6 +77,12 @@ public sealed class TweetContentParser
             return RequestContentResult.NotFound;
         }
 
+        if (_contentElement.Value.TryGetProperty("__typename", out var typeName) &&
+            typeName.GetString()?.Equals("TweetTombstone", StringComparison.OrdinalIgnoreCase) == true)
+        {
+            return RequestContentResult.Protected;
+        }
+
         if (_contentElement.Value.TryGetProperty("tweet", out var tweetElement))
         {
             _contentElement = tweetElement;
