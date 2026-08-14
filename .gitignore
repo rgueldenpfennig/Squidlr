@@ -401,3 +401,6 @@ FodyWeavers.xsd
 /src/Squidlr.Web/wwwroot/css/custom-bootstrap.css
 /src/Squidlr.Web/wwwroot/css/custom-bootstrap.css.map
 /src/Squidlr.Web/wwwroot/lib/
+
+# JetBrains IDEs
+.idea/
