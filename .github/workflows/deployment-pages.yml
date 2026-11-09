@@ -1,0 +1,45 @@
+name: deployment-pages
+
+# Deploys the static "deprecated" website (www.squidlr.com) to GitHub Pages.
+# Requires: repository Settings -> Pages -> Source = "GitHub Actions".
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/deployment-pages.yml'
+      - 'deprecated/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload static site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: deprecated
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,13 +1,14 @@
 name: infrastructure-prod
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - '.github/workflows/infrastructure.yml'
-      - '.github/workflows/infrastructure-prod.yml'
-      - 'infrastructure/**'
+  # Disabled: Azure hosting has been discontinued. The static site is deployed via deployment-pages.yml.
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - '.github/workflows/infrastructure.yml'
+  #     - '.github/workflows/infrastructure-prod.yml'
+  #     - 'infrastructure/**'
   workflow_dispatch:
 
 jobs:
