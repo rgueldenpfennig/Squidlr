@@ -1,14 +1,15 @@
 name: deployment-api
 
 on:
-  push:
-    branches:
-      - dev
-      - main
-    paths:
-      - '.github/workflows/deployment-api.yml'
-      - 'src/Squidlr/**'
-      - 'src/Squidlr.Api/**'
+  # Disabled: Azure hosting has been discontinued. The static site is deployed via deployment-pages.yml.
+  # push:
+  #   branches:
+  #     - dev
+  #     - main
+  #   paths:
+  #     - '.github/workflows/deployment-api.yml'
+  #     - 'src/Squidlr/**'
+  #     - 'src/Squidlr.Api/**'
   workflow_dispatch:
 
 env:
