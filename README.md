@@ -1,3 +1,10 @@
+> [!IMPORTANT]
+> **Squidlr has been discontinued.** Due to my focus on family and work I no longer have enough time to keep developing and hosting Squidlr. On top of that, keeping a web-based video download service working is hard, as social media platforms keep changing all the time.
+>
+> www.squidlr.com is now a static website. If you want to download videos, have a look at [yt-dlp](https://github.com/yt-dlp/yt-dlp) on desktop or the [Seal](https://github.com/JunkFood02/Seal) app on Android.
+>
+> The source code stays available here for anyone interested in how Squidlr worked.
+
 ![Squidlr landing page](/docs/img/2025-01-16-squidlr-screenshot-landing.png)
 
 <details>
@@ -31,7 +38,7 @@ Squidlr was created out of a need for a better user experience. Many existing do
 Additionally I wanted to use and learn the functionality of Blazor, a SPA library, which is part of the ASP.NET Core Framework from Microsoft.
 
 ## How do I use Squidlr?
-Currently Squidlr is being hosted on the Azure Cloud and can be accessed from any web browser via https://www.squidlr.com/
+The hosted service at https://www.squidlr.com/ has been shut down. You can still build and run Squidlr locally (see below), but the platform integrations are no longer maintained and may break at any time.
 
 ## Build and use locally
 If you want to use Squidlr on your local machine you have to download the source code or clone the complete repository with Git:
@@ -55,11 +62,9 @@ Either way you can access the frontend by navigating to http://localhost:8091/ a
 If you want to contribute you are welcome to create a pull request targeting the `dev` branch or simply open up an issue.
 
 ## Deployment and hosting
-Both the API backend and the web frontend are uploaded to an Azure Container Registry as Docker images. The `dev` and `main` branch builds are then pushed into a Azure Container App which are accessible through the Internet. Both branches have their own environment respectively, where `dev` is Staging and `main` is Production.
+The Azure hosting has been discontinued. www.squidlr.com is now a static website located in the [`deprecated`](/deprecated) folder and deployed to GitHub Pages by the `deployment-pages` GitHub Actions workflow.
 
-All the relevant steps are executed by using GitHub actions.
-
-Additionally each environment has a Application Insights instance to collect basic (anonymous) meta data.
+The former Azure workflows (`deployment-api`, `deployment-web`, `infrastructure-*`) are kept for reference, but their automatic triggers are disabled.
 
 ## Mobile App
 I also started to develop a mobile app version of Squidlr based on .NET MAUI. Depending on my free resources I would love to explore that endeavour and publish Squidlr as an app on Android and iOS devices. As the whole logic would be hosted by the client device there won't be any need to communicate with a server but the targeted social media platforms. This means the HTTP request pipeline will be under total control outside of the restriction of modern web browsers. So, it would be possible to directly download TikTok videos for example, instead of using a proxy video streaming server. Additionally it won't be necessary to use a HTTP proxy, which is currently required to crawl Instagram from the backend APIs.

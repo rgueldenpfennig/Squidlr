@@ -1,13 +1,14 @@
 name: infrastructure-dev
 
 on:
-  push:
-    branches:
-      - dev
-    paths:
-      - '.github/workflows/infrastructure.yml'
-      - '.github/workflows/infrastructure-dev.yml'
-      - 'infrastructure/**'
+  # Disabled: Azure hosting has been discontinued. The static site is deployed via deployment-pages.yml.
+  # push:
+  #   branches:
+  #     - dev
+  #   paths:
+  #     - '.github/workflows/infrastructure.yml'
+  #     - '.github/workflows/infrastructure-dev.yml'
+  #     - 'infrastructure/**'
   workflow_dispatch:
 
 jobs:
